@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: 구현 해야 할 기능 요청
 title: ''
 labels: ''
 assignees: ''
@@ -9,6 +9,6 @@ assignees: ''
 
 - 기능 이름
 
-- 필요한 것들
+- 포함 해야 하는 것
 
-- 디테일
+- 세부사항
