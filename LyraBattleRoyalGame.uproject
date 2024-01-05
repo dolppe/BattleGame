@@ -5,7 +5,7 @@
 	"Description": "",
 	"Modules": [
 		{
-			"Name": "BattleGame",
+			"Name": "LyraBattleRoyalGame",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}

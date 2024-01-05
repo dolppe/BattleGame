@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "BattleGameGameModeBase.generated.h"
+#include "LyraBattleRoyalGameGameModeBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BATTLEGAME_API ABattleGameGameModeBase : public AGameModeBase
+class LYRABATTLEROYALGAME_API ALyraBattleRoyalGameGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	

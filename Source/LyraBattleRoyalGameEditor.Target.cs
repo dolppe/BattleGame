@@ -3,13 +3,13 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class BattleGameEditorTarget : TargetRules
+public class LyraBattleRoyalGameEditorTarget : TargetRules
 {
-	public BattleGameEditorTarget( TargetInfo Target) : base(Target)
+	public LyraBattleRoyalGameEditorTarget( TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;
-		ExtraModuleNames.Add("BattleGame");
+		ExtraModuleNames.Add("LyraBattleRoyalGame");
 	}
 }
