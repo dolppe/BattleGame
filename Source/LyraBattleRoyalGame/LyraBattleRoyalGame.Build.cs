@@ -8,7 +8,20 @@ public class LyraBattleRoyalGame : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+		PublicDependencyModuleNames.AddRange(new string[]
+		{
+			"Core", 
+			"CoreUObject", 
+			"Engine", 
+			"InputCore",
+			// GAS
+			"GameplayTags",
+			"GameplayTasks",
+			"GameplayAbilities",
+			// Game Feature
+			"ModularGameplay",
+			"GameFeatures",
+		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
