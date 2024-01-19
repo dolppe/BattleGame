@@ -1,6 +1,7 @@
 #include "BattleGameMode.h"
 
 #include "BattleGameState.h"
+#include "LyraBattleRoyalGame/Character/BattleCharacter.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerController.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerState.h"
 
@@ -12,5 +13,6 @@ ABattleGameMode::ABattleGameMode(const FObjectInitializer& ObjectInitializer)
 	GameStateClass = ABattleGameState::StaticClass();
 	PlayerControllerClass = ABattlePlayerController::StaticClass();
 	PlayerStateClass = ABattlePlayerState::StaticClass();
+	DefaultPawnClass = ABattleCharacter::StaticClass();
 	
 }
