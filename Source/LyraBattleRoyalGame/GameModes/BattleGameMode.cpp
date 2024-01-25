@@ -5,6 +5,7 @@
 #include "BattleGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyraBattleRoyalGame/Character/BattleCharacter.h"
+#include "LyraBattleRoyalGame/Character/BattlePawnExtensionComponent.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerController.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerState.h"
 
@@ -60,6 +61,13 @@ APawn* ABattleGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* 
 	{
 		if (APawn* SpawnedPawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform,SpawnInfo))
 		{
+			if (UBattlePawnExtensionComponent* PawnExtComp = UBattlePawnExtensionComponent::FindPawnExtensionComponent(SpawnedPawn))
+			{
+				if (const UBattlePawnData* PawnData = GetPawnDataForController(NewPlayer))
+				{
+					PawnExtComp->SetPawnData(PawnData);
+				}
+			}
 			SpawnedPawn->FinishSpawning(SpawnTransform);
 			return SpawnedPawn;
 		}
