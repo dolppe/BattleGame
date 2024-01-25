@@ -95,14 +95,12 @@ bool UBattlePawnExtensionComponent::CanChangeInitState(UGameFrameworkComponentMa
 	{
 		if (Pawn)
 		{
-			UE_LOG(LogBattle, Log, TEXT("PawnExt => Spawned"));
 			return true;
 		}
 		
 	}
 
 	// InitState_Spawnd -> InitState_DataAvailable
-	// PawnData가 설정되고, Controller가 붙었으면 통과
 	if (CurrentState == InitTags.InitState_Spawned && DesiredState == InitTags.InitState_DataAvailable)
 	{
 		// PawnData가 설정 돼야 넘어갈 수 있음.
@@ -113,8 +111,8 @@ bool UBattlePawnExtensionComponent::CanChangeInitState(UGameFrameworkComponentMa
 		}
 		
 		// 초기에는는 컨트롤러 세팅이 안되어 있는게 맞음
-		// 아직 Possess가 안되어 있을 때
-		
+		// 아직 Possess가 안되어 있을 때 => bIsLocallyControlled가 ture가 되기 때문에 바로 DataAvailable로 변경됨.
+		// 이는 예외처리 같은 느낌으로 있는 코드인듯.
 		const bool bIsLocallyControlled = Pawn->IsLocallyControlled();
 		if (bIsLocallyControlled)
 		{
@@ -123,7 +121,6 @@ bool UBattlePawnExtensionComponent::CanChangeInitState(UGameFrameworkComponentMa
 				return false;
 			}
 		}
-		UE_LOG(LogBattle, Log, TEXT("PawnExt => DataAvailable"));
 		return true;
 	}
 	//  InitState_DataAvailable -> InitState_DataInitialized
@@ -133,11 +130,9 @@ bool UBattlePawnExtensionComponent::CanChangeInitState(UGameFrameworkComponentMa
 		// PawnExtensionComponent가 InitState_DataInitialized이 됐다는 것은 다른 Component들도 최소 DataAvailable 상태라는 것.
 		return Manager->HaveAllFeaturesReachedInitState(Pawn, InitTags.InitState_DataAvailable);
 	}
-	UE_LOG(LogBattle, Log, TEXT("PawnExt => DatInitailzed"));
 	//  InitState_DataInitialized -> InitState_GameplayReady
 	if (CurrentState == InitTags.InitState_DataInitialized && DesiredState == InitTags.InitState_GameplayReady)
 	{
-		UE_LOG(LogBattle, Log, TEXT("PawnExt => GameplayReady"));
 		return true;
 	}
 	

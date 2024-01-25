@@ -89,7 +89,6 @@ bool UBattleHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Ma
 	{
 		if (Pawn)
 		{
-			UE_LOG(LogBattle, Log, TEXT("Hero => Spawned"));
 			return true;
 		}
 	}
@@ -102,7 +101,6 @@ bool UBattleHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Ma
 		{
 			return false;
 		}
-		UE_LOG(LogBattle, Log, TEXT("Hero => DataAvailbable"));
 		return true;
 	}
 
@@ -112,10 +110,8 @@ bool UBattleHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Ma
 	{
 		return ClonePS && Manager->HasFeatureReachedInitState(Pawn,UBattlePawnExtensionComponent::NAME_ActorFeatureName, InitTags.InitState_DataInitialized);
 	}
-	UE_LOG(LogBattle, Log, TEXT("Hero => DataInitialzed"));
 	if (CurrentState == InitTags.InitState_DataInitialized && DesiredState == InitTags.InitState_GameplayReady)
 	{
-		UE_LOG(LogBattle, Log, TEXT("Hero => GameplayReady"));
 		return true;
 	}
 	
