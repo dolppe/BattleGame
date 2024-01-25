@@ -11,14 +11,15 @@ class UBattleAssetManager : public UAssetManager
 public:
 
 	UBattleAssetManager();
+
+	virtual void StartInitialLoading() override;
+
 	
 	static UBattleAssetManager& Get();
 
 	// 에셋 캐싱
 	void AddLoadedAsset(const UObject* Asset);
 	
-	static bool ModuleTest();
-
 	static bool ShouldLogAssetLoads();
 
 	// 동기적인 정적 로딩
@@ -32,7 +33,7 @@ public:
 	template<typename AssetType>
 	static TSubclassOf<AssetType> GetSubClass(const TSoftClassPtr<AssetType>& AssetPointer, bool bKeepInMemory = true);
 
-	virtual void StartInitialLoading() override;
+
 	
 	UPROPERTY()
 	TSet<TObjectPtr<const UObject>> LoadedAssets;

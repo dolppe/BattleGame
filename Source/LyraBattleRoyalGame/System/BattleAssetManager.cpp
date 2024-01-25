@@ -1,4 +1,6 @@
 #include "BattleAssetManager.h"
+
+#include "LyraBattleRoyalGame/BattleGameplayTags.h"
 #include "LyraBattleRoyalGame/BattleLogChannels.h"
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleAssetManager)
 
@@ -60,5 +62,9 @@ UObject* UBattleAssetManager::SynchronousLoadAsset(const FSoftObjectPath& AssetP
 void UBattleAssetManager::StartInitialLoading()
 {
 	Super::StartInitialLoading();
-	
+
+	// BattleGameplayTags 초기화
+	// Lyra에서는 STARTUP_JOB 매크로를 활용하여 진행
+	// 이는 추후 로딩, 에셋 번들에서 사용되는 것으로 현재는 단순하게 호출함.
+	FBattleGameplayTags::InitializeNativeTags();
 }
