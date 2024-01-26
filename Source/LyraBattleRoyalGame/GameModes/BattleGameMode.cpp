@@ -5,6 +5,7 @@
 #include "BattleGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyraBattleRoyalGame/Character/BattleCharacter.h"
+#include "LyraBattleRoyalGame/Character/BattlePawnExtensionComponent.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerController.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerState.h"
 
@@ -42,6 +43,7 @@ void ABattleGameMode::InitGameState()
 
 void ABattleGameMode::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
 {
+	// Experience가 로딩되지 않았을 때 NewPlayer를 생성하고 Possess하는 것을 막음.
 	if (IsExperienceLoaded())
 	{
 		Super::HandleStartingNewPlayer_Implementation(NewPlayer);
@@ -56,18 +58,26 @@ APawn* ABattleGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* 
 	SpawnInfo.ObjectFlags |= RF_Transient;
 	SpawnInfo.bDeferConstruction = true;
 
+	// PawnData를 통해 PawnClass를 가져와서 Spawn 진행함.
 	if (UClass* PawnClass = GetDefaultPawnClassForController(NewPlayer))
 	{
 		if (APawn* SpawnedPawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform,SpawnInfo))
 		{
+			if (UBattlePawnExtensionComponent* PawnExtComp = UBattlePawnExtensionComponent::FindPawnExtensionComponent(SpawnedPawn))
+			{
+				if (const UBattlePawnData* PawnData = GetPawnDataForController(NewPlayer))
+				{
+					PawnExtComp->SetPawnData(PawnData);
+				}
+			}
 			SpawnedPawn->FinishSpawning(SpawnTransform);
 			return SpawnedPawn;
 		}
 	}
 	
 	return nullptr;	
-}
 
+}
 UClass* ABattleGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
 {
 	if (const UBattlePawnData* PawnData = GetPawnDataForController(InController))
