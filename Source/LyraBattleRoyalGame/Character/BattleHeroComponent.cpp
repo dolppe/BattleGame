@@ -28,8 +28,8 @@ void UBattleHeroComponent::OnRegister()
 		}
 	}
 
+	// UGameFrameworkComponentManager에 InitState를 사용하는 GameFeature Component라고 등록하는 것.
 	RegisterInitStateFeature();
-	
 }
 
 void UBattleHeroComponent::BeginPlay()
@@ -40,6 +40,7 @@ void UBattleHeroComponent::BeginPlay()
 	// PawnExtensionComponent의 InitState만 관찰하도록 함.
 	BindOnActorInitStateChanged(UBattlePawnExtensionComponent::NAME_ActorFeatureName, FGameplayTag(),false);
 
+	// None => InitState_Spawned
 	ensure(TryToChangeInitState(FBattleGameplayTags::Get().InitState_Spawned));
 
 	CheckDefaultInitialization();
@@ -51,6 +52,7 @@ void UBattleHeroComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
+// 연쇄적으로 자신의 InitState를 업데이트할 수 있으면 업데이트 하도록 하는 것 (None인 경우 동작x)
 void UBattleHeroComponent::CheckDefaultInitialization()
 {
 	// Hero Feature는 PawnExtension Feature에 종속되어 있어서, CheckDefaultInitializationforImplemanters를 호출하지 않음

@@ -1,46 +1,46 @@
 # Character
 
-## ¿ä¾à
+## ìš”ì•½
 
-- Character Å¬·¡½º  
-GameFramworkComponent¸¦ ¿©·¯°³ °¡Áö°í ÀÖÀ½ => ±â´É ±¸Çö  
-ex) PawnExtensionComponent => GameFeatureÀÇ InitState¸¦ È°¿ëÇÏ´Â ComponentÀÌ¸ç ´Ù¸¥ ÄÄÆ÷³ÍÆ®µéÀÇ ÃÊ±âÈ­, ¼ø¼­ ¸ÂÃß±â¸¦ ´ã´ç.  
-ex) HeroComponent => GameFeatureÀÇ InitState¸¦ È°¿ëÇÏ¸ç Input, Camera µîÀÇ ÃÊ±âÈ­, ¹ÙÀÎµù µîÀ» ´ã´çÇÏ°í ÀÖÀ½.
-- PawnData Å¬·¡½º  
-Character°¡ »ç¿ëÇÒ µ¥ÀÌÅÍ¸¦ °¡Áö°í ÀÖ´Â Å¬·¡½º.  
-UPrimaryDataAssetÀ» »ó¼Ó ¹ÞÀº Data Å¬·¡½ºÀÌ±â ¶§¹®¿¡ ¾î¶² »óÈ²ÀÎÁö¿¡ µû¶ó PawnData¸¦ ¹Ù²ã°¡¸ç Character¿¡ ´ëÇÑ °ªµéÀ» º¯°æÇÒ ¼ö ÀÖÀ½. => UserFacingExperience°¡ PawnData°ªÀ» °¡Áö°í ÀÖÀ½. (¸ðµå º¯°æ½Ã ÀÌ ¶ÇÇÑ º¯°æ)  
-³»ºÎ¿¡´Â PawnClass, DefaultCameraMode, InputConfig, AbilitySets µîÀÌ ÀÖÀ½.
+- Character í´ëž˜ìŠ¤  
+GameFramworkComponentë¥¼ ì—¬ëŸ¬ê°œ ê°€ì§€ê³  ìžˆìŒ => ê¸°ëŠ¥ êµ¬í˜„  
+ex) PawnExtensionComponent => GameFeatureì˜ InitStateë¥¼ í™œìš©í•˜ëŠ” Componentì´ë©° ë‹¤ë¥¸ ì»´í¬ë„ŒíŠ¸ë“¤ì˜ ì´ˆê¸°í™”, ìˆœì„œ ë§žì¶”ê¸°ë¥¼ ë‹´ë‹¹.  
+ex) HeroComponent => GameFeatureì˜ InitStateë¥¼ í™œìš©í•˜ë©° Input, Camera ë“±ì˜ ì´ˆê¸°í™”, ë°”ì¸ë”© ë“±ì„ ë‹´ë‹¹í•˜ê³  ìžˆìŒ.
+- PawnData í´ëž˜ìŠ¤  
+Characterê°€ ì‚¬ìš©í•  ë°ì´í„°ë¥¼ ê°€ì§€ê³  ìžˆëŠ” í´ëž˜ìŠ¤.  
+UPrimaryDataAssetì„ ìƒì† ë°›ì€ Data í´ëž˜ìŠ¤ì´ê¸° ë•Œë¬¸ì— ì–´ë–¤ ìƒí™©ì¸ì§€ì— ë”°ë¼ PawnDataë¥¼ ë°”ê¿”ê°€ë©° Characterì— ëŒ€í•œ ê°’ë“¤ì„ ë³€ê²½í•  ìˆ˜ ìžˆìŒ. => UserFacingExperienceê°€ PawnDataê°’ì„ ê°€ì§€ê³  ìžˆìŒ. (ëª¨ë“œ ë³€ê²½ì‹œ ì´ ë˜í•œ ë³€ê²½)  
+ë‚´ë¶€ì—ëŠ” PawnClass, DefaultCameraMode, InputConfig, AbilitySets ë“±ì´ ìžˆìŒ.
 
 ## Character Class
-À¯Àú°¡ ÇÃ·¹ÀÌÇÏ°Ô µÇ´Â CharacterÀÇ °¡Àå ¸ÞÀÎµÇ´Â ClassÀÓ.  
-ÇØ´ç Å¬·¡½º¿¡ ¼ÓÇØÀÖ´Â ÄÄÆ÷³ÍÆ®, ºÙ¾î ÀÖ´Â ¿©·¯ ¾×ÅÍµéÀÇ »óÈ£ÀÛ¿ë µîÀ¸·Î Character°¡ µ¿ÀÛÇÏ°Ô µÊ.
+ìœ ì €ê°€ í”Œë ˆì´í•˜ê²Œ ë˜ëŠ” Characterì˜ ê°€ìž¥ ë©”ì¸ë˜ëŠ” Classìž„.  
+í•´ë‹¹ í´ëž˜ìŠ¤ì— ì†í•´ìžˆëŠ” ì»´í¬ë„ŒíŠ¸, ë¶™ì–´ ìžˆëŠ” ì—¬ëŸ¬ ì•¡í„°ë“¤ì˜ ìƒí˜¸ìž‘ìš© ë“±ìœ¼ë¡œ Characterê°€ ë™ìž‘í•˜ê²Œ ë¨.
 
-³»ºÎ¿¡ PawnExtensionComponent, HeroComponent µîÀÇ ÄÄÆ÷³ÍÆ®°¡ Á¸ÀçÇÔ.   
-=> ÀÌ´Â GameFeatureÀÇ InitState¸¦ È°¿ëÇÏ¿© ¼øÂ÷ÀûÀ¸·Î ÃÊ±âÈ­°¡ ÁøÇàµÇ´Â ÄÄÆ÷³ÍÆ®µéÀÓ.
+ë‚´ë¶€ì— PawnExtensionComponent, HeroComponent ë“±ì˜ ì»´í¬ë„ŒíŠ¸ê°€ ì¡´ìž¬í•¨.   
+=> ì´ëŠ” GameFeatureì˜ InitStateë¥¼ í™œìš©í•˜ì—¬ ìˆœì°¨ì ìœ¼ë¡œ ì´ˆê¸°í™”ê°€ ì§„í–‰ë˜ëŠ” ì»´í¬ë„ŒíŠ¸ë“¤ìž„.
 
 ### PawnExtensionComponent
-=> ±¸Çö ÈÄ¿¡ Ãß°¡ÀûÀ¸·Î Á¤¸®.
+=> êµ¬í˜„ í›„ì— ì¶”ê°€ì ìœ¼ë¡œ ì •ë¦¬.
 
 
 ### HeroComponent
-=> ±¸Çö ÈÄ¿¡ Ãß°¡ÀûÀ¸·Î Á¤¸®.
+=> êµ¬í˜„ í›„ì— ì¶”ê°€ì ìœ¼ë¡œ ì •ë¦¬.
 
 ## PawnData Class
-Ä³¸¯ÅÍ°¡ »ç¿ëÇÒ µ¥ÀÌÅÍ¸¦ °¡Áö°í ÀÖ´Â Å¬·¡½º.  
-UPrimaryDataAssetÀ» »ó¼Ó ¹ÞÀº Data Å¬·¡½ºÀÓ.  
+ìºë¦­í„°ê°€ ì‚¬ìš©í•  ë°ì´í„°ë¥¼ ê°€ì§€ê³  ìžˆëŠ” í´ëž˜ìŠ¤.  
+UPrimaryDataAssetì„ ìƒì† ë°›ì€ Data í´ëž˜ìŠ¤ìž„.  
 
-³»ºÎ¿¡
-- PawnClass => »ç¿ëÇÒ ¸ÞÀÎ Ä³¸¯ÅÍ Å¬·¡½º
-- DefaultCameraMode => ±âº» Ä«¸Þ¶ó ¸ðµå
-- InputConfig => »ç¿ëÇÒ InputConfig
-- AbilitySets => AbilitySystem¿¡ ActivatableAbilities¿¡ µé¾î°¥ AbilitySets
+ë‚´ë¶€ì—
+- PawnClass => ì‚¬ìš©í•  ë©”ì¸ ìºë¦­í„° í´ëž˜ìŠ¤
+- DefaultCameraMode => ê¸°ë³¸ ì¹´ë©”ë¼ ëª¨ë“œ
+- InputConfig => ì‚¬ìš©í•  InputConfig
+- AbilitySets => AbilitySystemì— ActivatableAbilitiesì— ë“¤ì–´ê°ˆ AbilitySets
 
-¸¦ °¡Áö°í ÀÖÀ½.
+ë¥¼ ê°€ì§€ê³  ìžˆìŒ.
 
-PawnData¸¦ º¯°æÇÏ¿© ¼Õ½±°Ô Ä³¸¯ÅÍ, Ä«¸Þ¶ó ¸ðµå, ÀÔ·Â ¹æ½Ä, È°¼ºÈ­ °¡´ÉÇÑ ¾îºô¸®Æ¼ µîÀ» º¯°æÇÒ ¼ö ÀÖÀ½.
+PawnDataë¥¼ ë³€ê²½í•˜ì—¬ ì†ì‰½ê²Œ ìºë¦­í„°, ì¹´ë©”ë¼ ëª¨ë“œ, ìž…ë ¥ ë°©ì‹, í™œì„±í™” ê°€ëŠ¥í•œ ì–´ë¹Œë¦¬í‹° ë“±ì„ ë³€ê²½í•  ìˆ˜ ìžˆìŒ.
 
-=> Experience¿¡ µé¾î°¡ ÀÖ´Â µ¥ÀÌÅÍ Áß ÇÏ³ªÀÓ.
-Áï, Experience¸¦ º¯°æÇÏ¸é À§ÀÇ Ä³¸¯ÅÍ, ÀÔ·Â ¹æ½Ä µîÀ» º¯°æÇÒ ¼ö ÀÖ´Ù´Â °Í.
+=> Experienceì— ë“¤ì–´ê°€ ìžˆëŠ” ë°ì´í„° ì¤‘ í•˜ë‚˜ìž„.
+ì¦‰, Experienceë¥¼ ë³€ê²½í•˜ë©´ ìœ„ì˜ ìºë¦­í„°, ìž…ë ¥ ë°©ì‹ ë“±ì„ ë³€ê²½í•  ìˆ˜ ìžˆë‹¤ëŠ” ê²ƒ.
 
 
 

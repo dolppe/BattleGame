@@ -16,6 +16,7 @@ public:
 	
 private:
 
+	// PawnExtensionComponent는 SubObject로 붙여둠.
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Battle|Character", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBattlePawnExtensionComponent> PawnExtComponent;
 	

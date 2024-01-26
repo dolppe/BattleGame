@@ -33,7 +33,6 @@ public:
 	template<typename AssetType>
 	static TSubclassOf<AssetType> GetSubClass(const TSoftClassPtr<AssetType>& AssetPointer, bool bKeepInMemory = true);
 
-
 	
 	UPROPERTY()
 	TSet<TObjectPtr<const UObject>> LoadedAssets;

@@ -13,11 +13,13 @@ void UBattleGameInstance::Init()
 	Super::Init();
 	
 	UGameFrameworkComponentManager* ComponentManager = GetSubsystem<UGameFrameworkComponentManager>(this);
-	
+
+	// 사용할 GameplayTag를 등록함.
 	if (ensure(ComponentManager))
 	{
 		const FBattleGameplayTags& GameplayTags = FBattleGameplayTags::Get();
 
+		// InitState 관련 Tag 등록.
 		ComponentManager->RegisterInitState(GameplayTags.InitState_Spawned, false, FGameplayTag());
 		ComponentManager->RegisterInitState(GameplayTags.InitState_DataAvailable, false, GameplayTags.InitState_Spawned);
 		ComponentManager->RegisterInitState(GameplayTags.InitState_DataInitialized, false, GameplayTags.InitState_DataAvailable);
