@@ -4,6 +4,10 @@
 
 #include "BattleHeroComponent.generated.h"
 
+class UBattleCameraMode;
+template<class TClass> class TSubclassOf;
+
+
 //  카메라, 입력 등 플레이어가 제어하는 시스템의 초기화를 담당.
 UCLASS(Blueprintable, Meta=(BlueprintSpawnableComponent))
 class UBattleHeroComponent : public UPawnComponent, public IGameFrameworkInitStateInterface
@@ -26,4 +30,6 @@ public:
 	virtual bool CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const final;
 	virtual void HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) final;
 
+	TSubclassOf<UBattleCameraMode> DetermineCameraMode() const;
+	
 };

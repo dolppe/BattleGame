@@ -3,6 +3,7 @@
 #include "GameFramework/Character.h"
 #include "BattleCharacter.generated.h"
 
+class UBattleCameraComponent;
 class UBattlePawnExtensionComponent;
 
 UCLASS()
@@ -19,5 +20,8 @@ private:
 	// PawnExtensionComponent는 SubObject로 붙여둠.
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Battle|Character", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBattlePawnExtensionComponent> PawnExtComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Battle|Character", Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UBattleCameraComponent> CameraComponent;
 	
 };

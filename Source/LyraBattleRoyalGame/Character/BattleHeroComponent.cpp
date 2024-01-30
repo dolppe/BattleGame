@@ -4,6 +4,7 @@
 #include "Components/GameFrameworkComponentManager.h"
 #include "LyraBattleRoyalGame/BattleGameplayTags.h"
 #include "LyraBattleRoyalGame/BattleLogChannels.h"
+#include "LyraBattleRoyalGame/Camera/BattleCameraComponent.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerState.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleHeroComponent)
@@ -121,7 +122,7 @@ bool UBattleHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Ma
 	
 }
 
-// InitState 상태 변화를 위해 호출하는 함수
+// InitState 상태 변화가 진행될 때 호출하는 함수.
 void UBattleHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState,
 	FGameplayTag DesiredState)
 {
@@ -137,6 +138,44 @@ void UBattleHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager*
 		{
 			return;
 		}
+
+		const bool bIsLocallyControlled = Pawn->IsLocallyControlled();
+		const UBattlePawnData* PawnData = nullptr;
+		if (UBattlePawnExtensionComponent* PawnExtensionComponent = UBattlePawnExtensionComponent::FindPawnExtensionComponent(Pawn))
+		{
+			PawnData = PawnExtensionComponent->GetPawnData<UBattlePawnData>();
+		}
+
+		if (bIsLocallyControlled && PawnData)
+		{
+			// 현재 Character에 Attach된 CameraComponent
+			if (UBattleCameraComponent* CameraComponent = UBattleCameraComponent::FindCameraComponent(Pawn))
+			{
+				CameraComponent->DetermineCameraModeDelegate.BindUObject(this, &ThisClass::DetermineCameraMode);
+			}
+		}
+		
+	}
+
+	
+	
+}
+
+TSubclassOf<UBattleCameraMode> UBattleHeroComponent::DetermineCameraMode() const
+{
+	const APawn* Pawn = GetPawn<APawn>();
+	if (!Pawn)
+	{
+		return nullptr;
+	}
+
+	if (UBattlePawnExtensionComponent* PawnExtComp = UBattlePawnExtensionComponent::FindPawnExtensionComponent(Pawn))
+	{
+		if (const UBattlePawnData* PawnData = PawnExtComp->GetPawnData<UBattlePawnData>())
+		{
+			return PawnData->DefaultCameraMode;
+		}
 	}
 	
+	return nullptr;
 }
