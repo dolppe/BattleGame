@@ -35,6 +35,6 @@ public:
 	UPROPERTY()
 	TObjectPtr<UBattleCameraModeStack> CameraModeStack;
 
-	/** 현재 CameraMode를 가져오는 Delegate */
+	/** 현재 PawnData에 설정된 CameraMode를 가져오는 Delegate */
 	FBattleCameraModeDelegate DetermineCameraModeDelegate;
 };
