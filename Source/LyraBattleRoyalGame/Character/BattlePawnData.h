@@ -1,6 +1,8 @@
 #pragma once
 
+#include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "LyraBattleRoyalGame/Camera/BattleCameraMode.h"
 #include "BattlePawnData.generated.h"
 
 UCLASS()
@@ -12,5 +14,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Battle|Pawn")
 	TSubclassOf<APawn> PawnClass;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Battle|Camera")
+	TSubclassOf<UBattleCameraMode> DefaultCameraMode;
+
 };
