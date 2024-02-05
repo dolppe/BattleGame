@@ -2,8 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "LyraBattleRoyalGame/Camera/BattleCameraMode.h"
 #include "BattlePawnData.generated.h"
+
+class UBattleCameraMode;
+class UBattleInputConfig;
 
 UCLASS()
 class UBattlePawnData : public UPrimaryDataAsset
@@ -18,4 +20,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Battle|Camera")
 	TSubclassOf<UBattleCameraMode> DefaultCameraMode;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Battle|InputConfig")
+	TObjectPtr<UBattleInputConfig> InputConfig;
+	
 };

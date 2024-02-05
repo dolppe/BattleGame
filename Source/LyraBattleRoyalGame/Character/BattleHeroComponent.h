@@ -1,4 +1,6 @@
 #pragma once
+
+#include "InputActionValue.h"
 #include "Components/GameFrameworkInitStateInterface.h"
 #include "Components/PawnComponent.h"
 
@@ -6,6 +8,7 @@
 
 class UBattleCameraMode;
 template<class TClass> class TSubclassOf;
+struct FBattleMappableConfigPair;
 
 
 //  카메라, 입력 등 플레이어가 제어하는 시스템의 초기화를 담당.
@@ -30,6 +33,15 @@ public:
 	virtual bool CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const final;
 	virtual void HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) final;
 
+	// Camera
 	TSubclassOf<UBattleCameraMode> DetermineCameraMode() const;
+
+	// Input
+	void InitilizePlayerInput(UInputComponent* PlayerInputComponent);
+	void Input_Move(const FInputActionValue& InputActionValue);
+	void Input_LookMouse(const FInputActionValue& InputActionValue);
+
+	UPROPERTY(EditAnywhere)
+	TArray<FBattleMappableConfigPair> DefaultInputConfigs;
 	
 };

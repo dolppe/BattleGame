@@ -21,6 +21,9 @@ public class LyraBattleRoyalGame : ModuleRules
 			// Game Feature
 			"ModularGameplay",
 			"GameFeatures",
+			// Input
+			"InputCore",
+			"EnhancedInput",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
