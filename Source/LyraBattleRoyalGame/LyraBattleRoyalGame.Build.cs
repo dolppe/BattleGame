@@ -24,6 +24,8 @@ public class LyraBattleRoyalGame : ModuleRules
 			// Input
 			"InputCore",
 			"EnhancedInput",
+			// CommonUser
+			"CommonUser",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
