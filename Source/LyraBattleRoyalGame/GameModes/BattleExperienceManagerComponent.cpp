@@ -1,5 +1,6 @@
 #include "BattleExperienceManagerComponent.h"
 
+#include "GameFeaturesSubsystem.h"
 #include "GameFeaturesSubsystemSettings.h"
 #include "LyraBattleRoyalGame/GameModes/BattleExperienceDefinition.h"
 #include "LyraBattleRoyalGame/System/BattleAssetManager.h"
@@ -123,10 +124,51 @@ void UBattleExperienceManagerComponent::OnExperienceLoadComplete()
 	check(LoadState == EBattleExperienceLoadState::Loading);
 	check(CurrentExperience);
 
-	// 여기에는 Experience에 등록된 GameFeature Plugin에 대한 처리를 진행함.
-	// 이는 추후 분석후 추가할 예정
+	// 이전에 활성화된 GameFeature Plugin의 URL을 클리어 해줌.
+	GameFeaturePluginURLs.Reset();
+
+	// FeaturePluginList를 순회하면서, PluginName으로 PluginURL을 찾고 GameFeaturePluginURL에 등록해줌.
+	auto CollectGameFeaturePluginURLs = [This = this](const UPrimaryDataAsset* Context, const TArray<FString>& FeaturePluginList)
+	{
+		for (const FString& PluginName : FeaturePluginList)
+		{
+			FString PluginURL;
+			if (UGameFeaturesSubsystem::Get().GetPluginURLByName(PluginName, PluginURL))
+			{
+				This->GameFeaturePluginURLs.AddUnique(PluginURL);
+			}
+		}
+	};
+
+	// 등록해둔 GameFeaturesToEnable에 있는 Plugin만 활성화할 GameFeature Plugin 후보군으로 등록함.
+	CollectGameFeaturePluginURLs(CurrentExperience, CurrentExperience->GameFeaturesToEnable);
+
+	NumGameFeaturePluginsLoading = GameFeaturePluginURLs.Num();
+	if (NumGameFeaturePluginsLoading)
+	{
+		LoadState = EBattleExperienceLoadState::LoadingGameFeature;
+		for (const FString& PluginURL : GameFeaturePluginURLs)
+		{
+			// 매 Plugin이 로딩 및 활성화된 이후 OnGameFeaturePluginLoadComplete 콜백 함수를 실행하도록 함.
+			UGameFeaturesSubsystem::Get().LoadAndActivateGameFeaturePlugin(PluginURL, FGameFeaturePluginLoadComplete::CreateUObject(this, &ThisClass::OnGameFeaturePluginLoadComplete));
+		}
+	}
+	else
+	{
+		OnExperienceFullLoadCompleted();	
+	}
 	
-	OnExperienceFullLoadCompleted();
+}
+
+void UBattleExperienceManagerComponent::OnGameFeaturePluginLoadComplete(const UE::GameFeatures::FResult& Result)
+{
+	// GameFeaturePlugin이 로딩되고 활성화됐을때 실행
+	NumGameFeaturePluginsLoading--;
+	if (NumGameFeaturePluginsLoading == 0)
+	{
+		// GameFeaturePlugin 로딩이 끝나면 기존의 Loaded대로 진행함.
+		OnExperienceFullLoadCompleted();
+	}
 }
 
 void UBattleExperienceManagerComponent::OnExperienceFullLoadCompleted()
