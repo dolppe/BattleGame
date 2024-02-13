@@ -98,6 +98,14 @@ void ABattleGameMode::HandleMatchAssignmentIfNotExpectingOne()
 
 	UWorld* World = GetWorld();
 
+	// ServerTravel때 넘긴 ExtraArgs는 OptionString에 들어있음.
+	if (!ExperienceId.IsValid() && UGameplayStatics::HasOption(OptionsString, TEXT("Experience")))
+	{
+		const FString ExperienceFromOptions = UGameplayStatics::ParseOption(OptionsString, TEXT("Experience"));
+		ExperienceId = FPrimaryAssetId(UBattleExperienceDefinition::StaticClass()->GetFName(), FName(*ExperienceFromOptions));
+	}
+
+	// Experience가 없으면 Default로 설정된 것으로 가져옴.
 	// 만들어둔 것을 Default하게 설정해서 PrimaryAssetId로 생성함
 	// 5.1 Ver 기준으로는 Config나 다른 곳에서 가져오는 것이 아니라 그냥 바로 코드상 입력되어 있음.
 	if (!ExperienceId.IsValid())
