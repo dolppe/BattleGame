@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/GameStateComponent.h"
+#include "GameFeaturePluginOperationResult.h"
 #include "BattleExperienceManagerComponent.generated.h"
 
 
@@ -13,7 +14,7 @@ enum class EBattleExperienceLoadState
 {
 	Unloaded,
 	Loading,
-	//LoadingGameFeature,
+	LoadingGameFeature,
 	//ExecutingActions,
 	Loaded,
 	Deactivating,
@@ -40,6 +41,7 @@ public:
 	void ServerSetCurrentExperience(FPrimaryAssetId ExperienceId);
 	void StartExperienceLoad();
 	void OnExperienceLoadComplete();
+	void OnGameFeaturePluginLoadComplete(const UE::GameFeatures::FResult& Result);
 	void OnExperienceFullLoadCompleted();
 	const UBattleExperienceDefinition* GetCurrentExperienceChecked() const;
 	
@@ -54,6 +56,8 @@ private:
 	// Experience 로딩 완료 후 델리게이트
 	FOnBattleExperienceLoaded OnExperienceLoaded;
 
-	
+	// 활성화된 GameFeature Plugin들
+	int32 NumGameFeaturePluginsLoading = 0;
+	TArray<FString> GameFeaturePluginURLs;
 	
 };
