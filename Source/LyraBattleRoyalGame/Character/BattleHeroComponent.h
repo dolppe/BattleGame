@@ -19,7 +19,11 @@ class UBattleHeroComponent : public UPawnComponent, public IGameFrameworkInitSta
 public:
 	UBattleHeroComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	// GameFeature Name
 	static const FName NAME_ActorFeatureName;
+
+	// GameFrameworkComponentManager Extension Custom Event Name
+	static const FName NAME_BindInputsNow;
 
 	// PawnComponent Interface
 	virtual void OnRegister() final;

@@ -194,6 +194,7 @@ void UBattleExperienceManagerComponent::OnExperienceFullLoadCompleted()
 		{
 			for (UGameFeatureAction* Action : ActionList)
 			{
+				// explicit GameFeatureAction state Set Registering => Loading => Activating
 				if (Action)
 				{
 					Action->OnGameFeatureRegistering();
