@@ -3,6 +3,7 @@
 #include "GameFeaturesSubsystem.h"
 #include "GameFeaturesSubsystemSettings.h"
 #include "LyraBattleRoyalGame/GameModes/BattleExperienceDefinition.h"
+#include "BattleExperienceActionSet.h"
 #include "LyraBattleRoyalGame/System/BattleAssetManager.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleExperienceManagerComponent)
@@ -173,8 +174,44 @@ void UBattleExperienceManagerComponent::OnGameFeaturePluginLoadComplete(const UE
 
 void UBattleExperienceManagerComponent::OnExperienceFullLoadCompleted()
 {
+	// After GameFeatureAction Load && Activation
 	check(LoadState != EBattleExperienceLoadState::Loaded);
+	
+	// Start GameFeature Action Activation
+	{
+		LoadState = EBattleExperienceLoadState::ExecutingActions;
 
+		FGameFeatureActivatingContext Context;
+		{
+			const FWorldContext* ExistingWorldContext = GEngine->GetWorldContextFromWorld(GetWorld());
+			if (ExistingWorldContext)
+			{
+				Context.SetRequiredWorldContextHandle(ExistingWorldContext->ContextHandle);
+			}
+		}
+
+		auto ActivateListOfActions = [&Context](const TArray<UGameFeatureAction*>& ActionList)
+		{
+			for (UGameFeatureAction* Action : ActionList)
+			{
+				// explicit GameFeatureAction state Set Registering => Loading => Activating
+				if (Action)
+				{
+					Action->OnGameFeatureRegistering();
+					Action->OnGameFeatureLoading();
+					Action->OnGameFeatureActivating(Context);
+				}
+			}
+		};
+		
+		ActivateListOfActions(CurrentExperience->Actions);
+
+		for (const TObjectPtr<UBattleExperienceActionSet>& ActionSet : CurrentExperience->ActionSets)
+		{
+			ActivateListOfActions(ActionSet->Actions);
+		}
+	}
+	
 	// Experience가 완전히 로드 됐으니 등록된 델리게이트들에게 Broadcast 진행.
 	LoadState = EBattleExperienceLoadState::Loaded;
 	OnExperienceLoaded.Broadcast(CurrentExperience);

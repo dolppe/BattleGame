@@ -15,8 +15,8 @@ enum class EBattleExperienceLoadState
 	Unloaded,
 	Loading,
 	LoadingGameFeature,
-	//ExecutingActions,
 	Loaded,
+	ExecutingActions,
 	Deactivating,
 };
 

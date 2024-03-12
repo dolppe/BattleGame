@@ -16,6 +16,8 @@
 
 const FName UBattleHeroComponent::NAME_ActorFeatureName("Hero");
 
+const FName UBattleHeroComponent::NAME_BindInputsNow("BindInputsNow");
+
 UBattleHeroComponent::UBattleHeroComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -249,7 +251,8 @@ void UBattleHeroComponent::InitilizePlayerInput(UInputComponent* PlayerInputComp
 			}
 		}
 	}
-	
+
+	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(const_cast<APawn*>(Pawn), NAME_BindInputsNow);
 	
 }
 
@@ -310,8 +313,6 @@ void UBattleHeroComponent::Input_LookMouse(const FInputActionValue& InputActionV
 	}
 	
 }
-
-
 
 
 
