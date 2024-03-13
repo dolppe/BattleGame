@@ -21,11 +21,13 @@ public class LyraBattleRoyalGame : ModuleRules
 			// Game Feature
 			"ModularGameplay",
 			"GameFeatures",
+			"ModularGameplayActors",
 			// Input
 			"InputCore",
 			"EnhancedInput",
 			// CommonUser
 			"CommonUser",
+			
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
