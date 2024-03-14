@@ -3,7 +3,7 @@
 #include "UObject/Object.h"
 #include "BattleEquipmentInstance.generated.h"
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class UBattleEquipmentInstance : public UObject
 {
 	GENERATED_BODY()
