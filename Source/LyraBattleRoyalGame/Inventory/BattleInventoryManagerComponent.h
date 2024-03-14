@@ -24,6 +24,9 @@ struct FBattleInventoryList
 	FBattleInventoryList(UActorComponent* InOwnerComponent = nullptr)
 		:OwnerComponent(InOwnerComponent)
 	{}
+
+	UBattleInventoryItemInstance* AddEntry(TSubclassOf<UBattleInventoryItemDefinition> ItemDef);
+	
 	
 	UPROPERTY()
 	TArray<FBattleInventoryEntry> Entries;
@@ -42,6 +45,11 @@ class UBattleInventoryManagerComponent : public UActorComponent
 public:
 	UBattleInventoryManagerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	// InventoryItemDefinition을 통해 InventoryList에 추가하여 관리하며, InventoryItemInstance를 반환함.
+	UFUNCTION(BlueprintCallable, Category=Inventory)
+	UBattleInventoryItemInstance* AddItemDefinition(TSubclassOf<UBattleInventoryItemDefinition> ItemDef);
+	
+	
 	UPROPERTY()
 	FBattleInventoryList InventoryList;
 	

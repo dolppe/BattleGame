@@ -10,11 +10,14 @@
  * - Rifle에 대한 SetStats으로 총알에 대한 장착 최대치와 남은 잔탄수를 예시로 들수있다.
  */
 
-UCLASS(Abstract, EditInlineNew)
+class UBattleInventoryItemInstance;
+
+UCLASS(Abstract, DefaultToInstanced,EditInlineNew)
 class UBattleInventoryItemFragment : public UObject
 {
 	GENERATED_BODY()
 public:
+	virtual void OnInstanceCreated(UBattleInventoryItemInstance* Instance) const {}
 };
 
 
@@ -24,6 +27,8 @@ class UBattleInventoryItemDefinition : public UObject
 	GENERATED_BODY()
 public:
 	UBattleInventoryItemDefinition(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	const UBattleInventoryItemFragment* FindFragmentByClass(TSubclassOf<UBattleInventoryItemFragment> FragmentClass) const;
 	
 	// Inventory Item 정의 이름
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Display)

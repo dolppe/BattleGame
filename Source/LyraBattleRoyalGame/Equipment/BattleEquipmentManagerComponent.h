@@ -30,6 +30,9 @@ struct FBattleEquipmentList
 	FBattleEquipmentList(UActorComponent* InOwnerComponent = nullptr)
 		: OwnerComponent(InOwnerComponent)
 	{}
+
+	UBattleEquipmentInstance* AddEntry(TSubclassOf<UBattleEquipmentDefinition> EquipmentDefinition);
+	void RemoveEntry(UBattleEquipmentInstance* Instance);
 	
 	UPROPERTY()
 	TArray<FBattleAppliedEquipmentEntry> Entries;
@@ -47,6 +50,21 @@ class UBattleEquipmentManagerComponent : public UPawnComponent
 	GENERATED_BODY()
 public:
 	UBattleEquipmentManagerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	UBattleEquipmentInstance* EquipItem(TSubclassOf<UBattleEquipmentDefinition> EquipmentDefinition);
+	void UnequipItem(UBattleEquipmentInstance* ItemInstance);
+
+	UFUNCTION(BlueprintCallable)
+	TArray<UBattleEquipmentInstance*> GetEquipmentInstancesOfType(TSubclassOf<UBattleEquipmentInstance> InstanceType) const;
+
+	// 장착물중 처음 것을 바로 반환
+	UBattleEquipmentInstance* GetFirstInstanceOfType(TSubclassOf<UBattleEquipmentInstance> InstanceType);
+
+	template <typename T>
+	T* GetFirstInstanceOfType()
+	{
+		return (T*)GetFirstInstanceOfType(T::StaticClass());
+	}
 	
 	UPROPERTY()
 	FBattleEquipmentList EquipmentList;

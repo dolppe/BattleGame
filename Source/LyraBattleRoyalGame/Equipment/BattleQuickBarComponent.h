@@ -3,6 +3,7 @@
 #include "Components/ControllerComponent.h"
 #include "BattleQuickBarComponent.generated.h"
 
+class UBattleEquipmentManagerComponent;
 class UBattleInventoryItemInstance;
 class UBattleEquipmentInstance;
 
@@ -23,7 +24,20 @@ public:
 
 	UBattleQuickBarComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	virtual void BeginPlay() override;
 
+	UBattleEquipmentManagerComponent* FindEquipmentManager() const;
+	void EquipItemInSlot();
+	void UnequipItemInSlot();
+	
+	
+	UFUNCTION(BlueprintCallable)
+	void AddItemToSlot(int32 SlotIndex, UBattleInventoryItemInstance* Item);
+
+	UFUNCTION(BlueprintCallable, Category="Battle")
+	void SetActiveSlotIndex(int32 NewIndex);
+
+	
 	// HUD QuickBar Slot 개수
 	UPROPERTY()
 	int32 NumSlots = 3;
