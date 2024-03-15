@@ -5,3 +5,10 @@ UBattleWeaponInstance::UBattleWeaponInstance(const FObjectInitializer& ObjectIni
 	: Super(ObjectInitializer)
 {
 }
+
+TSubclassOf<UAnimInstance> UBattleWeaponInstance::PickBestAnimLayer(bool bEquipped,
+	const FGameplayTagContainer& CosmeticTags) const
+{
+	const FBattleAnimLayerSelectionSet& SetToQuery = (bEquipped ? EquippedAnimSet : UnequippedAnimSet);
+	return SetToQuery.SelectBestLayer(CosmeticTags);
+}
