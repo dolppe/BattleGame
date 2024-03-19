@@ -151,6 +151,8 @@ void UBattleHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager*
 		if (UBattlePawnExtensionComponent* PawnExtensionComponent = UBattlePawnExtensionComponent::FindPawnExtensionComponent(Pawn))
 		{
 			PawnData = PawnExtensionComponent->GetPawnData<UBattlePawnData>();
+
+			PawnExtensionComponent->InitializeAbilitySystem(BattlePS->GetBattleAbilitySystemComponent(), BattlePS);
 		}
 
 		if (bIsLocallyControlled && PawnData)

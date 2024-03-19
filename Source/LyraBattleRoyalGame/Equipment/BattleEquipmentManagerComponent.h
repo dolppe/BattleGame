@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Components/PawnComponent.h"
+#include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySet.h"
 #include "BattleEquipmentManagerComponent.generated.h"
 
 class UBattleEquipmentDefinition;
@@ -19,6 +20,9 @@ struct FBattleAppliedEquipmentEntry
 	// EquipmentDefinition을 통해 생성된 인스턴스
 	UPROPERTY()
 	TObjectPtr<UBattleEquipmentInstance> Instance = nullptr;
+
+	UPROPERTY()
+	FBattleAbilitySet_GrantedHandles GrantedHandles;
 	
 };
 
@@ -33,6 +37,8 @@ struct FBattleEquipmentList
 
 	UBattleEquipmentInstance* AddEntry(TSubclassOf<UBattleEquipmentDefinition> EquipmentDefinition);
 	void RemoveEntry(UBattleEquipmentInstance* Instance);
+
+	UBattleAbilitySystemComponent* GetAbilitySystemComponent() const;
 	
 	UPROPERTY()
 	TArray<FBattleAppliedEquipmentEntry> Entries;

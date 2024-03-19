@@ -52,6 +52,9 @@ public:
 	// 해당 장착 아이템을 사용하면 어떤 Actor가 Spawn 되는지 정보를 담고 있음.
 	UPROPERTY(EditDefaultsOnly, Category= Equipment)
 	TArray<FBattleEquipmentActorToSpawn> ActorsToSpawn;
+
+	UPROPERTY(EditDefaultsOnly, Category= Equipment)
+	TArray<TObjectPtr<UBattleAbilitySet>> AbilitySetsToGrant;
 	
 };
 

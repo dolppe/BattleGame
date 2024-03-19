@@ -1,6 +1,10 @@
 #include "BattleEquipmentManagerComponent.h"
+
+#include "AbilitySystemGlobals.h"
 #include "BattleEquipmentDefinition.h"
 #include "BattleEquipmentInstance.h"
+#include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySystemComponent.h"
+
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleEquipmentManagerComponent)
 
 UBattleEquipmentInstance* FBattleEquipmentList::AddEntry(TSubclassOf<UBattleEquipmentDefinition> EquipmentDefinition)
@@ -24,6 +28,15 @@ UBattleEquipmentInstance* FBattleEquipmentList::AddEntry(TSubclassOf<UBattleEqui
 	NewEntry.Instance = NewObject<UBattleEquipmentInstance>(OwnerComponent->GetOwner(), InstanceType);
 	Result = NewEntry.Instance;
 
+	UBattleAbilitySystemComponent* ASC = GetAbilitySystemComponent();
+	check(ASC);
+	{
+		for (TObjectPtr<UBattleAbilitySet> AbilitySet : EquipmentCDO->AbilitySetsToGrant)
+		{
+			AbilitySet->GiveToAbilitySystem(ASC, &NewEntry.GrantedHandles, Result);
+		}
+	}
+
 	Result->SpawnEquipmentActors(EquipmentCDO->ActorsToSpawn);
 	
 	return Result;
@@ -37,11 +50,26 @@ void FBattleEquipmentList::RemoveEntry(UBattleEquipmentInstance* Instance)
 		FBattleAppliedEquipmentEntry& Entry = *EntryIt;
 		if (Entry.Instance == Instance)
 		{
+			UBattleAbilitySystemComponent* ASC = GetAbilitySystemComponent();
+			check(ASC)
+			{
+				Entry.GrantedHandles.TakeFromAbilitySystem(ASC);
+			}
+			
 			Instance->DestroyEquipmentActors();
 			EntryIt.RemoveCurrent();
 		}
 		
 	}
+}
+
+UBattleAbilitySystemComponent* FBattleEquipmentList::GetAbilitySystemComponent() const
+{
+	check(OwnerComponent);
+	AActor* OwningActor = OwnerComponent->GetOwner();
+
+	return Cast<UBattleAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwningActor));
+	
 }
 
 UBattleEquipmentManagerComponent::UBattleEquipmentManagerComponent(const FObjectInitializer& ObjectInitializer)

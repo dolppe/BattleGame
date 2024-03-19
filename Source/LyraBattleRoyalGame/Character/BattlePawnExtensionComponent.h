@@ -4,6 +4,7 @@
 
 #include "BattlePawnExtensionComponent.generated.h"
 
+class UBattleAbilitySystemComponent;
 class UBattlePawnData;
 
 // 초기화 순서 등 전반을 조정하는 컴포넌트
@@ -36,9 +37,17 @@ public:
 	void SetPawnData(const UBattlePawnData* InPawnData);
 	static UBattlePawnExtensionComponent* FindPawnExtensionComponent(const AActor* Actor) {return (Actor ? Actor->FindComponentByClass<UBattlePawnExtensionComponent>() : nullptr);}
 	void SetupPlayerInputComponent();
+
+	void InitializeAbilitySystem(UBattleAbilitySystemComponent* InASC, AActor* InOwnerActor);
+	void UnInitializeAbilitySystem();
+	UBattleAbilitySystemComponent* GetAbilitySystemComponent() const {return AbilitySystemComponent;}
 	
 	UPROPERTY(EditInstanceOnly, Category= "Battle|Pawn")
 	TObjectPtr<const UBattlePawnData> PawnData;
 
+	UPROPERTY()
+	TObjectPtr<UBattleAbilitySystemComponent> AbilitySystemComponent;
+
+	
 	
 };

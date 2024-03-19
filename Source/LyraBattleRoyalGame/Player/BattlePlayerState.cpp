@@ -2,19 +2,31 @@
 
 #include "LyraBattleRoyalGame/GameModes/BattleExperienceManagerComponent.h"
 #include "LyraBattleRoyalGame/GameModes/BattleGameMode.h"
+#include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySystemComponent.h"
+#include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattlePlayerState)
 
 ABattlePlayerState::ABattlePlayerState(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	
+	AbilitySystemComponent = ObjectInitializer.CreateDefaultSubobject<UBattleAbilitySystemComponent>(this, TEXT("AbilitySystemcomponent"));
 }
 
 void ABattlePlayerState::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+	check(AbilitySystemComponent);
+	{
+		FGameplayAbilityActorInfo* ActorInfo = AbilitySystemComponent->AbilityActorInfo.Get();
+		check(ActorInfo->OwnerActor == this);
+		check(ActorInfo->OwnerActor == ActorInfo->AvatarActor);		
+	}
+	// 아직 Pawn이 안붙었기에 nullptr이긴 함. 초기화 느낌으로 nullptr로 초기화.
+	AbilitySystemComponent->InitAbilityActorInfo(this, GetPawn());
+	
+	
 	AGameStateBase* GameState = GetWorld()->GetGameState();
 	check(GameState);
 
@@ -35,6 +47,15 @@ void ABattlePlayerState::SetPawnData(const UBattlePawnData* InPawnData)
 	check(!PawnData);
 	
 	PawnData = InPawnData;
+
+	for (UBattleAbilitySet* AbilitySet : PawnData->AbilitySets)
+	{
+		if (AbilitySet)
+		{
+			AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, nullptr);
+		}
+	}
+	
 }
 
 void ABattlePlayerState::OnExperienceLoaded(const UBattleExperienceDefinition* CurrentExperience)
