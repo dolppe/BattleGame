@@ -4,4 +4,5 @@
 UBattleGameplayAbility::UBattleGameplayAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	ActivationPolicy = EBattleAbilityActivationPolicy::OnInputTriggered;
 }

@@ -30,7 +30,7 @@ public:
 	void SetPawnData(const UBattlePawnData* InPawnData);
 	void OnExperienceLoaded(const UBattleExperienceDefinition* CurrentExperience);
 
-	UBattleAbilitySystemComponent* GetBattleAbilitySystemComponent() {return AbilitySystemComponent;}
+	UBattleAbilitySystemComponent* GetBattleAbilitySystemComponent() const {return AbilitySystemComponent;}
 	
 
 	
