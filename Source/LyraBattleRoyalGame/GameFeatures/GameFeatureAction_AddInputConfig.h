@@ -1,10 +1,13 @@
 #pragma once
+
+#include "CoreMinimal.h"
 #include "GameFeatureAction_WorldActionBase.h"
+#include "LyraBattleRoyalGame/Input/BattleMappableConfigPair.h"
 
 #include "GameFeatureAction_AddInputConfig.generated.h"
 
-struct FBattleMappableConfigPair;
 struct FComponentRequestHandle;
+class APawn;
 
 UCLASS()
 class UGameFeatureAction_AddInputConfig : public UGameFeatureAction_WorldActionBase

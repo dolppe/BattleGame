@@ -14,4 +14,7 @@ class UBattleGameplayAbility_FromEquipment : public UBattleGameplayAbility
 public:
 	UBattleGameplayAbility_FromEquipment(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	UBattleEquipmentInstance* GetAssociatedEquipment() const;
+	UBattleInventoryItemInstance* GetAssociatedItem() const;
+	
 };

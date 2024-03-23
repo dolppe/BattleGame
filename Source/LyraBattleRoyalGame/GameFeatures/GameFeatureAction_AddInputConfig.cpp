@@ -1,5 +1,4 @@
 #include "GameFeatureAction_AddInputConfig.h"
-#include "LyraBattleRoyalGame/Input/BattleMappableConfigPair.h"
 #include "EnhancedInputSubsystems.h"
 #include "PlayerMappableInputConfig.h"
 #include "Components/GameFrameworkComponentManager.h"
@@ -9,8 +8,7 @@
 
 void UGameFeatureAction_AddInputConfig::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
-	Super::OnGameFeatureActivating(Context);
-
+	
 	FPerContextData& ActiveData = ContextData.FindOrAdd(Context);
 
 	// check double Activating with no deactivating
