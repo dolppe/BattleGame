@@ -1,7 +1,6 @@
 #pragma once
 #include "Components/GameFrameworkInitStateInterface.h"
 #include "Components/PawnComponent.h"
-
 #include "BattlePawnExtensionComponent.generated.h"
 
 class UBattleAbilitySystemComponent;

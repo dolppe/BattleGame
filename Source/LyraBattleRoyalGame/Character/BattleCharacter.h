@@ -1,13 +1,12 @@
 #pragma once
 
 #include "AbilitySystemInterface.h"
-#include "GameFramework/Character.h"
 #include "ModularCharacter.h"
 #include "BattleCharacter.generated.h"
 
 class UBattleCameraComponent;
 class UBattlePawnExtensionComponent;
-class UAbilitySystemComponent;
+
 
 UCLASS()
 class ABattleCharacter : public AModularCharacter, public IAbilitySystemInterface

@@ -18,7 +18,7 @@ void UGameFeatureAction_AddInputConfig::OnGameFeatureActivating(FGameFeatureActi
 		!ensure(ActiveData.PawnsAddedTo.IsEmpty())
 		)
 	{
-		Reset(ActiveData);
+ 		Reset(ActiveData);
 	}
 
 	// To call AddToWorld
