@@ -6,6 +6,7 @@
 #include "Components/GameFrameworkComponentManager.h"
 #include "LyraBattleRoyalGame/BattleGameplayTags.h"
 #include "LyraBattleRoyalGame/BattleLogChannels.h"
+#include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySystemComponent.h"
 #include "LyraBattleRoyalGame/Camera/BattleCameraComponent.h"
 #include "LyraBattleRoyalGame/Input/BattleInputComponent.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerState.h"
@@ -91,7 +92,7 @@ bool UBattleHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Ma
 
 	const FBattleGameplayTags& InitTags = FBattleGameplayTags::Get();
 	APawn* Pawn = GetPawn<APawn>();
-	ABattlePlayerState* ClonePS = GetPlayerState<ABattlePlayerState>();
+	ABattlePlayerState* BattlePS = GetPlayerState<ABattlePlayerState>();
 
 	// None -> InitState_Spawned
 	// Pawn이 존재 => Component이기에 오류만 없으면 무조건 존재.
@@ -107,7 +108,7 @@ bool UBattleHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Ma
 	// PlayerState가 설정되어 있어야 넘어갈 수 있음.
 	if (CurrentState == InitTags.InitState_Spawned && DesiredState == InitTags.InitState_DataAvailable)
 	{
-		if (!ClonePS)
+		if (!BattlePS)
 		{
 			return false;
 		}
@@ -118,7 +119,7 @@ bool UBattleHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Ma
 	// 즉, 다른 모든 Feature Component가 최소 DataAvailable 상태라는 것.
 	if (CurrentState == InitTags.InitState_DataAvailable && DesiredState == InitTags.InitState_DataInitialized)
 	{
-		return ClonePS && Manager->HasFeatureReachedInitState(Pawn,UBattlePawnExtensionComponent::NAME_ActorFeatureName, InitTags.InitState_DataInitialized);
+		return BattlePS && Manager->HasFeatureReachedInitState(Pawn,UBattlePawnExtensionComponent::NAME_ActorFeatureName, InitTags.InitState_DataInitialized);
 	}
 	if (CurrentState == InitTags.InitState_DataInitialized && DesiredState == InitTags.InitState_GameplayReady)
 	{
@@ -151,6 +152,8 @@ void UBattleHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager*
 		if (UBattlePawnExtensionComponent* PawnExtensionComponent = UBattlePawnExtensionComponent::FindPawnExtensionComponent(Pawn))
 		{
 			PawnData = PawnExtensionComponent->GetPawnData<UBattlePawnData>();
+
+			PawnExtensionComponent->InitializeAbilitySystem(BattlePS->GetBattleAbilitySystemComponent(), BattlePS);
 		}
 
 		if (bIsLocallyControlled && PawnData)
@@ -242,6 +245,11 @@ void UBattleHeroComponent::InitilizePlayerInput(UInputComponent* PlayerInputComp
 				
 				UBattleInputComponent* BattleIC = CastChecked<UBattleInputComponent>(PlayerInputComponent);
 				{
+					{
+						TArray<uint32> BindHandles;
+						BattleIC->BindAbilityActions(InputConfig, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, BindHandles);
+					}
+					
 					// InputTag_Move, InputTag_Look_Mouse에 대해 각각 Input_Move, Input_LookMouse 멤버 함수를 바인딩함.
 					// 바인딩을 진행하면, 이후 Input 이벤트에 따라 멤버 함수가 트리거됨.
 					BattleIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this,&ThisClass::Input_Move, false);
@@ -312,6 +320,34 @@ void UBattleHeroComponent::Input_LookMouse(const FInputActionValue& InputActionV
 		Pawn->AddControllerPitchInput(AimInversionValue);
 	}
 	
+}
+
+void UBattleHeroComponent::Input_AbilityInputTagPressed(FGameplayTag InputTag)
+{
+	if (const APawn* Pawn = GetPawn<APawn>())
+	{
+		if (const UBattlePawnExtensionComponent* PawnExtComp = UBattlePawnExtensionComponent::FindPawnExtensionComponent(Pawn))
+		{
+			if (UBattleAbilitySystemComponent* BattleASC = PawnExtComp->GetAbilitySystemComponent())
+			{
+				BattleASC->AbilityInputTagPressed(InputTag);
+			}
+		}
+	}
+}
+
+void UBattleHeroComponent::Input_AbilityInputTagReleased(FGameplayTag InputTag)
+{
+	if (const APawn* Pawn = GetPawn<APawn>())
+	{
+		if (const UBattlePawnExtensionComponent* PawnExtComp = UBattlePawnExtensionComponent::FindPawnExtensionComponent(Pawn))
+		{
+			if (UBattleAbilitySystemComponent* BattleASC = PawnExtComp->GetAbilitySystemComponent())
+			{
+				BattleASC->AbilityInputTagReleased(InputTag);
+			}
+		}
+	}
 }
 
 

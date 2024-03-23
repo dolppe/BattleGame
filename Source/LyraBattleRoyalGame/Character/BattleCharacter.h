@@ -1,20 +1,23 @@
 #pragma once
 
-#include "GameFramework/Character.h"
+#include "AbilitySystemInterface.h"
 #include "ModularCharacter.h"
 #include "BattleCharacter.generated.h"
 
 class UBattleCameraComponent;
 class UBattlePawnExtensionComponent;
 
+
 UCLASS()
-class ABattleCharacter : public AModularCharacter
+class ABattleCharacter : public AModularCharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 public:
 	ABattleCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) final;
+
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
 private:
 

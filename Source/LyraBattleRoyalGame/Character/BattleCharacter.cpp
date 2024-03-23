@@ -1,5 +1,6 @@
 #include "BattleCharacter.h"
 #include "BattlePawnExtensionComponent.h"
+#include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySystemComponent.h"
 #include "LyraBattleRoyalGame/Camera/BattleCameraComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleCharacter)
@@ -28,4 +29,9 @@ void ABattleCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PawnExtComponent->SetupPlayerInputComponent();
+}
+
+UAbilitySystemComponent* ABattleCharacter::GetAbilitySystemComponent() const
+{
+	return PawnExtComponent->GetAbilitySystemComponent();
 }

@@ -3,6 +3,7 @@
 #include "Components/GameFrameworkComponentManager.h"
 #include "LyraBattleRoyalGame/BattleGameplayTags.h"
 #include "LyraBattleRoyalGame/BattleLogChannels.h"
+#include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySystemComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattlePawnExtensionComponent)
 
@@ -182,4 +183,38 @@ void UBattlePawnExtensionComponent::SetPawnData(const UBattlePawnData* InPawnDat
 void UBattlePawnExtensionComponent::SetupPlayerInputComponent()
 {
 	CheckDefaultInitialization();
+}
+
+void UBattlePawnExtensionComponent::InitializeAbilitySystem(UBattleAbilitySystemComponent* InASC, AActor* InOwnerActor)
+{
+	check (InASC && InOwnerActor);
+
+	if (AbilitySystemComponent == InASC)
+	{
+		return;
+	}
+	if (AbilitySystemComponent)
+	{
+		UnInitializeAbilitySystem();
+	}
+
+	APawn* Pawn = GetPawnChecked<APawn>();
+	AActor* ExistingAvatar = InASC->GetAvatarActor();
+	check(!ExistingAvatar);
+
+	AbilitySystemComponent = InASC;
+	AbilitySystemComponent->InitAbilityActorInfo(InOwnerActor, Pawn);
+
+	
+	
+}
+
+void UBattlePawnExtensionComponent::UnInitializeAbilitySystem()
+{
+	if (!AbilitySystemComponent)
+	{
+		return;
+	}
+	
+	AbilitySystemComponent = nullptr;
 }

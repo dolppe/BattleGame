@@ -4,6 +4,7 @@
 #include "Engine/DataAsset.h"
 #include "BattlePawnData.generated.h"
 
+class UBattleAbilitySet;
 class UBattleCameraMode;
 class UBattleInputConfig;
 
@@ -22,5 +23,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Battle|InputConfig")
 	TObjectPtr<UBattleInputConfig> InputConfig;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Battle|Abilities")
+	TArray<TObjectPtr<UBattleAbilitySet>> AbilitySets;
 };

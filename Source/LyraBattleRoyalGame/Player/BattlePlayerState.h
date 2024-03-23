@@ -4,6 +4,7 @@
 #include "LyraBattleRoyalGame/Character/BattlePawnData.h"
 #include "BattlePlayerState.generated.h"
 
+class UBattleAbilitySystemComponent;
 class UBattleExperienceDefinition;
 class UBattlePawnData;
 
@@ -28,6 +29,8 @@ public:
 	const T* GetPawnData() const {return Cast<T>(PawnData);}
 	void SetPawnData(const UBattlePawnData* InPawnData);
 	void OnExperienceLoaded(const UBattleExperienceDefinition* CurrentExperience);
+
+	UBattleAbilitySystemComponent* GetBattleAbilitySystemComponent() const {return AbilitySystemComponent;}
 	
 
 	
@@ -36,5 +39,8 @@ private:
 	// PawnData
 	UPROPERTY()
 	TObjectPtr<const UBattlePawnData> PawnData;
+
+	UPROPERTY(VisibleAnywhere, Category="Battle|PlayerState")
+	TObjectPtr<UBattleAbilitySystemComponent> AbilitySystemComponent;
 	
 };
