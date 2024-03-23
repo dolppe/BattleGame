@@ -1,12 +1,33 @@
 #include "BattleAbilitySystemComponent.h"
 
 #include "Abilities/BattleGameplayAbility.h"
+#include "LyraBattleRoyalGame/Animation/BattleAnimInstance.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleAbilitySystemComponent)
 
 UBattleAbilitySystemComponent::UBattleAbilitySystemComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+}
+
+void UBattleAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
+{
+	FGameplayAbilityActorInfo* ActorInfo = AbilityActorInfo.Get();
+	check(ActorInfo);
+	check(InOwnerActor);
+
+	const bool bHasNewPawnAvatar = Cast<APawn>(InAvatarActor) && (InAvatarActor != ActorInfo->AvatarActor);
+	
+	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+
+	if (bHasNewPawnAvatar)
+	{
+		if (UBattleAnimInstance* AnimInstance = Cast<UBattleAnimInstance>(ActorInfo->GetAnimInstance()))
+		{
+			AnimInstance->InitializeWithAbilitySystem(this);
+		}
+	}
+	
 }
 
 void UBattleAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
