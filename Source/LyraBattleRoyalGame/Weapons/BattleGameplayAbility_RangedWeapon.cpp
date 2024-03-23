@@ -232,7 +232,7 @@ FTransform UBattleGameplayAbility_RangedWeapon::GetTargetingTransform(APawn* Sou
 	const FVector WeaponLoc = GetWeaponTargetingSourceLocation();
 	FVector FinalCamLoc = FocalLoc + (((WeaponLoc - FocalLoc) | AimDir)*AimDir);
 
-#if 0
+#if 1
 	{
 		DrawDebugPoint(GetWorld(), WeaponLoc, 10.0f, FColor::Red, false, 60.0f);
 		DrawDebugPoint(GetWorld(), CamLoc, 10.0f, FColor::Yellow, false, 60.0f);
