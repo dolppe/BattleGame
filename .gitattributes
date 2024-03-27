@@ -1,8 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
-
-
 [diff "euckr"]
       textconv="iconv -f euc-kr -t utf-8"
-
 *.md diff=euckr
+Content filter=lfs diff=lfs merge=lfs -text
