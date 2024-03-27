@@ -1,0 +1,6 @@
+outs:
+- md5: 8db8097fd3d21232687e75537912868d.dir
+  size: 953262613
+  nfiles: 386
+  hash: md5
+  path: Content
