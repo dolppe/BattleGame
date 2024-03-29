@@ -45,6 +45,10 @@
 		{
 			"Name" : "CommonGame",
 			"Enabled": true
+		},
+		{
+			"Name" : "UIExtension",
+			"Enabled": true
 		}
 	]
 }

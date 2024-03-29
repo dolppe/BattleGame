@@ -29,6 +29,12 @@ public class LyraBattleRoyalGame : ModuleRules
 			"CommonUser",
 			// CommonGame
 			"CommonGame",
+			// CommonUI
+			"CommonUI",
+			// UMG
+			"UMG",
+			// UIExtension
+			"UIExtension",
 			
 		});
 
