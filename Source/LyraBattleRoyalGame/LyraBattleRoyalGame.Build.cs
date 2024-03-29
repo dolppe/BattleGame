@@ -27,6 +27,8 @@ public class LyraBattleRoyalGame : ModuleRules
 			"EnhancedInput",
 			// CommonUser
 			"CommonUser",
+			// CommonGame
+			"CommonGame",
 			
 		});
 

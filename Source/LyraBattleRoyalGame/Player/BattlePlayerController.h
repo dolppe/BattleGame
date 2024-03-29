@@ -1,14 +1,13 @@
 #pragma once
 
-#include "GameFramework/PlayerController.h"
-#include "ModularPlayerController.h"
+#include "CommonPlayerController.h"
 #include "BattlePlayerController.generated.h"
 
 class UBattleAbilitySystemComponent;
 class ABattlePlayerState;
 
 UCLASS()
-class ABattlePlayerController : public AModularPlayerController
+class ABattlePlayerController : public ACommonPlayerController
 {
 	GENERATED_BODY()
 public:

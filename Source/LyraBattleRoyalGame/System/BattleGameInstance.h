@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Engine/GameInstance.h"
+#include "CommonGameInstance.h"
 #include "BattleGameInstance.generated.h"
 
 UCLASS()
-class UBattleGameInstance : public UGameInstance
+class UBattleGameInstance : public UCommonGameInstance
 {
 	GENERATED_BODY()
 public:
