@@ -41,6 +41,14 @@
 		{
 			"Name": "AnimationWarping",
 			"Enabled": true
+		},
+		{
+			"Name" : "CommonGame",
+			"Enabled": true
+		},
+		{
+			"Name" : "UIExtension",
+			"Enabled": true
 		}
 	]
 }

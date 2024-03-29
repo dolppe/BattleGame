@@ -27,6 +27,14 @@ public class LyraBattleRoyalGame : ModuleRules
 			"EnhancedInput",
 			// CommonUser
 			"CommonUser",
+			// CommonGame
+			"CommonGame",
+			// CommonUI
+			"CommonUI",
+			// UMG
+			"UMG",
+			// UIExtension
+			"UIExtension",
 			
 		});
 
