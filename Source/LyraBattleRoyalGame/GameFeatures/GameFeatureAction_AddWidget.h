@@ -4,7 +4,10 @@
 #include "CommonActivatableWidget.h"
 #include "GameFeatureAction_WorldActionBase.h"
 #include "GameplayTagContainer.h"
+#include "UIExtensionSystem.h"
 #include "GameFeatureAction_AddWidget.generated.h"
+
+struct FComponentRequestHandle;
 
 USTRUCT()
 struct FBattleHUDLayoutRequest

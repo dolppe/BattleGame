@@ -31,15 +31,6 @@ public:
 		, DataPtr(InDataPtr)
 	{}
 
-	void Unregister();
-	bool IsValid() const {return DataPtr.IsValid();}
-	bool operator==(const FUIExtensionHandle& Other) const {return DataPtr==Other.DataPtr;}
-	bool operator!=(const FUIExtensionHandle& Other) const {return !operator==(Other);}
-
-	friend FORCEINLINE uint32 GetTypeHash(FUIExtensionHandle Handle)
-	{
-		return PointerHash(Handle.DataPtr.Get());
-	}
 
 	friend class UUIExtensionSubsystem;
 	TWeakObjectPtr<UUIExtensionSubsystem> ExtensionSource;
