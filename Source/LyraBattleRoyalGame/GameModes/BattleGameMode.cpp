@@ -7,6 +7,7 @@
 #include "LyraBattleRoyalGame/Character/BattleCharacter.h"
 #include "LyraBattleRoyalGame/Character/BattlePawnExtensionComponent.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerController.h"
+#include "LyraBattleRoyalGame/UI/BattleHUD.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerState.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleGameMode)
@@ -18,6 +19,7 @@ ABattleGameMode::ABattleGameMode(const FObjectInitializer& ObjectInitializer)
 	PlayerControllerClass = ABattlePlayerController::StaticClass();
 	PlayerStateClass = ABattlePlayerState::StaticClass();
 	DefaultPawnClass = ABattleCharacter::StaticClass();
+	HUDClass = ABattleHUD::StaticClass();
 	
 }
 

@@ -14,6 +14,10 @@ class UBattleExperienceActionSet : public UPrimaryDataAsset
 public:
 	UBattleExperienceActionSet();
 
+#if WITH_EDITORONLY_DATA
+	virtual void UpdateAssetBundleData() override;
+#endif
+
 	UPROPERTY(EditAnywhere, Category="Actions to Perform")
 	TArray<TObjectPtr<UGameFeatureAction>> Actions;	
 };

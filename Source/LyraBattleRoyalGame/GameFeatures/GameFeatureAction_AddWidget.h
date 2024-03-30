@@ -53,8 +53,17 @@ public:
 		TArray<FUIExtensionHandle> ExtensionHandles;
 	};
 
+	void AddWidgets(AActor* Actor, FPerContextData& ActiveData);
+	void RemoveWidgets(AActor* Actor, FPerContextData& ActiveData);
 	
+	void Reset(FPerContextData& ActiveData);
+	void HandleActorExtension(AActor* Actor, FName EventName, FGameFeatureStateChangeContext ChangeContext);
 	
+	virtual void AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext) override;
+	virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
+
+		
+
 
 	// GameFeatureAction의 Add Remove 상태를 관리함. 
 	TMap<FGameFeatureStateChangeContext, FPerContextData> ContextData; 

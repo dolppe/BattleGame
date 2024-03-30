@@ -20,6 +20,8 @@ class COMMONGAME_API UGameUIManagerSubsystem : public UGameInstanceSubsystem
 public:
 	UGameUIManagerSubsystem();
 
+	const UGameUIPolicy* GetCurrentUIPolicy() const{return CurrentPolicy;}
+	UGameUIPolicy* GetCurrentUIPolicy() {return CurrentPolicy;}
 	void SwitchToPolicy(UGameUIPolicy* InPolicy);
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;

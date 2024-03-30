@@ -79,6 +79,16 @@ void UBattleExperienceManagerComponent::StartExperienceLoad()
 	// ex) UPrimaryDataAsset -> ExpereinceDefinition -> BP_DefaultExpereince Class
 	BundleAssetList.Add(CurrentExperience->GetPrimaryAssetId());
 
+	// ExpeirenceActionSet을 순회하며, BundleAssetList로 추가함
+	for (const TObjectPtr<UBattleExperienceActionSet>& ActionSet : CurrentExperience->ActionSets)
+	{
+		if (ActionSet)
+		{
+			// BundleAssetList는 Bundle로 등록할 RootLayout인 PrimaryDataAsset을 추가하는 것임.
+			BundleAssetList.Add(ActionSet->GetPrimaryAssetId());
+		}
+	}
+
 	
 	TArray<FName> BundlesToLoad;
 	{
