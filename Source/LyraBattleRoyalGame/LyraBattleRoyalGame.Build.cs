@@ -35,6 +35,9 @@ public class LyraBattleRoyalGame : ModuleRules
 			"UMG",
 			// UIExtension
 			"UIExtension",
+			// Slate
+			"Slate",
+			"SlateCore",
 			
 		});
 
