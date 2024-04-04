@@ -169,7 +169,86 @@
             이를 통해 GameFeature Plugin이 등록될 때, 스캔을 진행해야 하는 GameplayCue가 담긴 Path 정보를 가져옴.
 
 
-    
-     
+## AttributeSet
 
+- AttributeSet  
+    단일 Attribute 데이터인 GameplayAttributeData의 묶음.  
+    - GameplayAttributeData  
+        BaseValue => 기본값, 영구히 적용되는 고정 스탯 값을 관리.  
+        CurrentValue => 변동값, 버프 등으로 임시적으로 변동된 값을 처리하는데 사용.  
+
+    이를 묶어서 AttributeSet으로 관리함.  
+    - 주요함수
+        - PreAttributeChange (+Post) => Attribute 변경 전후 호출  
+        - PreGameplayEffectExecute (+Post) => GameplayEffect 적용 전후 호출
+    - AttributeSet 접근자 매크로  
+        Attribute에 대해서 많이 수행하는 기능을 매크로로 만들어서 제공해줌.  
+        => ATTRIBUTE_ACCESSORS  
+        ex) ValueGetter, PropertyGetter, ValueSetter, ValueIniter
+    - ASC는 초기화될 때 같은 Actor에 있는 Attribute타입의 객체를 자동으로 찾아서 등록함.
+
+이를 활용하여 게임에서의 스탯, 버프, 데미지, 디버프 등을 쉽게 구현 가능함.  
+ASC를 통해서 Attribute에 대해 서로 다른 액터들이 상호작용 가능.  
+Attribute는 GameplayEffect와 함께 동작하도록 구성되어 있음.
+
+- MetaAttribute  
+    Attribute 설정을 위해 사전에 미리 설정하는 임시 어트리뷰트.  
+    - ex) 데미지를 입을 때, 체력 Attribute를 바로 깎는 것이 아니라, 데미지라는 Attribute를 통해 체력을 감소하도록 설정시키는 것.  
+    => 체력은 일반 어트리뷰트, 데미지는 메타 어트리뷰트임.  
+
+    데미지를 사용하는 경우 기획 추가에 유연한 대처가 가능해짐.
+    - 무적 기능 => 데미지를 0으로 처리함 (무적인 동안)
+    - 실드 기능 => 실드값으로 데미지 값을 낮춤.
+    - 콤보 공격시 공격력 보정 => 데미지 계수를 높여서 적용하도록.  
+
+    메타 어트리뷰트 사용시 주의사항.
+    - 사실상 일반 AttributeData와 동일하지만, PostGameplayEffectExecute를 통해 메타 어트리뷰트 값이 변경되는 경우 다시 값을 0으로 바꿔줘야함.
+    - 즉, 메타 어트리뷰트는 적용 후 바로 0으로 값을 초기화하도록 설정해야함.
+    - 또한 리플리케이션에서 일반적으로는 제외시킴.
+
+
+## GameplayEffect
+
+GameplayCue는 게임 로직에 영향을 주지 않는 시각적이나 청각적인 기능들을 담당함.  
+GameplayEffect는 게임에 영향을 주는 기능을 담당함. (게임 데이터를 변경한다는 의미임.)  
+
+- GameplayEffect  
+    GE는 Attribute와 함께 동작함.
+    - GE의 DurationType  
+        Instant => 즉각적으로 한프레임에 Attribute에 적용됨.  
+        Duration => 지정한 시간동안 동작.  
+        Infinite => 명시적으로 종료하지 않는 한 계속 동작.
+    - GameplayEffect Modifier  
+        GE에서 Attribute의 변경 방법을 지정.  
+        - 적용할 Attribute 지정.
+        - 적용 방식 설정. (곱하기, 더하기, 덮어쓰기 등)  
+
+        또한 Modifier 계산 방법을 정할 수도 있음.  
+        - ScalableFloat => 실수 (데이터 테이블과 연동 가능)
+        - AttributeBased => 특정 Attribute 기반으로 계산
+        - CustomCalculationClass => 계산을 진행하는 전용 클래스를 활용
+        - SetByCaller => 데이터 태그를 활용하여 데이터 전달  
+
+        Modier 없이 자체 계산 로직 만드는 방법 => GameplayEffectExecutionCalculation을 커스텀 구현.  
+    
+    GE 또한 BP와 연동해서 사용하는 것이 권장됨.  
+    ex) GE 자체를 BP로 제작, 복잡한 계산이나 적용 관련은 C++로 진행.
+
+    - GameplayTag와 연동  
+    GE에 GameplayTag를 연동하여, GE가 발동할 때 해당 Tag를 활성화하도록 할 수 있음.  
+    이를 통해 GA 등 다른 GAS 시스템과 연동 가능함.  
+    이 외에도 특정 태그가 있을 때만 GE가 발동하게 하거나 특정 태그가 활성화시 GE를 발동하지 못하게 하는 등 여러가지 구현 가능.  
+    
+
+    
+- 기간형 게임플레이 이펙트  
+    Instance 타입이 아닌 GameplayEffect를 의미함.  
+    Insstance 타입은 한 프레임에 종료되기 때문에 상태를 가질 수 없음.  
+    - 그러나, 기간형 GE는 유효 기간동안 태그와 같은 상태를 가질 수 있음.
+    - 또한 Stack처럼 중첩되도록 설정할 수 있음.  
+    - Current값을 변경하고 추후에 원래대로 돌려놓음으로서 여러 스킬, 버프 등을 구현하기 쉬움.  
+
+    주의사항
+    - 일반적으로 기간형 타입은 Current 값을 변경하는 것임.
+    - 그러나 Period를 넣어서 주기적으로 발동하게 하면 Base값을 건드리게 됨.
 
