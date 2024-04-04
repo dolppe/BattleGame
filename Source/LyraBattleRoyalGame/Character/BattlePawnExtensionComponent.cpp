@@ -205,7 +205,7 @@ void UBattlePawnExtensionComponent::InitializeAbilitySystem(UBattleAbilitySystem
 	AbilitySystemComponent = InASC;
 	AbilitySystemComponent->InitAbilityActorInfo(InOwnerActor, Pawn);
 
-	
+	OnAbilitySystemInitialized.Broadcast();
 	
 }
 
@@ -215,6 +215,33 @@ void UBattlePawnExtensionComponent::UnInitializeAbilitySystem()
 	{
 		return;
 	}
+
+	if (AbilitySystemComponent->GetAvatarActor() == GetOwner())
+	{
+		OnAbilitySystemUninitialized.Broadcast();
+	}
 	
 	AbilitySystemComponent = nullptr;
+}
+
+void UBattlePawnExtensionComponent::OnAbilitySystemInitialized_RegisterAndCall(
+	FSimpleMulticastDelegate::FDelegate Delegate)
+{
+	if (!OnAbilitySystemInitialized.IsBoundToObject(Delegate.GetUObject()))
+	{
+		OnAbilitySystemInitialized.Add(Delegate);
+	}
+
+	if (AbilitySystemComponent)
+	{
+		Delegate.Execute();
+	}
+}
+
+void UBattlePawnExtensionComponent::OnAbilitySystemUninitialized_Register(FSimpleMulticastDelegate::FDelegate Delegate)
+{
+	if (!OnAbilitySystemUninitialized.IsBoundToObject(Delegate.GetUObject()))
+	{
+		OnAbilitySystemUninitialized.Add(Delegate);
+	}
 }

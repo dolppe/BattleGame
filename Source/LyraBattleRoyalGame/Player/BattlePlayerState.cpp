@@ -4,6 +4,8 @@
 #include "LyraBattleRoyalGame/GameModes/BattleGameMode.h"
 #include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySystemComponent.h"
 #include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySet.h"
+#include "LyraBattleRoyalGame/AbilitySystem/Attributes/BattleCombatSet.h"
+#include "LyraBattleRoyalGame/AbilitySystem/Attributes/BattleHealthSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattlePlayerState)
 
@@ -11,6 +13,9 @@ ABattlePlayerState::ABattlePlayerState(const FObjectInitializer& ObjectInitializ
 	: Super(ObjectInitializer)
 {
 	AbilitySystemComponent = ObjectInitializer.CreateDefaultSubobject<UBattleAbilitySystemComponent>(this, TEXT("AbilitySystemcomponent"));
+
+	CreateDefaultSubobject<UBattleHealthSet>(TEXT("HealthSet"));
+	CreateDefaultSubobject<UBattleCombatSet>(TEXT("CombatSet"));
 }
 
 void ABattlePlayerState::PostInitializeComponents()

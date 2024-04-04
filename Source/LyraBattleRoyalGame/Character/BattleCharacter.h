@@ -4,6 +4,7 @@
 #include "ModularCharacter.h"
 #include "BattleCharacter.generated.h"
 
+class UBattleHealthComponent;
 class UBattleCameraComponent;
 class UBattlePawnExtensionComponent;
 
@@ -15,6 +16,9 @@ class ABattleCharacter : public AModularCharacter, public IAbilitySystemInterfac
 public:
 	ABattleCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	void OnAbilitySystemInitialized();
+	void OnAbilitySystemUninitialized();
+	
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) final;
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -27,5 +31,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Battle|Character", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBattleCameraComponent> CameraComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Battle|Character", Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UBattleHealthComponent> HealthComponent;
 	
 };
