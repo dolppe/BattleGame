@@ -2,6 +2,7 @@
 #include "BattlePawnExtensionComponent.h"
 #include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySystemComponent.h"
 #include "LyraBattleRoyalGame/Camera/BattleCameraComponent.h"
+#include "BattleHealthComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleCharacter)
 
@@ -14,13 +15,33 @@ ABattleCharacter::ABattleCharacter(const FObjectInitializer& ObjectInitializer)
 
 	// PawnExtComponent 생성
 	PawnExtComponent = CreateDefaultSubobject<UBattlePawnExtensionComponent>(TEXT("PawnExtensionComponent"));
-
+	{
+		PawnExtComponent->OnAbilitySystemInitialized_RegisterAndCall(FSimpleMulticastDelegate::FDelegate::CreateUObject(this, &ThisClass::OnAbilitySystemInitialized));
+		PawnExtComponent->OnAbilitySystemUninitialized_Register(FSimpleMulticastDelegate::FDelegate::CreateUObject(this, &ThisClass::OnAbilitySystemUninitialized));
+	}
 	// CameraComponent 생성
 	{
 		CameraComponent = CreateDefaultSubobject<UBattleCameraComponent>(TEXT("CameraComponent"));
 		CameraComponent->SetRelativeLocation(FVector(-300.0f, 0.0f, 75.0f));
 	}
+
+	{
+		HealthComponent = CreateDefaultSubobject<UBattleHealthComponent>(TEXT("HealthComponent"));
+	}
 	
+}
+
+void ABattleCharacter::OnAbilitySystemInitialized()
+{
+	UBattleAbilitySystemComponent* BattleASC = Cast<UBattleAbilitySystemComponent>(GetAbilitySystemComponent());
+	check(BattleASC);
+
+	HealthComponent->InitializeWithAbilitySystem(BattleASC);
+}
+
+void ABattleCharacter::OnAbilitySystemUninitialized()
+{
+	HealthComponent->UnInitializeWithAbilitySystem();
 }
 
 // PC가 Possess한 이후에 실행되는데 이때 PawnExtensionComponent의 InitState 초기화를 연결시켜줌.
