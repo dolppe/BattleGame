@@ -16,3 +16,23 @@ const UBattleInventoryItemFragment* UBattleInventoryItemInstance::FindFragmentBy
 	}
 	return nullptr;
 }
+
+void UBattleInventoryItemInstance::AddStatTagStack(FGameplayTag Tag, int32 StackCount)
+{
+	StatTags.AddStack(Tag,StackCount);
+}
+
+void UBattleInventoryItemInstance::RemoveStatTagStack(FGameplayTag Tag, int32 StackCount)
+{
+	StatTags.RemoveStack(Tag,StackCount);
+}
+
+bool UBattleInventoryItemInstance::HasStatTag(FGameplayTag Tag) const
+{
+	return StatTags.ContainsTag(Tag);
+}
+
+int32 UBattleInventoryItemInstance::GetStatTagStackCount(FGameplayTag Tag) const
+{
+	return StatTags.GetStackCount(Tag);
+}
