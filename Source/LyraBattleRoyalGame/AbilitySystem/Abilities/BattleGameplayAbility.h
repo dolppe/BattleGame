@@ -14,6 +14,7 @@ enum class EBattleAbilityActivationPolicy : uint8
 	OnSpawn,
 };
 
+class UBattleAbilityCost;
 
 UCLASS(Abstract)
 class UBattleGameplayAbility : public UGameplayAbility
@@ -22,9 +23,13 @@ class UBattleGameplayAbility : public UGameplayAbility
 public:
 	UBattleGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const override;
+	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Battle|AbilityActivation")
 	EBattleAbilityActivationPolicy ActivationPolicy;
 
+	UPROPERTY(EditDefaultsOnly, Instanced, Category=Costs)
+	TArray<TObjectPtr<UBattleAbilityCost>> AdditionalCosts;
 	
 };

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "LyraBattleRoyalGame/System/BattleGameplayTagStack.h"
 #include "UObject/Object.h"
 #include "Templates/SubclassOf.h"
 #include "BattleInventoryItemInstance.generated.h"
@@ -23,6 +24,17 @@ public:
 	{
 		return (ResultClass*) FindFragmentByClass(ResultClass::StaticClass());
 	}
+
+	void AddStatTagStack(FGameplayTag Tag, int32 StackCount);
+	void RemoveStatTagStack(FGameplayTag Tag, int32 StackCount);
+
+	bool HasStatTag(FGameplayTag Tag) const;
+
+	UFUNCTION(BlueprintCallable, Category=Inventory)
+	int32 GetStatTagStackCount(FGameplayTag Tag) const;
+	
+	UPROPERTY()
+	FBattleGameplayTagStackContainer StatTags;
 	
 	// 인벤토리의 아이템 인스턴스는 무엇으로 정의되어있는지 메타 클래스인 Definition을 들고 있음.
 	UPROPERTY()
