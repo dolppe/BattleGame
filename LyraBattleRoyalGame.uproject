@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{A41219DC-49CC-0DE9-DF97-ADABE33822C1}",
+	"EngineAssociation": "{87FD7DAA-4EA4-9A10-85B5-BFA320D3ECA3}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -43,11 +43,11 @@
 			"Enabled": true
 		},
 		{
-			"Name" : "CommonGame",
+			"Name": "CommonGame",
 			"Enabled": true
 		},
 		{
-			"Name" : "UIExtension",
+			"Name": "UIExtension",
 			"Enabled": true
 		}
 	]
