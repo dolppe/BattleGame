@@ -1,5 +1,6 @@
 #include "BattleAbilitySystemComponent.h"
 
+#include "BattleAbilityTagRelationshipMapping.h"
 #include "Abilities/BattleGameplayAbility.h"
 #include "LyraBattleRoyalGame/Animation/BattleAnimInstance.h"
 
@@ -73,7 +74,7 @@ void UBattleAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bG
 			{
 				const UBattleGameplayAbility* BattleAbilityCDO = CastChecked<UBattleGameplayAbility>(AbilitySpec->Ability);
 
-				if (BattleAbilityCDO->ActivationPolicy == EBattleAbilityActivationPolicy::WhileInputActive)
+				if (BattleAbilityCDO->GetActivationPolicy() == EBattleAbilityActivationPolicy::WhileInputActive)
 				{
 					AbilitiesToActive.AddUnique(AbilitySpec->Handle);
 				}
@@ -98,7 +99,7 @@ void UBattleAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bG
 				{
 					const UBattleGameplayAbility* BattleAbilityCDO = CastChecked<UBattleGameplayAbility>(AbilitySpec->Ability);
 
-					if (BattleAbilityCDO->ActivationPolicy == EBattleAbilityActivationPolicy::OnInputTriggered)
+					if (BattleAbilityCDO->GetActivationPolicy() == EBattleAbilityActivationPolicy::OnInputTriggered)
 					{
 						AbilitiesToActive.AddUnique(AbilitySpec->Handle);
 					}
@@ -131,4 +132,34 @@ void UBattleAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bG
 	InputReleasedSpecHandles.Reset();
 	
 	
+}
+
+void UBattleAbilitySystemComponent::SetTagRelationshipMapping(UBattleAbilityTagRelationshipMapping* NewMapping)
+{
+	TagRelationshipMapping = NewMapping;
+}
+
+void UBattleAbilitySystemComponent::GetAdditionalActivationTagRequirements(const FGameplayTagContainer& AbilityTags,
+                                                                           FGameplayTagContainer& OutActivationRequired, FGameplayTagContainer& OutActivationBlocked) const
+{
+	if (TagRelationshipMapping)
+	{
+		TagRelationshipMapping->GetRequiredAndBlockedActivationTags(AbilityTags, &OutActivationRequired, &OutActivationBlocked);
+	}
+}
+
+void UBattleAbilitySystemComponent::ApplyAbilityBlockAndCancelTags(const FGameplayTagContainer& AbilityTags,
+	UGameplayAbility* RequestingAbility, bool bEnableBlockTags, const FGameplayTagContainer& BlockTags,
+	bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags)
+{
+	FGameplayTagContainer ModifiedBlockTags = BlockTags;
+	FGameplayTagContainer ModifiedCancelTags = CancelTags;
+
+	if (TagRelationshipMapping)
+	{
+		TagRelationshipMapping->GetAbilityTagsToBlockAndCancel(AbilityTags, &ModifiedBlockTags, &ModifiedCancelTags);
+	}
+	
+	Super::ApplyAbilityBlockAndCancelTags(AbilityTags, RequestingAbility, bEnableBlockTags, BlockTags,
+	                                      bExecuteCancelTags, CancelTags);
 }
