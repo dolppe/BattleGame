@@ -38,6 +38,8 @@ public class LyraBattleRoyalGame : ModuleRules
 			// Slate
 			"Slate",
 			"SlateCore",
+			// GameplayMessageRouter
+			"GameplayMessageRuntime",
 			
 		});
 
