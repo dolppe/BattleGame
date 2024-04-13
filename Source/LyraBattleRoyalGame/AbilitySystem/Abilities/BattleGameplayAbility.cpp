@@ -6,6 +6,8 @@
 #include "LyraBattleRoyalGame/BattleGameplayTags.h"
 #include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySystemComponent.h"
 #include "LyraBattleRoyalGame/Character/BattleCharacter.h"
+#include "LyraBattleRoyalGame/Player/BattlePlayerController.h"
+
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleGameplayAbility)
 
 UBattleGameplayAbility::UBattleGameplayAbility(const FObjectInitializer& ObjectInitializer)
@@ -15,9 +17,63 @@ UBattleGameplayAbility::UBattleGameplayAbility(const FObjectInitializer& ObjectI
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
 
+UBattleAbilitySystemComponent* UBattleGameplayAbility::GetBattleAbilitySystemComponentFromActorInfo() const
+{
+	return (CurrentActorInfo ? Cast<UBattleAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent) : nullptr);
+}
+
+ABattlePlayerController* UBattleGameplayAbility::GetBattlePlayerControllerFromActorInfo() const
+{
+	return (CurrentActorInfo ? Cast<ABattlePlayerController>(CurrentActorInfo->PlayerController.Get()) : nullptr);
+}
+
+AController* UBattleGameplayAbility::GetControllerFromActorInfo() const
+{
+	if (CurrentActorInfo)
+	{
+		if (AController* PC = CurrentActorInfo->PlayerController.Get())
+		{
+			return PC;
+		}
+
+		AActor* FindActor = CurrentActorInfo->OwnerActor.Get();
+		while (FindActor)
+		{
+			if (AController* Controller = Cast<AController>(FindActor))
+			{
+				return Controller;
+			}
+
+			if (APawn* Pawn = Cast<APawn>(FindActor))
+			{
+				return Pawn->GetController();
+			}
+
+			FindActor = FindActor->GetOwner();
+		}
+	}
+	return nullptr;
+}
+
 ABattleCharacter* UBattleGameplayAbility::GetBattleCharacterFromActorInfo() const
 {
 	return (CurrentActorInfo ? Cast<ABattleCharacter>(CurrentActorInfo->AvatarActor.Get()) : nullptr);
+}
+
+
+void UBattleGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	Super::OnGiveAbility(ActorInfo, Spec);
+
+	K2_OnAbilityAdded();
+}
+
+void UBattleGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilitySpec& Spec)
+{
+	K2_OnAbilityRemoved();
+	
+	Super::OnRemoveAbility(ActorInfo, Spec);
 }
 
 bool UBattleGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle,

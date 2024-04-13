@@ -247,3 +247,27 @@ void UUIExtensionSubsystem::NotifyExtensionPointsOfExtension(EUIExtensionAction 
 		bOnInitialTag = false;
 	}
 }
+
+FUIExtensionHandle UUIExtensionSubsystem::K2_RegisterExtensionAsWidgetForContext(FGameplayTag ExtensionPointTag,
+	TSubclassOf<UUserWidget> WidgetClass, UObject* ContextObject, int32 Priority)
+{
+	if (ContextObject)
+	{
+		return RegisterExtensionAsWidgetForContext(ExtensionPointTag, ContextObject, WidgetClass, Priority);
+	}
+	else
+	{
+		FFrame::KismetExecutionMessage(TEXT("A null ContextObject was passed to Register Extension (Widget For Context)"), ELogVerbosity::Error);
+		return FUIExtensionHandle();
+	}
+}
+
+void UUIExtensionHandleFunctions::Unregister(FUIExtensionHandle& Handle)
+{
+	Handle.Unregister();
+}
+
+bool UUIExtensionHandleFunctions::IsValid(FUIExtensionHandle& Handle)
+{
+	return Handle.IsValid();
+}

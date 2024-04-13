@@ -180,6 +180,6 @@ void UBattleAbilitySystemComponent::ApplyAbilityBlockAndCancelTags(const FGamepl
 		TagRelationshipMapping->GetAbilityTagsToBlockAndCancel(AbilityTags, &ModifiedBlockTags, &ModifiedCancelTags);
 	}
 	
-	Super::ApplyAbilityBlockAndCancelTags(AbilityTags, RequestingAbility, bEnableBlockTags, BlockTags,
-	                                      bExecuteCancelTags, CancelTags);
+	Super::ApplyAbilityBlockAndCancelTags(AbilityTags, RequestingAbility, bEnableBlockTags, ModifiedBlockTags,
+	                                      bExecuteCancelTags, ModifiedCancelTags);
 }
