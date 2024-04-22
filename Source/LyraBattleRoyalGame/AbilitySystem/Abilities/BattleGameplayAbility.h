@@ -15,6 +15,10 @@ enum class EBattleAbilityActivationPolicy : uint8
 };
 
 class UBattleAbilityCost;
+class ABattleCharacter;
+class AController;
+class UBattleAbilitySystemComponent;
+class ABattlePlayerController;
 
 UCLASS(Abstract)
 class UBattleGameplayAbility : public UGameplayAbility
@@ -23,9 +27,38 @@ class UBattleGameplayAbility : public UGameplayAbility
 public:
 	UBattleGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	UFUNCTION(BlueprintCallable, Category = "Battle|Ability")
+	UBattleAbilitySystemComponent* GetBattleAbilitySystemComponentFromActorInfo() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Battle|Ability")
+	ABattlePlayerController* GetBattlePlayerControllerFromActorInfo() const;
+	
+	UFUNCTION(BlueprintCallable, Category = "Battle|Ability")
+	AController* GetControllerFromActorInfo() const;
+	
+	UFUNCTION(BlueprintCallable, Category = "Battle|Ability")
+	ABattleCharacter* GetBattleCharacterFromActorInfo() const;
+
+	
+
+	EBattleAbilityActivationPolicy GetActivationPolicy() const {return ActivationPolicy;}
+
+protected:
+
+	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	virtual void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const override;
 
+	UFUNCTION(BlueprintImplementableEvent, Category=Ability, DisplayName="OnAbilityAdded")
+	void K2_OnAbilityAdded();
+
+	UFUNCTION(BlueprintImplementableEvent, Category=Ability, DisplayName="OnAbilityRemoved")
+	void K2_OnAbilityRemoved();
+
+protected:
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Battle|AbilityActivation")
 	EBattleAbilityActivationPolicy ActivationPolicy;
 

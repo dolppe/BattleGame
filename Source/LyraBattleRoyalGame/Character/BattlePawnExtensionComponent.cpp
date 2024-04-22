@@ -1,5 +1,6 @@
 #include "BattlePawnExtensionComponent.h"
 
+#include "BattlePawnData.h"
 #include "Components/GameFrameworkComponentManager.h"
 #include "LyraBattleRoyalGame/BattleGameplayTags.h"
 #include "LyraBattleRoyalGame/BattleLogChannels.h"
@@ -205,6 +206,11 @@ void UBattlePawnExtensionComponent::InitializeAbilitySystem(UBattleAbilitySystem
 	AbilitySystemComponent = InASC;
 	AbilitySystemComponent->InitAbilityActorInfo(InOwnerActor, Pawn);
 
+	if (ensure(PawnData))
+	{
+		InASC->SetTagRelationshipMapping(PawnData->TagRelationshipMapping);
+	}
+	
 	OnAbilitySystemInitialized.Broadcast();
 	
 }

@@ -3,6 +3,7 @@
 #include "GameplayTagContainer.h"
 #include "Templates/SharedPointer.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "Kismet/BlueprintFunctionLibrary.h"
 #include "UIExtensionSystem.generated.h"
 
 UENUM()
@@ -161,12 +162,20 @@ public:
 	FUIExtensionPointHandle RegisterExtensionPoint(const FGameplayTag& ExtensionPointTag, EUIExtensionPointMatch ExtensionPointTagMatchType, const TArray<UClass*>& AllowedDataClasses, FExtendExtensionPointDelegate ExtensionCallback);
 
 	FUIExtensionRequest CreateExtensionRequest(const TSharedPtr<FUIExtension>& Extension);
+
+protected:
 	
 	// ExtensionPoint -Broadcast => Extensions [ExtensionPoint가 추가/제거 됐을 때, Extensions에게 알림]
 	void NotifyExtensionPointOfExtensions(TSharedPtr<FUIExtensionPoint>& ExtensionPoint);
 	// Extension - Broadcast => ExtensionPoints [Extension이 추가/제거 됐을 때, ExtensionPoints에 알림]
 	void NotifyExtensionPointsOfExtension(EUIExtensionAction Action, TSharedPtr<FUIExtension>& Extension);
+
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "UI Extension", meta = (DisplayName = "Register Extension (Widget For Context)"))
+	FUIExtensionHandle K2_RegisterExtensionAsWidgetForContext(FGameplayTag ExtensionPointTag, TSubclassOf<UUserWidget> WidgetClass, UObject* ContextObject, int32 Priority = -1);
 	
+
+	
+private:
 	
 	// GameplayTag(Slot) -- FUIExtension(WidgetClass)
 	typedef TArray<TSharedPtr<FUIExtension>> FExtensionList;
@@ -178,4 +187,17 @@ public:
 	
 };
 
+UCLASS()
+class UIEXTENSION_API UUIExtensionHandleFunctions : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
 
+public:
+	UUIExtensionHandleFunctions() { }
+
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "UI Extension")
+	static void Unregister(UPARAM(ref) FUIExtensionHandle& Handle);
+
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "UI Extension")
+	static bool IsValid(UPARAM(ref) FUIExtensionHandle& Handle);
+};
