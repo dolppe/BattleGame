@@ -14,7 +14,10 @@ class UBattleGameplayAbility_FromEquipment : public UBattleGameplayAbility
 public:
 	UBattleGameplayAbility_FromEquipment(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	UFUNCTION(BlueprintCallable, Category="Battle|Ability")
 	UBattleEquipmentInstance* GetAssociatedEquipment() const;
+
+	UFUNCTION(BlueprintCallable, Category="Battle|Ability")
 	UBattleInventoryItemInstance* GetAssociatedItem() const;
 	
 };
