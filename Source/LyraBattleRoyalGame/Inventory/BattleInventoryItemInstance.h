@@ -25,9 +25,13 @@ public:
 		return (ResultClass*) FindFragmentByClass(ResultClass::StaticClass());
 	}
 
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category=Inventory)
 	void AddStatTagStack(FGameplayTag Tag, int32 StackCount);
+	
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category=Inventory)
 	void RemoveStatTagStack(FGameplayTag Tag, int32 StackCount);
 
+	UFUNCTION(BlueprintCallable, Category=Inventory)
 	bool HasStatTag(FGameplayTag Tag) const;
 
 	UFUNCTION(BlueprintCallable, Category=Inventory)

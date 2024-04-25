@@ -30,6 +30,7 @@ void UBattleAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, A
 	}
 	
 }
+PRAGMA_DISABLE_OPTIMIZATION
 
 void UBattleAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
@@ -133,6 +134,8 @@ void UBattleAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bG
 	
 	
 }
+
+PRAGMA_ENABLE_OPTIMIZATION
 
 void UBattleAbilitySystemComponent::SetTagRelationshipMapping(UBattleAbilityTagRelationshipMapping* NewMapping)
 {

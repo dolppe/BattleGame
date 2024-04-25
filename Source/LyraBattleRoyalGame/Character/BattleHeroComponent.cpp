@@ -322,6 +322,8 @@ void UBattleHeroComponent::Input_LookMouse(const FInputActionValue& InputActionV
 	
 }
 
+PRAGMA_DISABLE_OPTIMIZATION
+
 void UBattleHeroComponent::Input_AbilityInputTagPressed(FGameplayTag InputTag)
 {
 	if (const APawn* Pawn = GetPawn<APawn>())
@@ -335,6 +337,8 @@ void UBattleHeroComponent::Input_AbilityInputTagPressed(FGameplayTag InputTag)
 		}
 	}
 }
+
+PRAGMA_ENABLE_OPTIMIZATION
 
 void UBattleHeroComponent::Input_AbilityInputTagReleased(FGameplayTag InputTag)
 {
