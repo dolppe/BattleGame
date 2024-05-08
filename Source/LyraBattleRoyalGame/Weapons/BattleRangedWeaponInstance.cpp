@@ -5,3 +5,5 @@ UBattleRangedWeaponInstance::UBattleRangedWeaponInstance(const FObjectInitialize
 	: Super(ObjectInitializer)
 {
 }
+
+
