@@ -6,8 +6,15 @@ UBattleWeaponInstance::UBattleWeaponInstance(const FObjectInitializer& ObjectIni
 {
 }
 
+void UBattleWeaponInstance::UpdateFiringTime()
+{
+	UWorld* World = GetWorld();
+	check(World);
+	TimeLastFired = World->GetTimeSeconds();
+}
+
 TSubclassOf<UAnimInstance> UBattleWeaponInstance::PickBestAnimLayer(bool bEquipped,
-	const FGameplayTagContainer& CosmeticTags) const
+                                                                    const FGameplayTagContainer& CosmeticTags) const
 {
 	const FBattleAnimLayerSelectionSet& SetToQuery = (bEquipped ? EquippedAnimSet : UnequippedAnimSet);
 	return SetToQuery.SelectBestLayer(CosmeticTags);

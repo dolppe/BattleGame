@@ -11,8 +11,11 @@ class UBattleWeaponInstance : public UBattleEquipmentInstance
 public:
 	UBattleWeaponInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	UFUNCTION(BlueprintCallable, BlueprintPure=false, Category=Animation)
-	TSubclassOf<UAnimInstance> PickBestAnimLayer(bool bEquipped, const FGameplayTagContainer& CosmeticTags)const;
+	UFUNCTION(BlueprintCallable)
+	void UpdateFiringTime();
+	
+
+protected:
 	
 	// Weapon에 Equip, UnEquip에 대한 Animation Set 정보를 들고 있음.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Animation)
@@ -20,5 +23,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Animation)
 	FBattleAnimLayerSelectionSet UnequippedAnimSet;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure=false, Category=Animation)
+	TSubclassOf<UAnimInstance> PickBestAnimLayer(bool bEquipped, const FGameplayTagContainer& CosmeticTags)const;
+
+private:
+
+	double TimeLastFired = 0.0;
 	
 };
