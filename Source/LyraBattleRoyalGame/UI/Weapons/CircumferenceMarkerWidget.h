@@ -36,6 +36,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Corner)
 	uint8 bReticleCornerOutsideSpreadRadius : 1;
+	
+public:
+	UFUNCTION(BlueprintCallable, Category="Appearance")
+	void SetRadius(float InRadius);
 
 	/** UMG의 CircumferenceMarkerWidget에 대응되는 SWidget */
 	TSharedPtr<SCircumferenceMarkerWidget> MyMarkerWidget;

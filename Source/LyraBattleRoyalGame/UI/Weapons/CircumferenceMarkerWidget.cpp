@@ -11,6 +11,15 @@ void UCircumferenceMarkerWidget::ReleaseSlateResources(bool bReleaseChildren)
 	MyMarkerWidget.Reset();
 }
 
+void UCircumferenceMarkerWidget::SetRadius(float InRadius)
+{
+	Radius = InRadius;
+	if (MyMarkerWidget.IsValid())
+	{
+		MyMarkerWidget->SetRadius(InRadius);
+	}
+}
+
 void UCircumferenceMarkerWidget::SynchronizeProperties()
 {
 	Super::SynchronizeProperties();
