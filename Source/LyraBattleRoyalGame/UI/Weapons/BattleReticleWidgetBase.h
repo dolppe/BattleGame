@@ -20,7 +20,17 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnWeaponInitialized();
-	
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float ComputeSpreadAngle() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float ComputeMaxScreenspaceSpreadRadius() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool HasFirstShotAccuracy() const;
+
+protected:
 	/*
 	 * 각 변수들은 상태 추적용으로 캐싱해두는 것임.
 	 */

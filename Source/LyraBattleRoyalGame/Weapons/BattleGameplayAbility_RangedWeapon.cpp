@@ -12,8 +12,19 @@ UBattleGameplayAbility_RangedWeapon::UBattleGameplayAbility_RangedWeapon(const F
 {
 }
 
+void UBattleGameplayAbility_RangedWeapon::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
+{
+	UBattleRangedWeaponInstance* WeaponData = GetWeaponInstance();
+	check(WeaponData);
+	WeaponData->UpdateFiringTime();
+	
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+}
+
 ECollisionChannel UBattleGameplayAbility_RangedWeapon::DetermineTraceChannel(FCollisionQueryParams& TraceParams,
-	bool bIsSimulated) const
+                                                                             bool bIsSimulated) const
 {
 	return Battle_TraceChannel_Weapon;
 }
@@ -346,6 +357,10 @@ void UBattleGameplayAbility_RangedWeapon::OnTargetDataReadyCallback(const FGamep
 
 		if (CommitAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo))
 		{
+			UBattleRangedWeaponInstance* WeaponData = GetWeaponInstance();
+			check(WeaponData);
+			WeaponData->AddSpared();
+			
 			OnRangeWeaponTargetDataReady(LocalTargetDataHandle);
 		}
 		else
