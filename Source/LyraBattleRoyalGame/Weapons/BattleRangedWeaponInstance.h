@@ -1,10 +1,11 @@
 #pragma once
 
 #include "BattleWeaponInstance.h"
+#include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySourceInterface.h"
 #include "BattleRangedWeaponInstance.generated.h"
 
 UCLASS()
-class UBattleRangedWeaponInstance : public UBattleWeaponInstance
+class UBattleRangedWeaponInstance : public UBattleWeaponInstance, public IBattleAbilitySourceInterface
 {
 	GENERATED_BODY()
 public:
@@ -152,6 +153,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="WeaponConfig", meta = (ForceUnits = cm))
 	float BulletTraceSweepRadius = 0.0f;
 
+	UPROPERTY(EditAnywhere, Category="Weapon Config")
+	FRuntimeFloatCurve DistanceDamageFalloff;
+
+	UPROPERTY(EditAnywhere, Category="Weapon Config")
+	TMap<FGameplayTag, float> MaterialDamageMultiplier;
 	
 private:
 
@@ -190,8 +196,16 @@ public:
 	 * EquipmentInstance Interface
 	 */
 	virtual void OnEquipped() override;
-
+	
+	/*
+	 * IBattleAbilitySourceInterface Interface
+	 */
+	virtual float GetDistanceAttenuation(float Distance, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags) const override;
+	virtual float GetPhysicalMaterialAttenuation(const UPhysicalMaterial* PhysicalMaterial, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags) const override;
+	
+	
 	void AddSpared();
+
 
 private:
 	void ComputeSpreadRange(float& MinSpread, float& MaxSpread);

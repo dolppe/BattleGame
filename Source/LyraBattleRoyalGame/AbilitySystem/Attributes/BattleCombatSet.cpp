@@ -4,5 +4,6 @@
 UBattleCombatSet::UBattleCombatSet()
 	: Super()
 	, BaseHeal(0.0f)
+	, BaseDamage(0.0f)
 {
 }
