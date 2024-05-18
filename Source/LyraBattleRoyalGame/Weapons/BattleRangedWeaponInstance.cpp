@@ -2,6 +2,7 @@
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "LyraBattleRoyalGame/BattleLogChannels.h"
+#include "LyraBattleRoyalGame/Physics/PhysicalMaterialWithTags.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleRangedWeaponInstance)
 
@@ -40,6 +41,31 @@ void UBattleRangedWeaponInstance::OnEquipped()
 	StandingStillMultiplier = 1.0f;
 	JumpFallMultiplier = 1.0f;
 	CrouchingMultiplier = 1.0f;	
+}
+
+float UBattleRangedWeaponInstance::GetDistanceAttenuation(float Distance, const FGameplayTagContainer* SourceTags,
+	const FGameplayTagContainer* TargetTags) const
+{
+	const FRichCurve* Curve = DistanceDamageFalloff.GetRichCurveConst();
+	return Curve->HasAnyData() ? Curve->Eval(Distance) : 1.0f;
+}
+
+float UBattleRangedWeaponInstance::GetPhysicalMaterialAttenuation(const UPhysicalMaterial* PhysicalMaterial,
+	const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags) const
+{
+	float CombinedMultiplier = 1.0f;
+	if (const UPhysicalMaterialWithTags* PhysMatWithTags = Cast<const UPhysicalMaterialWithTags>(PhysicalMaterial))
+	{
+		for (const FGameplayTag MaterialTag : PhysMatWithTags->Tags)
+		{
+			if (const float* pTagMultiplier = MaterialDamageMultiplier.Find(MaterialTag))
+			{
+				CombinedMultiplier *= *pTagMultiplier;
+			}
+		}
+	}
+
+	return CombinedMultiplier;
 }
 
 

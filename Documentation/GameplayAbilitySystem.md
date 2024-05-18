@@ -168,6 +168,21 @@
             스캔을 진행할 GameplayCue의 Path를 등록하는 GameFeatureAction임.  
             이를 통해 GameFeature Plugin이 등록될 때, 스캔을 진행해야 하는 GameplayCue가 담긴 Path 정보를 가져옴.
 
+- GCN 실행 로직
+    - GCN을 실행하는 각종 함수들로 인해 GCN의 실행이 요청 됨.  
+    ex) ExecuteGameplayCueWithParams, ExecuteGameplayCue 등...
+    - 결국 ExecuteGameplayCue가 호출되며, AddPendingCueExecute가 실행됨.  
+    해당 과정에서 GameplayCueManager에 있는 PendingExecuteCues라는 Array에 해당 Cue가 들어가게 됨. (정확히는 GameplayTag, CueParams 등)  
+    Cue 자체는 아직 인스턴스화되지 않음. 태그로 전달하는 것임.
+    - FlushPendingCues가 실행됨.  
+    ASC 및 여러 조건을 체크하고, Call_InvokeGameplayCuesExecuted가 호출되며, PendingExecuteCue에 들어가 있는 Cue들을 실행함.
+    - ASC에서 Cue 실행 Event를 만들어서 전달함. InvokeGameplayCueEvent
+    - GameplayCueManager에서 HandleGameplayCue를 실행하며, Event를 CueSet에 전달함.
+    - CueMap에서 GameplayTag에 해당하는 GCN Class를 찾고, 이에 Event를 전달함.
+    - 이때, GCN이 GCN_Static인지, GCN_Actor인지에 따라 로직이 달라짐.  
+    GCN_Static => CDO를 활용하여 EventType에 따른 함수를 실행함 (OnExecute 등...)
+    GCN_Actor => FGCNotifyActorKey를 활용하여 GameplayCueManager에 캐싱된 GCN_Actor가 있는지 체크하고, 있으면 이를 재활용함.  
+    없으면 World에 있는지도 찾아보고, 그래도 없으면 다시 만들어서 EventType에 따른 함수를 실행함.
 
 ## AttributeSet
 

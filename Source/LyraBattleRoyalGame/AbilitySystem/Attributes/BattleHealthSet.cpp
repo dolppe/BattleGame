@@ -12,6 +12,8 @@ UBattleHealthSet::UBattleHealthSet()
 }
 
 
+
+
 void UBattleHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
@@ -27,6 +29,11 @@ void UBattleHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	else if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), MinimumHealth, GetMaxHealth()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetDamageAttribute())
+	{
+		SetHealth(FMath::Clamp(GetHealth() - GetHealing(), MinimumHealth, GetMaxHealth()));
+		SetDamage(0.0f);
 	}
 }
 

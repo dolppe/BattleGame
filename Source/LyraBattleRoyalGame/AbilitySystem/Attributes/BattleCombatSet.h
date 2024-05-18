@@ -17,9 +17,16 @@ public:
 	UBattleCombatSet();
 
 	ATTRIBUTE_ACCESSORS(UBattleCombatSet, BaseHeal);
+	ATTRIBUTE_ACCESSORS(UBattleCombatSet, BaseDamage);
+
+
+private:
 
 	// Healing의 단위
-	UPROPERTY(BlueprintReadOnly, Category="Battle|Combat")
+	UPROPERTY(BlueprintReadOnly, Category="Battle|Combat", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData BaseHeal;
+
+	UPROPERTY(BlueprintReadOnly, Category="Battle|Combat", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData BaseDamage;
 	
 };

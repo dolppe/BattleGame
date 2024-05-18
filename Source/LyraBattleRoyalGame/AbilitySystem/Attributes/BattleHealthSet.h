@@ -18,7 +18,8 @@ public:
 	ATTRIBUTE_ACCESSORS(UBattleHealthSet, Health);
 	ATTRIBUTE_ACCESSORS(UBattleHealthSet, MaxHealth);
 	ATTRIBUTE_ACCESSORS(UBattleHealthSet, Healing);
-
+	ATTRIBUTE_ACCESSORS(UBattleHealthSet, Damage);
+	
 	// GameplayEffect가 Attribute를 건드린 후에 불리는 콜백
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
@@ -34,6 +35,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category="Battle|Health")
 	FGameplayAttributeData Healing;
+
+	UPROPERTY(BlueprintReadOnly, Category="Battle|Health", meta=(HideFromModifiers, AllowPrivateAccess=true))
+	FGameplayAttributeData Damage;
 	
 };
 

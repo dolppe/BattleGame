@@ -40,7 +40,8 @@ public class LyraBattleRoyalGame : ModuleRules
 			"SlateCore",
 			// GameplayMessageRouter
 			"GameplayMessageRuntime",
-			
+			// Physics
+			"PhysicsCore",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
