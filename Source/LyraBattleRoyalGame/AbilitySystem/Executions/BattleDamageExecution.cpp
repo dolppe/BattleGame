@@ -34,6 +34,7 @@ void UBattleDamageExecution::Execute_Implementation(const FGameplayEffectCustomE
 	FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
+	
 	FBattleGameplayEffectContext* TypedContext = FBattleGameplayEffectContext::ExtractEffectContext(Spec.GetContext());
 	check(TypedContext);
 

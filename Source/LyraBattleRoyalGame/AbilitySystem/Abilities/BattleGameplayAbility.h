@@ -19,6 +19,7 @@ class ABattleCharacter;
 class AController;
 class UBattleAbilitySystemComponent;
 class ABattlePlayerController;
+class IBattleAbilitySourceInterface;
 
 UCLASS(Abstract)
 class UBattleGameplayAbility : public UGameplayAbility
@@ -50,7 +51,10 @@ protected:
 	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const override;
+	virtual FGameplayEffectContextHandle MakeEffectContext(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo) const override;
 
+	virtual void GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IBattleAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const;
+	
 	UFUNCTION(BlueprintImplementableEvent, Category=Ability, DisplayName="OnAbilityAdded")
 	void K2_OnAbilityAdded();
 

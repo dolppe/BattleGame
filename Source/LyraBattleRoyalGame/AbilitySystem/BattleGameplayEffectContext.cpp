@@ -16,6 +16,11 @@ FBattleGameplayEffectContext* FBattleGameplayEffectContext::ExtractEffectContext
 	
 }
 
+void FBattleGameplayEffectContext::SetAbilitySource(const IBattleAbilitySourceInterface* InObject, float InSourceLevel)
+{
+	AbilitySourceObject = MakeWeakObjectPtr(Cast<const UObject>(InObject));
+}
+
 const IBattleAbilitySourceInterface* FBattleGameplayEffectContext::GetAbilitySource() const
 {
 	return Cast<IBattleAbilitySourceInterface>(AbilitySourceObject.Get());
