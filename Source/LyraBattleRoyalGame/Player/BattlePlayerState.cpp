@@ -1,5 +1,6 @@
 #include "BattlePlayerState.h"
 
+#include "LyraBattleRoyalGame/BattleLogChannels.h"
 #include "LyraBattleRoyalGame/GameModes/BattleExperienceManagerComponent.h"
 #include "LyraBattleRoyalGame/GameModes/BattleGameMode.h"
 #include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySystemComponent.h"
@@ -14,6 +15,7 @@ ABattlePlayerState::ABattlePlayerState(const FObjectInitializer& ObjectInitializ
 {
 	AbilitySystemComponent = ObjectInitializer.CreateDefaultSubobject<UBattleAbilitySystemComponent>(this, TEXT("AbilitySystemcomponent"));
 
+	
 	CreateDefaultSubobject<UBattleHealthSet>(TEXT("HealthSet"));
 	CreateDefaultSubobject<UBattleCombatSet>(TEXT("CombatSet"));
 }
@@ -73,4 +75,19 @@ void ABattlePlayerState::OnExperienceLoaded(const UBattleExperienceDefinition* C
 
 		SetPawnData(NewPawnData);
 	}
+}
+
+void ABattlePlayerState::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	const UBattleHealthSet* temp = AbilitySystemComponent->GetSet<UBattleHealthSet>();
+
+	UE_LOG(LogBattle, Log, TEXT("Health: %f"),temp->GetHealth());
+}
+
+UAbilitySystemComponent* ABattlePlayerState::GetAbilitySystemComponent() const
+{
+	return GetBattleAbilitySystemComponent();
+	
 }

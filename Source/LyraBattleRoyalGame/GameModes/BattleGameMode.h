@@ -34,6 +34,9 @@ public:
 	// PC의 PawnData 혹은 Experience의 DefaultPawnData를 리턴해줌.
 	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 
+	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+	virtual bool PlayerCanRestart_Implementation(APlayerController* Player) override;
+	
 	/*
 	 * Member Methods
 	 */
@@ -44,4 +47,8 @@ public:
 	bool IsExperienceLoaded() const;
 	const UBattlePawnData* GetPawnDataForController(const AController* InController) const;
 	void OnExperienceLoaded(const UBattleExperienceDefinition* CurrentExperience);
+
+	virtual bool ControllerCanRestart(AController* Controller);
+
+	
 };

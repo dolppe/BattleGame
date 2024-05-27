@@ -7,6 +7,7 @@
 #include "LyraBattleRoyalGame/Character/BattleCharacter.h"
 #include "LyraBattleRoyalGame/Character/BattlePawnExtensionComponent.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerController.h"
+#include "LyraBattleRoyalGame/Player/BattlePlayerSpawningManagerComponent.h"
 #include "LyraBattleRoyalGame/UI/BattleHUD.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerState.h"
 
@@ -91,6 +92,21 @@ UClass* ABattleGameMode::GetDefaultPawnClassForController_Implementation(AContro
 	}
 
 	return Super::GetDefaultPawnClassForController_Implementation(InController);
+}
+
+AActor* ABattleGameMode::ChoosePlayerStart_Implementation(AController* Player)
+{
+	if (UBattlePlayerSpawningManagerComponent* PlayerSpawningComponent = GameState->FindComponentByClass<UBattlePlayerSpawningManagerComponent>())
+	{
+		return PlayerSpawningComponent->ChoosePlayerStart(Player);
+	}
+	
+	return Super::ChoosePlayerStart_Implementation(Player);
+}
+
+bool ABattleGameMode::PlayerCanRestart_Implementation(APlayerController* Player)
+{
+	return ControllerCanRestart(Player);
 }
 
 void ABattleGameMode::HandleMatchAssignmentIfNotExpectingOne()
@@ -187,5 +203,31 @@ void ABattleGameMode::OnExperienceLoaded(const UBattleExperienceDefinition* Curr
 			}
 		}
 	}
+	
+}
+
+bool ABattleGameMode::ControllerCanRestart(AController* Controller)
+{
+	if (APlayerController* PC = Cast<APlayerController>(Controller))
+	{
+		if (!Super::PlayerCanRestart_Implementation(PC))
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if ((Controller == nullptr) || Controller->IsPendingKillPending())
+		{
+			return false;
+		}
+	}
+
+	if (UBattlePlayerSpawningManagerComponent* PlayerSpawningComponent = GameState->FindComponentByClass<UBattlePlayerSpawningManagerComponent>())
+	{
+		return PlayerSpawningComponent->ControllerCanRestart(Controller);
+	}
+
+	return true;
 	
 }
