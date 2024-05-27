@@ -32,7 +32,7 @@ void UBattleHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	}
 	else if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
-		SetHealth(FMath::Clamp(GetHealth() - GetHealing(), MinimumHealth, GetMaxHealth()));
+		SetHealth(FMath::Clamp(GetHealth() - GetDamage(), MinimumHealth, GetMaxHealth()));
 		SetDamage(0.0f);
 	}
 }

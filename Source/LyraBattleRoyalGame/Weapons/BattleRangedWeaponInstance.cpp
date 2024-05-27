@@ -22,8 +22,6 @@ void UBattleRangedWeaponInstance::Tick(float DeltaSeconds)
 	const bool bMinMultipliers = UpdateMultipliers(DeltaSeconds);
 
 	bHasFirstShotAccuracy = bAllowFirstShotAccuracy && bMinMultipliers && bMinSpread;
-
-	UE_LOG(LogBattle, Log, TEXT("Heat : %f / Spread: %f / SpreadMul: %f / bHasFirst: %d"), CurrentHeat,CurrentSpreadAngle, CurrentSpreadAngleMultiplier, bHasFirstShotAccuracy);
 }
 
 void UBattleRangedWeaponInstance::OnEquipped()

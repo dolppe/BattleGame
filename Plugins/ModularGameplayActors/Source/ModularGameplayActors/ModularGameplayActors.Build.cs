@@ -28,6 +28,7 @@ public class ModularGameplayActors : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"ModularGameplay",
+				"AIModule"
 				// ... add other public dependencies that you statically link with here ...
 			}
 		);

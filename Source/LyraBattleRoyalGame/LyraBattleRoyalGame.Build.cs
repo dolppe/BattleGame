@@ -42,6 +42,8 @@ public class LyraBattleRoyalGame : ModuleRules
 			"GameplayMessageRuntime",
 			// Physics
 			"PhysicsCore",
+			// AI
+			"AIModule",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

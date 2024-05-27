@@ -41,6 +41,8 @@ public:
 	void UnInitializeWithAbilitySystem();
 
 	void HandleHealthChanged(const FOnAttributeChangeData& ChangeData);
+
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	// HealthSet에 접근하기 위한 ASC를 캐싱해둠
 	UPROPERTY()
