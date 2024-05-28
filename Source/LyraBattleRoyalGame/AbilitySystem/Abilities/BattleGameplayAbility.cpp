@@ -63,6 +63,23 @@ ABattleCharacter* UBattleGameplayAbility::GetBattleCharacterFromActorInfo() cons
 }
 
 
+void UBattleGameplayAbility::TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilitySpec& Spec) const
+{
+	if (ActorInfo && !Spec.IsActive() && (ActivationPolicy == EBattleAbilityActivationPolicy::OnSpawn))
+	{
+		UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
+		const AActor* AvatarActor = ActorInfo->AvatarActor.Get();
+
+		if (ASC && AvatarActor && !AvatarActor->GetTearOff() && (AvatarActor->GetLifeSpan() <= 0.0f))
+		{
+			ASC->TryActivateAbility(Spec.Handle);
+		}
+		
+	}
+	
+}
+
 void UBattleGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	Super::OnGiveAbility(ActorInfo, Spec);

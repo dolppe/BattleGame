@@ -39,10 +39,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Battle|Ability")
 	ABattleCharacter* GetBattleCharacterFromActorInfo() const;
-
 	
-
 	EBattleAbilityActivationPolicy GetActivationPolicy() const {return ActivationPolicy;}
+
+	void TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const;
 
 protected:
 

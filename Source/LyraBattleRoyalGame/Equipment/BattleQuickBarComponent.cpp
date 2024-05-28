@@ -87,6 +87,49 @@ void UBattleQuickBarComponent::UnequipItemInSlot()
 	
 }
 
+void UBattleQuickBarComponent::CycleActiveSlotForward()
+{
+	if (Slots.Num() <2)
+	{
+		return;
+	}
+
+	const int32 OldIndex = (ActiveSlotIndex < 0 ? Slots.Num()-1 : ActiveSlotIndex);
+	int32 NewIndex = ActiveSlotIndex;
+	do
+	{
+		NewIndex = (NewIndex +1) %Slots.Num();
+		if (Slots[NewIndex] != nullptr)
+		{
+			SetActiveSlotIndex(NewIndex);
+			return;
+		}
+	}
+	while (NewIndex != OldIndex);
+	
+}
+
+void UBattleQuickBarComponent::CycleActiveSlotBackward()
+{
+	if (Slots.Num() <2)
+	{
+		return;
+	}
+
+	const int32 OldIndex = (ActiveSlotIndex < 0 ? Slots.Num()-1 : ActiveSlotIndex);
+	int32 NewIndex = ActiveSlotIndex;
+	do
+	{
+		NewIndex = (NewIndex -1 + Slots.Num()) % Slots.Num();
+		if (Slots[NewIndex] != nullptr)
+		{
+			SetActiveSlotIndex(NewIndex);
+			return;
+		}
+	}
+	while (NewIndex != OldIndex);
+}
+
 void UBattleQuickBarComponent::AddItemToSlot(int32 SlotIndex, UBattleInventoryItemInstance* Item)
 {
 	if (Slots.IsValidIndex(SlotIndex) && (Item != nullptr))
