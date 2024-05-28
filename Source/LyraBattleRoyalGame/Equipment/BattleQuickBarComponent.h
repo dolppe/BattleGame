@@ -29,7 +29,21 @@ public:
 	UBattleEquipmentManagerComponent* FindEquipmentManager() const;
 	void EquipItemInSlot();
 	void UnequipItemInSlot();
-	
+
+	UFUNCTION(BlueprintCallable, Category="Battle")
+	void CycleActiveSlotForward();
+
+	UFUNCTION(BlueprintCallable, Category="Battle")
+	void CycleActiveSlotBackward();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure=false)
+	TArray<UBattleInventoryItemInstance*> GetSlots() const
+	{
+		return Slots;
+	}
+
+	UFUNCTION(BlueprintCallable, BlueprintPure=false)
+	int32 GetActiveSlotIndex() const {return ActiveSlotIndex; }
 	
 	UFUNCTION(BlueprintCallable)
 	void AddItemToSlot(int32 SlotIndex, UBattleInventoryItemInstance* Item);
@@ -37,11 +51,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Battle")
 	void SetActiveSlotIndex(int32 NewIndex);
 
+protected:
 	
 	// HUD QuickBar Slot 개수
 	UPROPERTY()
 	int32 NumSlots = 3;
 
+private:
+	
 	// HUD QuickBar Slot 리스트
 	UPROPERTY()
 	TArray<TObjectPtr<UBattleInventoryItemInstance>> Slots;

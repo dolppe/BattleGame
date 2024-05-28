@@ -28,6 +28,8 @@ void UBattleAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, A
 			AnimInstance->InitializeWithAbilitySystem(this);
 		}
 	}
+
+	TryActivateAbilitiesOnSpawn();
 	
 }
 PRAGMA_DISABLE_OPTIMIZATION
@@ -149,6 +151,16 @@ void UBattleAbilitySystemComponent::GetAdditionalActivationTagRequirements(const
 	{
 		TagRelationshipMapping->GetRequiredAndBlockedActivationTags(AbilityTags, &OutActivationRequired, &OutActivationBlocked);
 	}
+}
+
+void UBattleAbilitySystemComponent::TryActivateAbilitiesOnSpawn()
+{
+	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	{
+		const UBattleGameplayAbility* BattleAbilityCDO = CastChecked<UBattleGameplayAbility>(AbilitySpec.Ability);
+		BattleAbilityCDO->TryActivateAbilityOnSpawn(AbilityActorInfo.Get(), AbilitySpec);
+	}
+	
 }
 
 void UBattleAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Spec)
