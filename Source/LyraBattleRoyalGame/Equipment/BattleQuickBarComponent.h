@@ -43,6 +43,9 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable, BlueprintPure=false)
+	int32 GetNextFreeItemSlot() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure=false)
 	int32 GetActiveSlotIndex() const {return ActiveSlotIndex; }
 	
 	UFUNCTION(BlueprintCallable)

@@ -48,7 +48,9 @@ public:
 	// InventoryItemDefinition을 통해 InventoryList에 추가하여 관리하며, InventoryItemInstance를 반환함.
 	UFUNCTION(BlueprintCallable, Category=Inventory)
 	UBattleInventoryItemInstance* AddItemDefinition(TSubclassOf<UBattleInventoryItemDefinition> ItemDef);
-	
+
+	UFUNCTION(BlueprintCallable, Category=Inventory, BlueprintPure)
+	UBattleInventoryItemInstance* FindFirstItemStackByDefinition(TSubclassOf<UBattleInventoryItemDefinition> ItemDef) const;
 	
 	UPROPERTY()
 	FBattleInventoryList InventoryList;

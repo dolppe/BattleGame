@@ -130,6 +130,21 @@ void UBattleQuickBarComponent::CycleActiveSlotBackward()
 	while (NewIndex != OldIndex);
 }
 
+int32 UBattleQuickBarComponent::GetNextFreeItemSlot() const
+{
+	int32 SlotIndex = 0;
+
+	for (TObjectPtr<UBattleInventoryItemInstance> ItemPtr : Slots)
+	{
+		if (ItemPtr == nullptr)
+		{
+			return SlotIndex;
+		}
+		++SlotIndex;
+	}
+	return INDEX_NONE;
+}
+
 void UBattleQuickBarComponent::AddItemToSlot(int32 SlotIndex, UBattleInventoryItemInstance* Item)
 {
 	if (Slots.IsValidIndex(SlotIndex) && (Item != nullptr))

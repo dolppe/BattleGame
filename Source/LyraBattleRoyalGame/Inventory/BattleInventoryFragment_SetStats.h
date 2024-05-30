@@ -14,6 +14,8 @@ public:
 
 	virtual void OnInstanceCreated(UBattleInventoryItemInstance* Instance) const override;
 
+	int32 GetItemStatByTag(FGameplayTag Tag) const;
+	
 	UPROPERTY(EditDefaultsOnly, Category=Equipment)
 	TMap<FGameplayTag, int32> InitialItemStats;
 	
