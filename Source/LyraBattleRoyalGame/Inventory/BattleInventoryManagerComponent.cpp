@@ -49,3 +49,23 @@ UBattleInventoryItemInstance* UBattleInventoryManagerComponent::AddItemDefinitio
 	return Result;
 	
 }
+
+UBattleInventoryItemInstance* UBattleInventoryManagerComponent::FindFirstItemStackByDefinition(
+	TSubclassOf<UBattleInventoryItemDefinition> ItemDef) const
+{
+	for (const FBattleInventoryEntry& Entry : InventoryList.Entries)
+	{
+		UBattleInventoryItemInstance* Instance = Entry.Instance;
+
+		if (IsValid(Instance))
+		{
+			if (Instance->GetItemDef() == ItemDef)
+			{
+				return Instance;
+			}
+		}
+	}
+	
+	return nullptr;
+	
+}

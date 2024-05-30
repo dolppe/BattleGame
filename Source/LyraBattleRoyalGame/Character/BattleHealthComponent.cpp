@@ -12,8 +12,8 @@ UBattleHealthComponent::UBattleHealthComponent(const FObjectInitializer& ObjectI
 {
 		// 이벤트기반으로 Character와 PlayerState의 HealthSet의 브릿지 역할만 해줌.
     	// 따라서 틱이 필요가 없음.
-    	PrimaryComponentTick.bStartWithTickEnabled = true;
-    	PrimaryComponentTick.bCanEverTick = true;
+    	PrimaryComponentTick.bStartWithTickEnabled = false;
+    	PrimaryComponentTick.bCanEverTick = false;
     
     	AbilitySystemComponent = nullptr;
     	HealthSet = nullptr;
@@ -106,13 +106,3 @@ void UBattleHealthComponent::HandleHealthChanged(const FOnAttributeChangeData& C
 	OnHealthChanged.Broadcast(this, ChangeData.OldValue, ChangeData.NewValue, GetInstigatorFromAttrChangeData(ChangeData));
 }
 
-void UBattleHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-	FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (HealthSet != nullptr)
-	{
-		UE_LOG(LogBattle, Log, TEXT("Health: %f"), HealthSet->GetHealth());
-	}
-}

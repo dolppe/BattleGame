@@ -36,6 +36,15 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category=Inventory)
 	int32 GetStatTagStackCount(FGameplayTag Tag) const;
+
+	TSubclassOf<UBattleInventoryItemDefinition> GetItemDef() const
+	{
+		return ItemDef;
+	}
+	
+private:
+
+	friend struct FBattleInventoryList;
 	
 	UPROPERTY()
 	FBattleGameplayTagStackContainer StatTags;
