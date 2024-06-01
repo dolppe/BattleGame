@@ -1,6 +1,10 @@
 #pragma once
 
 #include "AbilitySystemComponent.h"
+#include "Abilities/BattleGameplayAbility.h"
+#include "GameplayAbilitySpec.h"
+#include "GameplayTagContainer.h"
+#include "Templates/Function.h"
 #include "BattleAbilitySystemComponent.generated.h"
 
 class UBattleAbilityTagRelationshipMapping;
@@ -13,6 +17,9 @@ public:
 
 	UBattleAbilitySystemComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	typedef TFunctionRef<bool(const UBattleGameplayAbility* LyraAbility, FGameplayAbilitySpecHandle Handle)> TShouldCancelAbilityFunc;
+	void CancelAbilityByFunc(TShouldCancelAbilityFunc ShouldCancelFunc, bool bReplicateCancelAbility);
+	
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 	
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);

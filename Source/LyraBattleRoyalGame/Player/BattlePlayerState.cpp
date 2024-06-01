@@ -91,3 +91,23 @@ UAbilitySystemComponent* ABattlePlayerState::GetAbilitySystemComponent() const
 	return GetBattleAbilitySystemComponent();
 	
 }
+
+void ABattlePlayerState::AddStatTagStack(FGameplayTag Tag, int32 StackCount)
+{
+	StatTags.AddStack(Tag, StackCount);
+}
+
+void ABattlePlayerState::RemoveStatTagStack(FGameplayTag Tag, int32 StackCount)
+{
+	StatTags.RemoveStack(Tag, StackCount);
+}
+
+int32 ABattlePlayerState::GetStatTagStack(FGameplayTag Tag)
+{
+	return StatTags.GetStackCount(Tag);
+}
+
+bool ABattlePlayerState::HasStatTag(FGameplayTag Tag) const
+{
+	return StatTags.ContainsTag(Tag);
+}
