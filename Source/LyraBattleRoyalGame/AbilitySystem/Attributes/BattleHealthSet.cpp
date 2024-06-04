@@ -1,6 +1,7 @@
 #include "BattleHealthSet.h"
 
 #include "GameplayEffectExtension.h"
+#include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySystemComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleHealthSet)
 
@@ -35,6 +36,20 @@ void UBattleHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 		SetHealth(FMath::Clamp(GetHealth() - GetDamage(), MinimumHealth, GetMaxHealth()));
 		SetDamage(0.0f);
 	}
+
+	if ((GetHealth() <= 0.0f) && !bOutOfHealth)
+	{
+		if (OnOutOfHealth.IsBound())
+		{
+			const FGameplayEffectContextHandle& EffectContext = Data.EffectSpec.GetEffectContext();
+			AActor* Instigator = EffectContext.GetOriginalInstigator();
+			AActor* Causer = EffectContext.GetEffectCauser();
+
+			OnOutOfHealth.Broadcast(Instigator, Causer, Data.EffectSpec, Data.EvaluatedData.Magnitude);
+		}
+
+		bOutOfHealth = (GetHealth() <= 0.0f);
+	}
 }
 
 void UBattleHealthSet::ClampAttribute(const FGameplayAttribute& Attribute, float& NewValue) const
@@ -63,4 +78,15 @@ void UBattleHealthSet::PreAttributeChange(const FGameplayAttribute& Attribute, f
 	Super::PreAttributeChange(Attribute, NewValue);
 
 	ClampAttribute(Attribute, NewValue);
+}
+
+void UBattleHealthSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+
+
+	if (bOutOfHealth && (GetHealth() >0.0f))
+	{
+		bOutOfHealth = false;
+	}
 }

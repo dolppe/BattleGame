@@ -37,10 +37,10 @@ public:
 	UBattleAbilitySystemComponent* GetBattleAbilitySystemComponent() const {return AbilitySystemComponent;}
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category=Score)
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly,Category=Score)
 	void AddStatTagStack(FGameplayTag Tag,int32 StackCount);
 
-	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category=Score)
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly,Category=Score)
 	void RemoveStatTagStack(FGameplayTag Tag,int32 StackCount);
 
 	UFUNCTION(BlueprintCallable, Category=Score)

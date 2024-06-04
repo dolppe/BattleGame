@@ -37,6 +37,9 @@ public:
 protected:
 
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override;	
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category="Game Phase", meta=(DisplayName="Start Phase", AutoCreateRefTerm="PhaseEnded"))
+	void K2_StartPhase(TSubclassOf<UBattleGamePhaseAbility> Phase, const FBattleGamePhaseDynamicDelegate& PhaseEnded);
 	
 	void OnBeginPhase(const UBattleGamePhaseAbility* PhaseAbility, const FGameplayAbilitySpecHandle PhaseAbilityHandle);
 	void OnEndPhase(const UBattleGamePhaseAbility* PhaseAbility, const FGameplayAbilitySpecHandle PhaseAbilityHandle);

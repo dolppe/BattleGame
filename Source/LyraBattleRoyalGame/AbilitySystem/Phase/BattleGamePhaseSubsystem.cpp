@@ -18,7 +18,7 @@ void UBattleGamePhaseSubsystem::StartPhase(TSubclassOf<UBattleGamePhaseAbility> 
 	UBattleAbilitySystemComponent* GameState_ASC = World->GetGameState()->FindComponentByClass<UBattleAbilitySystemComponent>();
 	if (ensure(GameState_ASC))
 	{
-		FGameplayAbilitySpec PhaseSpec(Cast<UGameplayAbility>(PhaseAbility), 1, 0, this);
+		FGameplayAbilitySpec PhaseSpec(PhaseAbility, 1, 0, this);
 		FGameplayAbilitySpecHandle SpecHandle = GameState_ASC->GiveAbilityAndActivateOnce(PhaseSpec);
 		FGameplayAbilitySpec* FoundSpec = GameState_ASC->FindAbilitySpecFromHandle((SpecHandle));
 
@@ -76,6 +76,17 @@ bool UBattleGamePhaseSubsystem::IsPhaseActive(const FGameplayTag& PhaseTag) cons
 bool UBattleGamePhaseSubsystem::DoesSupportWorldType(const EWorldType::Type WorldType) const
 {
 	return WorldType == EWorldType::Game || WorldType == EWorldType::PIE;
+}
+
+void UBattleGamePhaseSubsystem::K2_StartPhase(TSubclassOf<UBattleGamePhaseAbility> Phase,
+	const FBattleGamePhaseDynamicDelegate& PhaseEnded)
+{
+	const FBattleGamePhaseDelegate EndedDelegate = FBattleGamePhaseDelegate::CreateWeakLambda(const_cast<UObject*>(PhaseEnded.GetUObject()),[PhaseEnded](const UBattleGamePhaseAbility* PhaseAbility)
+	{
+		PhaseEnded.ExecuteIfBound(PhaseAbility);
+	});
+
+	StartPhase(Phase, EndedDelegate);
 }
 
 void UBattleGamePhaseSubsystem::OnBeginPhase(const UBattleGamePhaseAbility* PhaseAbility,

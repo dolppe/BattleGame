@@ -92,6 +92,8 @@ UAbilitySystemComponent* ABattlePlayerState::GetAbilitySystemComponent() const
 	
 }
 
+PRAGMA_DISABLE_OPTIMIZATION
+
 void ABattlePlayerState::AddStatTagStack(FGameplayTag Tag, int32 StackCount)
 {
 	StatTags.AddStack(Tag, StackCount);
@@ -111,3 +113,5 @@ bool ABattlePlayerState::HasStatTag(FGameplayTag Tag) const
 {
 	return StatTags.ContainsTag(Tag);
 }
+
+PRAGMA_ENABLE_OPTIMIZATION

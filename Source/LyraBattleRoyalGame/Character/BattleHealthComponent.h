@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameplayEffect.h"
 #include "Components/GameFrameworkComponent.h"
 #include "Delegates/Delegate.h"
 #include "LyraBattleRoyalGame/AbilitySystem/BattleGameplayAbilityTargetData_SingleTargetHit.h"
@@ -16,6 +17,15 @@ class AActor;
 class UBattleHealthComponent;
 struct FOnAttributeChangeData;
 
+UENUM(BlueprintType)
+enum class EBattleDeathState : uint8
+{
+	NotDead = 0,
+	DeathStarted,
+	DeathFinished,
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBattleHealth_DeathEvent, AActor*, OwningActor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FBattleHealth_AttributeChanged, UBattleHealthComponent*, HealthComponent, float, OldValue, float, NewValue, AActor*, Instigator);
 
 UCLASS(Blueprintable)
@@ -40,16 +50,32 @@ public:
 	void InitializeWithAbilitySystem(UBattleAbilitySystemComponent* InASC);
 	void UnInitializeWithAbilitySystem();
 
-	void HandleHealthChanged(const FOnAttributeChangeData& ChangeData);
+public:
 	
+	UPROPERTY(BlueprintAssignable)
+	FBattleHealth_AttributeChanged OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FBattleHealth_DeathEvent OnDeathStarted;
+
+	UPROPERTY(BlueprintAssignable)
+	FBattleHealth_DeathEvent OnDeathFinished;
+
+protected:
+
+	void HandleHealthChanged(const FOnAttributeChangeData& ChangeData);
+	void HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec& DamageEffectSpec, float DamageMagnitude);
+	
+protected:	
 	// HealthSet에 접근하기 위한 ASC를 캐싱해둠
 	UPROPERTY()
 	TObjectPtr<UBattleAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()
 	TObjectPtr<const UBattleHealthSet> HealthSet;
-	
-	UPROPERTY(BlueprintAssignable)
-	FBattleHealth_AttributeChanged OnHealthChanged;
+
+	UPROPERTY()
+	EBattleDeathState DeathState;
+
 };
 
