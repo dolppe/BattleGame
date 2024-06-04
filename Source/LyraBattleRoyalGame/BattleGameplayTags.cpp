@@ -28,6 +28,14 @@ void FBattleGameplayTags::AddAllTags(UGameplayTagsManager& Manager)
 	AddTag(InitState_GameplayReady, "InitState.GameplayReady","4: The actor/component is fully ready for active gameplay");
 
 	/*
+	 *  GA
+	 */
+
+	AddTag(GameplayEvent_Death, "GameplayEvent.Death", "Death Event");
+	AddTag(GameplayEvent_RequestReset, "GameplayEvent.RequestReset", "Reset Request");
+	AddTag(GameplayEvent_Reset, "GameplayEvent.Reset", "Reset Ended");
+	
+	/*
 	*	EnhancedInput Tags
 	*/
 	AddTag(InputTag_Move, "InputTag.Move", "");

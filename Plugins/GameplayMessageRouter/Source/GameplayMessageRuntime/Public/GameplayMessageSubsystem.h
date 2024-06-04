@@ -3,6 +3,8 @@
 #include "GameplayMessageTypes2.h"
 #include "GameplayTagContainer.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Templates/UnrealTemplate.h"
+#include "Templates/Function.h"
 #include "GameplayMessageSubsystem.generated.h"
 
 
@@ -95,7 +97,7 @@ public:
 	void BroadcastMessage(FGameplayTag Channel, const FMessageStructType& Message)
 	{
 		const UScriptStruct* StructType = TBaseStructure<FMessageStructType>::Get();
-		BroadCastMessageInternal(Channel, StructType, &Message);
+		BroadcastMessageInternal(Channel, StructType, &Message);
 	}
 
 	// 리스너를 등록할 때, StructType을 저장해두어야 추후에 오는 Data가 제대로 왔는지 체크할 수 있음.

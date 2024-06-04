@@ -1,11 +1,20 @@
 #include "BattleHealthComponent.h"
 #include "GameplayEffect.h"
 #include "GameplayEffectExtension.h"
+#include "GameplayMessageSubsystem.h"
+#include "NativeGameplayTags.h"
+#include "GameFramework/PlayerState.h"
+#include "GameFramework/PlayerController.h"
+#include "LyraBattleRoyalGame/BattleGameplayTags.h"
 #include "LyraBattleRoyalGame/BattleLogChannels.h"
 #include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySystemComponent.h"
 #include "LyraBattleRoyalGame/AbilitySystem/Attributes/BattleHealthSet.h"
+#include "LyraBattleRoyalGame/Messages/BattleVerbMessage.h"
+#include "LyraBattleRoyalGame/Messages/BattleVerbMessageHelpers.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleHealthComponent)
+
+UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Battle_Elimination_Message, "Battle.Elimination.Message");
 
 UBattleHealthComponent::UBattleHealthComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -78,7 +87,8 @@ void UBattleHealthComponent::InitializeWithAbilitySystem(UBattleAbilitySystemCom
 	}
 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UBattleHealthSet::GetHealthAttribute()).AddUObject(this, &ThisClass::HandleHealthChanged);
-
+	HealthSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOutOfHealth);
+	
 	OnHealthChanged.Broadcast(this, HealthSet->GetHealth(), HealthSet->GetHealth(), nullptr);
 	
 }
@@ -104,5 +114,40 @@ static AActor* GetInstigatorFromAttrChangeData(const FOnAttributeChangeData& Cha
 void UBattleHealthComponent::HandleHealthChanged(const FOnAttributeChangeData& ChangeData)
 {
 	OnHealthChanged.Broadcast(this, ChangeData.OldValue, ChangeData.NewValue, GetInstigatorFromAttrChangeData(ChangeData));
+}
+
+void UBattleHealthComponent::HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser,
+	const FGameplayEffectSpec& DamageEffectSpec, float DamageMagnitude)
+{
+	if (AbilitySystemComponent)
+	{
+		{
+			FGameplayEventData Payload;
+			Payload.EventTag = FBattleGameplayTags::Get().GameplayEvent_Death;
+			Payload.Instigator = DamageInstigator;
+			Payload.Target =AbilitySystemComponent->GetAvatarActor();
+			Payload.OptionalObject = DamageEffectSpec.Def;
+			Payload.ContextHandle = DamageEffectSpec.GetEffectContext();
+			Payload.InstigatorTags = *DamageEffectSpec.CapturedSourceTags.GetAggregatedTags();
+			Payload.TargetTags = *DamageEffectSpec.CapturedTargetTags.GetAggregatedTags();
+			Payload.EventMagnitude = DamageMagnitude;
+
+			FScopedPredictionWindow NewScopedWindow(AbilitySystemComponent, true);
+			AbilitySystemComponent->HandleGameplayEvent(Payload.EventTag, &Payload);
+		}
+
+		{
+			FBattleVerbMessage Message;
+			Message.Verb = TAG_Battle_Elimination_Message;
+			Message.Instigator = DamageInstigator;
+			Message.InstigatorTags = *DamageEffectSpec.CapturedSourceTags.GetAggregatedTags();
+			Message.Target = Cast<UObject>(UBattleVerbMessageHelpers::GetPlayerStateFromObject(AbilitySystemComponent->GetAvatarActor()));
+			Message.TargetTags = *DamageEffectSpec.CapturedTargetTags.GetAggregatedTags();
+
+			UGameplayMessageSubsystem& MessageSubsystem = UGameplayMessageSubsystem::Get(GetWorld());
+			MessageSubsystem.BroadcastMessage(Message.Verb, Message);
+		}
+	}
+	
 }
 

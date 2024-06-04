@@ -2,6 +2,7 @@
 
 #include "BattleAbilityTagRelationshipMapping.h"
 #include "Abilities/BattleGameplayAbility.h"
+#include "LyraBattleRoyalGame/BattleLogChannels.h"
 #include "LyraBattleRoyalGame/Animation/BattleAnimInstance.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleAbilitySystemComponent)
@@ -9,6 +10,50 @@
 UBattleAbilitySystemComponent::UBattleAbilitySystemComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+}
+
+void UBattleAbilitySystemComponent::CancelAbilityByFunc(TShouldCancelAbilityFunc ShouldCancelFunc,
+	bool bReplicateCancelAbility)
+{
+	ABILITYLIST_SCOPE_LOCK();
+	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	{
+		if (!AbilitySpec.IsActive())
+		{
+			continue;
+		}
+
+		UBattleGameplayAbility* BattleAbilityCDO = CastChecked<UBattleGameplayAbility>(AbilitySpec.Ability);
+
+		if (BattleAbilityCDO->GetInstancingPolicy() != EGameplayAbilityInstancingPolicy::NonInstanced)
+		{
+			TArray<UGameplayAbility*> Instances = AbilitySpec.GetAbilityInstances();
+			for (UGameplayAbility* AbilityInstance : Instances)
+			{
+				UBattleGameplayAbility* BattleAbilityInstance = CastChecked<UBattleGameplayAbility>(AbilityInstance);
+
+				if (ShouldCancelFunc(BattleAbilityInstance, AbilitySpec.Handle))
+				{
+					if (BattleAbilityInstance->CanBeCanceled())
+					{
+						BattleAbilityInstance->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), BattleAbilityInstance->GetCurrentActivationInfo(), bReplicateCancelAbility);
+					}
+					else
+					{
+						UE_LOG(LogBattle, Error, TEXT("Can't Cancel GA %s"), *BattleAbilityInstance->GetName());
+					}
+				}
+			}
+		}
+		else
+		{
+			if (ShouldCancelFunc(BattleAbilityCDO, AbilitySpec.Handle))
+			{
+				check(BattleAbilityCDO->CanBeCanceled());
+				BattleAbilityCDO->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), FGameplayAbilityActivationInfo(), bReplicateCancelAbility);
+			}
+		}
+	}
 }
 
 void UBattleAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)

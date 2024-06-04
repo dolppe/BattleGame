@@ -3,7 +3,9 @@
 #include "AbilitySystemInterface.h"
 #include "GameFramework/PlayerState.h"
 #include "LyraBattleRoyalGame/Character/BattlePawnData.h"
+#include "LyraBattleRoyalGame/System/BattleGameplayTagStack.h"
 #include "BattlePlayerState.generated.h"
+
 
 class UBattleAbilitySystemComponent;
 class UBattleExperienceDefinition;
@@ -35,14 +37,32 @@ public:
 	UBattleAbilitySystemComponent* GetBattleAbilitySystemComponent() const {return AbilitySystemComponent;}
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly,Category=Score)
+	void AddStatTagStack(FGameplayTag Tag,int32 StackCount);
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly,Category=Score)
+	void RemoveStatTagStack(FGameplayTag Tag,int32 StackCount);
+
+	UFUNCTION(BlueprintCallable, Category=Score)
+	int32 GetStatTagStack(FGameplayTag Tag);
+
+	UFUNCTION(BlueprintCallable, Category=Score)
+	bool HasStatTag(FGameplayTag Tag) const;
+
 	
-private:
+	
+protected:
 
 	// PawnData
 	UPROPERTY()
 	TObjectPtr<const UBattlePawnData> PawnData;
-
+	
+private:
+	
 	UPROPERTY(VisibleAnywhere, Category="Battle|PlayerState")
 	TObjectPtr<UBattleAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
+	FBattleGameplayTagStackContainer StatTags;
 	
 };
