@@ -28,6 +28,8 @@ UBattleHealthComponent::UBattleHealthComponent(const FObjectInitializer& ObjectI
     	HealthSet = nullptr;
 }
 
+
+
 UBattleHealthComponent* UBattleHealthComponent::FindHealthComponent(const AActor* Actor)
 {
 	if (!Actor)
