@@ -8,6 +8,7 @@
 #include "LyraBattleRoyalGame/BattleLogChannels.h"
 #include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySystemComponent.h"
 #include "LyraBattleRoyalGame/Camera/BattleCameraComponent.h"
+#include "LyraBattleRoyalGame/Camera/BattleCameraMode.h"
 #include "LyraBattleRoyalGame/Input/BattleInputComponent.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerState.h"
 #include "LyraBattleRoyalGame/Input/BattleMappableConfigPair.h"
@@ -24,6 +25,8 @@ UBattleHeroComponent::UBattleHeroComponent(const FObjectInitializer& ObjectIniti
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
+
+	AbilityCameraMode = nullptr;
 }
 
 void UBattleHeroComponent::OnRegister()
@@ -181,6 +184,11 @@ void UBattleHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager*
 
 TSubclassOf<UBattleCameraMode> UBattleHeroComponent::DetermineCameraMode() const
 {
+	if (AbilityCameraMode)
+	{
+		return AbilityCameraMode;
+	}
+	
 	const APawn* Pawn = GetPawn<APawn>();
 	if (!Pawn)
 	{
@@ -196,6 +204,16 @@ TSubclassOf<UBattleCameraMode> UBattleHeroComponent::DetermineCameraMode() const
 	}
 	
 	return nullptr;
+}
+
+void UBattleHeroComponent::SetAbilityCameraMode(TSubclassOf<UBattleCameraMode> CameraMode,
+	const FGameplayAbilitySpecHandle& OwningSpecHandle)
+{
+	if (CameraMode)
+	{
+		AbilityCameraMode = CameraMode;
+		AbilityCameraModeOwningSpecHandle = OwningSpecHandle;
+	}
 }
 
 void UBattleHeroComponent::InitilizePlayerInput(UInputComponent* PlayerInputComponent)

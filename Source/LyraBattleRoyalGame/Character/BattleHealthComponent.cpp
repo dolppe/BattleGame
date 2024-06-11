@@ -99,6 +99,50 @@ void UBattleHealthComponent::UnInitializeWithAbilitySystem()
 	HealthSet = nullptr;
 }
 
+void UBattleHealthComponent::StartDeath()
+{
+	if (DeathState != EBattleDeathState::NotDead)
+	{
+		return;
+	}
+
+	DeathState = EBattleDeathState::DeathStarted;
+
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->SetLooseGameplayTagCount(FBattleGameplayTags::Get().Status_Death_Dying, 1);
+	}
+
+	AActor* Owner = GetOwner();
+	check(Owner);
+
+	OnDeathStarted.Broadcast(Owner);
+
+	Owner->ForceNetUpdate();
+}
+
+void UBattleHealthComponent::FinishDeath()
+{
+	if (DeathState != EBattleDeathState::DeathStarted)
+	{
+		return;
+	}
+
+	DeathState = EBattleDeathState::DeathFinished;
+
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->SetLooseGameplayTagCount(FBattleGameplayTags::Get().Status_Death_Dead, 1);
+	}
+
+	AActor* Owner = GetOwner();
+	check(Owner);
+
+	OnDeathFinished.Broadcast(Owner);
+
+	Owner->ForceNetUpdate();
+}
+
 
 static AActor* GetInstigatorFromAttrChangeData(const FOnAttributeChangeData& ChangeData)
 {

@@ -20,6 +20,7 @@ class AController;
 class UBattleAbilitySystemComponent;
 class ABattlePlayerController;
 class IBattleAbilitySourceInterface;
+class UBattleCameraMode;
 
 UCLASS(Abstract)
 class UBattleGameplayAbility : public UGameplayAbility
@@ -39,10 +40,16 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Battle|Ability")
 	ABattleCharacter* GetBattleCharacterFromActorInfo() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Battle|Ability")
+	UBattleHeroComponent* GetHeroComponentFromActorInfo() const;
 	
 	EBattleAbilityActivationPolicy GetActivationPolicy() const {return ActivationPolicy;}
 
 	void TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Battle|Ability")
+	void SetCameraMode(TSubclassOf<UBattleCameraMode> CameraMode);
 
 protected:
 
@@ -68,5 +75,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Instanced, Category=Costs)
 	TArray<TObjectPtr<UBattleAbilityCost>> AdditionalCosts;
-	
+
+
+	TSubclassOf<UBattleCameraMode> ActiveCameraMode;
 };

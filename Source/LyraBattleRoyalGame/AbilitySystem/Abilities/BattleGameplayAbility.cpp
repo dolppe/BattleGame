@@ -9,6 +9,7 @@
 #include "LyraBattleRoyalGame/Character/BattleCharacter.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerController.h"
 #include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySourceInterface.h"
+#include "LyraBattleRoyalGame/Character/BattleHeroComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleGameplayAbility)
 
@@ -62,9 +63,14 @@ ABattleCharacter* UBattleGameplayAbility::GetBattleCharacterFromActorInfo() cons
 	return (CurrentActorInfo ? Cast<ABattleCharacter>(CurrentActorInfo->AvatarActor.Get()) : nullptr);
 }
 
+UBattleHeroComponent* UBattleGameplayAbility::GetHeroComponentFromActorInfo() const
+{
+	return (CurrentActorInfo ? UBattleHeroComponent::FindHeroComponent(CurrentActorInfo->AvatarActor.Get()) : nullptr);
+}
+
 
 void UBattleGameplayAbility::TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilitySpec& Spec) const
+                                                       const FGameplayAbilitySpec& Spec) const
 {
 	if (ActorInfo && !Spec.IsActive() && (ActivationPolicy == EBattleAbilityActivationPolicy::OnSpawn))
 	{
@@ -79,6 +85,20 @@ void UBattleGameplayAbility::TryActivateAbilityOnSpawn(const FGameplayAbilityAct
 	}
 	
 }
+
+
+PRAGMA_DISABLE_OPTIMIZATION
+
+void UBattleGameplayAbility::SetCameraMode(TSubclassOf<UBattleCameraMode> CameraMode)
+{
+	if (UBattleHeroComponent* HeroComponent = GetHeroComponentFromActorInfo())
+	{
+		HeroComponent->SetAbilityCameraMode(CameraMode, CurrentSpecHandle);
+		ActiveCameraMode = CameraMode;
+	}
+}
+
+PRAGMA_ENABLE_OPTIMIZATION
 
 void UBattleGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {

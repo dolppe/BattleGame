@@ -47,8 +47,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Battle|Health")
 	float GetHealthNormalized() const;
 
+	UFUNCTION(BlueprintCallable, Category="Battle|Health")
+	EBattleDeathState GetDeathState() const { return DeathState; }
+
+	UFUNCTION(BlueprintCallable, Category="Battle|Health")
+	bool IsDeadOrDying() const {return (DeathState > EBattleDeathState::NotDead);}
+	
 	void InitializeWithAbilitySystem(UBattleAbilitySystemComponent* InASC);
 	void UnInitializeWithAbilitySystem();
+
+	virtual void StartDeath();
+
+	virtual void FinishDeath();
 
 public:
 	

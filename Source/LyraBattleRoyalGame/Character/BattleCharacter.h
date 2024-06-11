@@ -4,6 +4,7 @@
 #include "ModularCharacter.h"
 #include "BattleCharacter.generated.h"
 
+class UBattleAbilitySystemComponent;
 class UBattleHealthComponent;
 class UBattleCameraComponent;
 class UBattlePawnExtensionComponent;
@@ -16,12 +17,29 @@ class ABattleCharacter : public AModularCharacter, public IAbilitySystemInterfac
 public:
 	ABattleCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	UFUNCTION(BlueprintCallable, Category="Battle|Character")
+	UBattleAbilitySystemComponent* GetBattleAbilitySystemComponent() const;
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	
 	void OnAbilitySystemInitialized();
 	void OnAbilitySystemUninitialized();
 	
+	UFUNCTION()
+	virtual void OnDeathStarted(AActor* OwningActor);
+
+	UFUNCTION()
+	virtual void OnDeathFinished(AActor* OwningActor);
+
+	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName="OnDeathFinished"))
+	void K2_OnDeathFinished();
+
+	void DisableMovementAndCollision();
+	void DestroyDueToDeath();
+	void UninitAndDestroy();
+	
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) final;
 
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	
 	
 private:
 

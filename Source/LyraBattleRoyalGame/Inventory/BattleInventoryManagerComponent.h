@@ -21,12 +21,17 @@ struct FBattleInventoryList
 {
 	GENERATED_BODY()
 
+public:
+	
 	FBattleInventoryList(UActorComponent* InOwnerComponent = nullptr)
 		:OwnerComponent(InOwnerComponent)
 	{}
 
+	TArray<UBattleInventoryItemInstance*> GetAllItems() const;	
+
 	UBattleInventoryItemInstance* AddEntry(TSubclassOf<UBattleInventoryItemDefinition> ItemDef);
-	
+
+	void RemoveEntry(UBattleInventoryItemInstance* Instance);
 	
 	UPROPERTY()
 	TArray<FBattleInventoryEntry> Entries;
@@ -51,6 +56,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category=Inventory, BlueprintPure)
 	UBattleInventoryItemInstance* FindFirstItemStackByDefinition(TSubclassOf<UBattleInventoryItemDefinition> ItemDef) const;
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category=Inventory)
+	void RemoveItemInstance(UBattleInventoryItemInstance* ItemInstance);
+	
+	UFUNCTION(BlueprintCallable, Category=Inventory, BlueprintPure=false)
+	TArray<UBattleInventoryItemInstance*> GetAllItems() const;
 	
 	UPROPERTY()
 	FBattleInventoryList InventoryList;

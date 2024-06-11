@@ -34,6 +34,10 @@ void FBattleGameplayTags::AddAllTags(UGameplayTagsManager& Manager)
 	AddTag(GameplayEvent_Death, "GameplayEvent.Death", "Death Event");
 	AddTag(GameplayEvent_RequestReset, "GameplayEvent.RequestReset", "Reset Request");
 	AddTag(GameplayEvent_Reset, "GameplayEvent.Reset", "Reset Ended");
+
+	AddTag(Status_Death, "Status.Death", "Target has the death status.");
+	AddTag(Status_Death_Dying, "Status.Death.Dying", "Target has begun the death process.");
+	AddTag(Status_Death_Dead, "Status.Death.Dead", "Target has finished the death process.");
 	
 	/*
 	*	EnhancedInput Tags

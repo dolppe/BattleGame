@@ -36,6 +36,10 @@ public:
 	FGameplayTag GameplayEvent_Death;
 	FGameplayTag GameplayEvent_RequestReset;
 	FGameplayTag GameplayEvent_Reset;
+
+	FGameplayTag Status_Death;
+	FGameplayTag Status_Death_Dying;
+	FGameplayTag Status_Death_Dead;
 	
 	/*
 	 *
