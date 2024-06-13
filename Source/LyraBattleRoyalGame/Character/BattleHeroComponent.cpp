@@ -88,6 +88,8 @@ void UBattleHeroComponent::OnActorInitStateChanged(const FActorInitStateChangedP
 	}
 }
 
+PRAGMA_DISABLE_OPTIMIZATION
+
 bool UBattleHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState,
 	FGameplayTag DesiredState) const
 {
@@ -115,6 +117,16 @@ bool UBattleHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Ma
 		{
 			return false;
 		}
+
+		if (Pawn->IsLocallyControlled() && !Pawn->IsBotControlled())
+		{
+			ABattlePlayerController* BattlePC = GetController<ABattlePlayerController>();
+
+			if (!Pawn->InputComponent || !BattlePC || !BattlePC->GetLocalPlayer())
+			{
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -132,6 +144,8 @@ bool UBattleHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Ma
 	return false;
 	
 }
+
+
 
 // InitState 상태 변화가 진행될 때 호출하는 함수.
 void UBattleHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState,
@@ -159,15 +173,6 @@ void UBattleHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager*
 			PawnExtensionComponent->InitializeAbilitySystem(BattlePS->GetBattleAbilitySystemComponent(), BattlePS);
 		}
 
-		if (bIsLocallyControlled && PawnData)
-		{
-			// 현재 Character에 Attach된 CameraComponent
-			if (UBattleCameraComponent* CameraComponent = UBattleCameraComponent::FindCameraComponent(Pawn))
-			{
-				CameraComponent->DetermineCameraModeDelegate.BindUObject(this, &ThisClass::DetermineCameraMode);
-			}
-		}
-
 		if (ABattlePlayerController* BattlePC = GetController<ABattlePlayerController>())
 		{
 			if (Pawn->InputComponent != nullptr)
@@ -176,11 +181,20 @@ void UBattleHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager*
 			}
 		}
 		
+		if (bIsLocallyControlled && PawnData)
+		{
+			// 현재 Character에 Attach된 CameraComponent
+			if (UBattleCameraComponent* CameraComponent = UBattleCameraComponent::FindCameraComponent(Pawn))
+			{
+				CameraComponent->DetermineCameraModeDelegate.BindUObject(this, &ThisClass::DetermineCameraMode);
+			}
+		}
+		
 	}
-
-	
 	
 }
+
+PRAGMA_ENABLE_OPTIMIZATION
 
 TSubclassOf<UBattleCameraMode> UBattleHeroComponent::DetermineCameraMode() const
 {

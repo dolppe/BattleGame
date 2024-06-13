@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "LyraBattleRoyalGame/Character/BattleCharacter.h"
 #include "LyraBattleRoyalGame/Character/BattlePawnExtensionComponent.h"
+#include "LyraBattleRoyalGame/Player/BattlePlayerBotController.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerController.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerSpawningManagerComponent.h"
 #include "LyraBattleRoyalGame/UI/BattleHUD.h"
@@ -121,6 +122,10 @@ void ABattleGameMode::RequestPlayerRestartNextFrame(AController* Controller, boo
 	if (APlayerController* PC = Cast<APlayerController>(Controller))
 	{
 		GetWorldTimerManager().SetTimerForNextTick(PC, &APlayerController::ServerRestartPlayer_Implementation);
+	}
+	else if (ABattlePlayerBotController* BotController = Cast<ABattlePlayerBotController>(Controller))
+	{
+		GetWorldTimerManager().SetTimerForNextTick(BotController, &ABattlePlayerBotController::ServerRestartController);
 	}
 	
 }

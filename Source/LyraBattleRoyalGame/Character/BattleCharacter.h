@@ -21,8 +21,7 @@ public:
 	UBattleAbilitySystemComponent* GetBattleAbilitySystemComponent() const;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
-	void OnAbilitySystemInitialized();
-	void OnAbilitySystemUninitialized();
+
 	
 	UFUNCTION()
 	virtual void OnDeathStarted(AActor* OwningActor);
@@ -38,8 +37,18 @@ public:
 	void UninitAndDestroy();
 	
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) final;
-	virtual void Reset() override;
 	
+	virtual void Reset() override;
+
+protected:
+
+	void OnAbilitySystemInitialized();
+	void OnAbilitySystemUninitialized();
+
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void UnPossessed() override;
+
+	void InitializeGameplayTags();
 	
 private:
 

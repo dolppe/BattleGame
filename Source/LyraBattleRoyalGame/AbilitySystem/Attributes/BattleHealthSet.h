@@ -2,11 +2,14 @@
 
 #include "BattleAttributeSet.h"
 #include "AbilitySystemComponent.h"
+#include "NativeGameplayTags.h"
 #include "BattleHealthSet.generated.h"
 
 /*
  *	체력에 대한 속성값 관리
  */
+
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Gameplay_DamageImmunity);
 
 UCLASS(BlueprintType)
 class UBattleHealthSet : public UBattleAttributeSet
@@ -23,6 +26,9 @@ public:
 	mutable FBattleAttributeEvent OnOutOfHealth;
 	
 protected:
+
+
+	virtual bool PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data) override;
 	
 	// GameplayEffect가 Attribute를 건드린 후에 불리는 콜백
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;

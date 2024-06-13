@@ -1,11 +1,15 @@
 #include "BattleAbilitySystemComponent.h"
 
 #include "BattleAbilityTagRelationshipMapping.h"
+#include "BattleGlobalAbilitySystem.h"
+#include "NativeGameplayTags.h"
 #include "Abilities/BattleGameplayAbility.h"
 #include "LyraBattleRoyalGame/BattleLogChannels.h"
 #include "LyraBattleRoyalGame/Animation/BattleAnimInstance.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleAbilitySystemComponent)
+
+UE_DEFINE_GAMEPLAY_TAG(TAG_Gameplay_AbilityInputBlocked, "Gameplay.AbilityInputBlocked");
 
 UBattleAbilitySystemComponent::UBattleAbilitySystemComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -17,6 +21,11 @@ UBattleAbilitySystemComponent::UBattleAbilitySystemComponent(const FObjectInitia
 
 void UBattleAbilitySystemComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	if (UBattleGlobalAbilitySystem* GlobalAbilitySystem = UWorld::GetSubsystem<UBattleGlobalAbilitySystem>(GetWorld()))
+	{
+		GlobalAbilitySystem->UnregisterASC(this);
+	}
+	
 	Super::EndPlay(EndPlayReason);
 }
 
@@ -94,6 +103,11 @@ void UBattleAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, A
 				BattleAbilityCDO->OnPawnAvatarSet();
 			}
 		}
+
+		if (UBattleGlobalAbilitySystem* GlobalAbilitySystem = UWorld::GetSubsystem<UBattleGlobalAbilitySystem>(GetWorld()))
+		{
+			GlobalAbilitySystem->RegisterASC(this);
+		}
 		
 		if (UBattleAnimInstance* AnimInstance = Cast<UBattleAnimInstance>(ActorInfo->GetAnimInstance()))
 		{
@@ -139,6 +153,13 @@ void UBattleAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& 
 
 void UBattleAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGamePaused)
 {
+
+	if (HasMatchingGameplayTag(TAG_Gameplay_AbilityInputBlocked))
+	{
+		ClearAbilityInput();
+		return;
+	}
+	
 	TArray<FGameplayAbilitySpecHandle> AbilitiesToActive;
 
 	for (const FGameplayAbilitySpecHandle& SpecHandle : InputHeldSpecHandles)

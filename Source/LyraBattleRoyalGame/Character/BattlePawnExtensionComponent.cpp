@@ -142,6 +142,7 @@ bool UBattlePawnExtensionComponent::CanChangeInitState(UGameFrameworkComponentMa
 	return false;
 }
 
+PRAGMA_DISABLE_OPTIMIZATION
 // 강제 업데이트 느낌.
 void UBattlePawnExtensionComponent::CheckDefaultInitialization()
 {
@@ -159,6 +160,7 @@ void UBattlePawnExtensionComponent::CheckDefaultInitialization()
 	// 업데이트가 멈춘다는 것은 다른 Component 혹은 다른 Actor의 세팅이나 진행이 필요한 것. (조건 덜 충족)
 	ContinueInitStateChain(StateChain);
 }
+PRAGMA_ENABLE_OPTIMIZATION
 
 void UBattlePawnExtensionComponent::SetPawnData(const UBattlePawnData* InPawnData)
 {
@@ -183,6 +185,24 @@ void UBattlePawnExtensionComponent::SetPawnData(const UBattlePawnData* InPawnDat
 
 void UBattlePawnExtensionComponent::SetupPlayerInputComponent()
 {
+	CheckDefaultInitialization();
+}
+
+void UBattlePawnExtensionComponent::HandleControllerChanged()
+{
+	if (AbilitySystemComponent && (AbilitySystemComponent->GetAvatarActor() == GetPawnChecked<APawn>()))
+	{
+		ensure(AbilitySystemComponent->AbilityActorInfo->OwnerActor == AbilitySystemComponent->GetOwnerActor());
+		if (AbilitySystemComponent->GetOwnerActor() == nullptr)
+		{
+			UnInitializeAbilitySystem();
+		}
+		else
+		{
+			AbilitySystemComponent->RefreshAbilityActorInfo();
+		}
+	}
+
 	CheckDefaultInitialization();
 }
 

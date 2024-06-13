@@ -57,11 +57,31 @@ void ABattleCharacter::OnAbilitySystemInitialized()
 	check(BattleASC);
 
 	HealthComponent->InitializeWithAbilitySystem(BattleASC);
+
+	InitializeGameplayTags();
 }
 
 void ABattleCharacter::OnAbilitySystemUninitialized()
 {
 	HealthComponent->UnInitializeWithAbilitySystem();
+}
+
+void ABattleCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	PawnExtComponent->HandleControllerChanged();
+}
+
+void ABattleCharacter::UnPossessed()
+{
+	Super::UnPossessed();
+
+	PawnExtComponent->HandleControllerChanged();
+}
+
+void ABattleCharacter::InitializeGameplayTags()
+{
 }
 
 void ABattleCharacter::OnDeathStarted(AActor* OwningActor)

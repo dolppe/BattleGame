@@ -4,10 +4,13 @@
 #include "Abilities/BattleGameplayAbility.h"
 #include "GameplayAbilitySpec.h"
 #include "GameplayTagContainer.h"
+#include "NativeGameplayTags.h"
 #include "Templates/Function.h"
 #include "BattleAbilitySystemComponent.generated.h"
 
 class UBattleAbilityTagRelationshipMapping;
+
+LYRABATTLEROYALGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Gameplay_AbilityInputBlocked);
 
 UCLASS()
 class UBattleAbilitySystemComponent : public UAbilitySystemComponent
