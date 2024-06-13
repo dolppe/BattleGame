@@ -126,6 +126,15 @@ void ABattleCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PawnExtComponent->SetupPlayerInputComponent();
 }
 
+void ABattleCharacter::Reset()
+{
+	DisableMovementAndCollision();
+
+	K2_OnReset();
+
+	UninitAndDestroy();
+}
+
 UAbilitySystemComponent* ABattleCharacter::GetAbilitySystemComponent() const
 {
 	return PawnExtComponent->GetAbilitySystemComponent();

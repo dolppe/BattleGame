@@ -49,6 +49,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category=Score)
 	bool HasStatTag(FGameplayTag Tag) const;
 
+	static const FName NAME_BattleAbilityReady;
 	
 	
 protected:

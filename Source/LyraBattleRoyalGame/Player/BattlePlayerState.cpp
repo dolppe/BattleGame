@@ -1,5 +1,6 @@
 #include "BattlePlayerState.h"
 
+#include "Components/GameFrameworkComponentManager.h"
 #include "LyraBattleRoyalGame/BattleLogChannels.h"
 #include "LyraBattleRoyalGame/GameModes/BattleExperienceManagerComponent.h"
 #include "LyraBattleRoyalGame/GameModes/BattleGameMode.h"
@@ -9,6 +10,8 @@
 #include "LyraBattleRoyalGame/AbilitySystem/Attributes/BattleHealthSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattlePlayerState)
+
+const FName ABattlePlayerState::NAME_BattleAbilityReady("BattleAbilitiesReady");
 
 ABattlePlayerState::ABattlePlayerState(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -62,6 +65,8 @@ void ABattlePlayerState::SetPawnData(const UBattlePawnData* InPawnData)
 			AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, nullptr);
 		}
 	}
+
+	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(this, NAME_BattleAbilityReady);
 	
 }
 

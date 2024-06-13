@@ -19,6 +19,8 @@ void FBattleGameplayTags::AddTag(FGameplayTag& OutTag, const ANSICHAR* TagName, 
 
 void FBattleGameplayTags::AddAllTags(UGameplayTagsManager& Manager)
 {
+	AddTag(Ability_Behavior_SurvivesDeath, "Ability.Behavior.SurvivesDeath", "Survive");
+	
 	/*
 	 * GameFrameworkComponentManager InitState tags
 	 */

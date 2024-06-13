@@ -38,7 +38,7 @@ public:
 	void UninitAndDestroy();
 	
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) final;
-
+	virtual void Reset() override;
 	
 	
 private:

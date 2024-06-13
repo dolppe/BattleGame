@@ -23,6 +23,8 @@ public:
 	 * - 게임의 Actor 사이에 공유되며, GameFrameworkInitStateInterface를 상속 받은 클래스는 InitState를 상태머신처럼 사용하여 관리할 수 있도록 인터페이스를 제공 받음.
 	 */
 public:
+
+	FGameplayTag Ability_Behavior_SurvivesDeath;
 	
 	FGameplayTag InitState_Spawned;
 	FGameplayTag InitState_DataAvailable;

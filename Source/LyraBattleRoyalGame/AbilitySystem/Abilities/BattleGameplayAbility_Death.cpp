@@ -36,6 +36,11 @@ void UBattleGameplayAbility_Death::ActivateAbility(const FGameplayAbilitySpecHan
 
 	UBattleAbilitySystemComponent* BattleASC = CastChecked<UBattleAbilitySystemComponent>(ActorInfo->AbilitySystemComponent.Get());
 
+	FGameplayTagContainer AbilityTypesToIgnore;
+	AbilityTypesToIgnore.AddTag(FBattleGameplayTags::Get().Ability_Behavior_SurvivesDeath);
+
+	BattleASC->CancelAbilities(nullptr, &AbilityTypesToIgnore, this);
+	
 	SetCanBeCanceled(false);
 
 	StartDeath();
@@ -69,7 +74,7 @@ void UBattleGameplayAbility_Death::FinishDeath()
 {
 		if (UBattleHealthComponent* HealthComponent = UBattleHealthComponent::FindHealthComponent(GetAvatarActorFromActorInfo()))
     	{
-    		if (HealthComponent->GetDeathState() == EBattleDeathState::NotDead)
+    		if (HealthComponent->GetDeathState() == EBattleDeathState::DeathStarted)
     		{
     			HealthComponent->FinishDeath();
     		}

@@ -17,6 +17,8 @@ public:
 
 	UBattleAbilitySystemComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
 	typedef TFunctionRef<bool(const UBattleGameplayAbility* LyraAbility, FGameplayAbilitySpecHandle Handle)> TShouldCancelAbilityFunc;
 	void CancelAbilityByFunc(TShouldCancelAbilityFunc ShouldCancelFunc, bool bReplicateCancelAbility);
 	
@@ -25,6 +27,7 @@ public:
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
+	void ClearAbilityInput();
 
 
 	void SetTagRelationshipMapping(UBattleAbilityTagRelationshipMapping* NewMapping);

@@ -64,7 +64,10 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FBattleHealth_AttributeChanged OnHealthChanged;
-
+	
+	UPROPERTY(BlueprintAssignable)
+	FBattleHealth_AttributeChanged OnMaxHealthChanged;
+	
 	UPROPERTY(BlueprintAssignable)
 	FBattleHealth_DeathEvent OnDeathStarted;
 
@@ -73,7 +76,13 @@ public:
 
 protected:
 
+	virtual void OnUnregister() override;
+
+	void ClearGameplayTags();
+	
 	void HandleHealthChanged(const FOnAttributeChangeData& ChangeData);
+	void HandleMaxHealthChanged(const FOnAttributeChangeData& ChangeData);
+	
 	void HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec& DamageEffectSpec, float DamageMagnitude);
 	
 protected:	

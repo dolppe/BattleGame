@@ -281,9 +281,14 @@ FGameplayEffectContextHandle UBattleGameplayAbility::MakeEffectContext(const FGa
 	return ContextHandle;	
 }
 
+void UBattleGameplayAbility::OnPawnAvatarSet()
+{
+	K2_OnPawnAvatarSet();
+}
+
 void UBattleGameplayAbility::GetAbilitySource(FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel,
-	const IBattleAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const
+                                              const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel,
+                                              const IBattleAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const
 {
 	OutSourceLevel = 0.0f;
 	OutAbilitySource = nullptr;

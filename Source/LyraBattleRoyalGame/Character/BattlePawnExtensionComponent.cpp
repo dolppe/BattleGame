@@ -224,6 +224,22 @@ void UBattlePawnExtensionComponent::UnInitializeAbilitySystem()
 
 	if (AbilitySystemComponent->GetAvatarActor() == GetOwner())
 	{
+		FGameplayTagContainer AbilityTypesToIgnore;
+		AbilityTypesToIgnore.AddTag(FBattleGameplayTags::Get().Ability_Behavior_SurvivesDeath);
+
+		AbilitySystemComponent->CancelAbilities(nullptr, &AbilityTypesToIgnore);
+		AbilitySystemComponent->ClearAbilityInput();
+		AbilitySystemComponent->RemoveAllGameplayCues();
+
+		if (AbilitySystemComponent->GetOwnerActor() != nullptr)
+		{
+			AbilitySystemComponent->SetAvatarActor(nullptr);
+		}
+		else
+		{
+			AbilitySystemComponent->ClearActorInfo();
+		}
+		
 		OnAbilitySystemUninitialized.Broadcast();
 	}
 	

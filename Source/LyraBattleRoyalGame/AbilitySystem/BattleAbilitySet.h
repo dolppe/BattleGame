@@ -55,7 +55,7 @@ class UBattleAbilitySet : public UPrimaryDataAsset
 public:
 	UBattleAbilitySet(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	void GiveToAbilitySystem(UBattleAbilitySystemComponent* BattleASC, FBattleAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject= nullptr);
+	void GiveToAbilitySystem(UBattleAbilitySystemComponent* BattleASC, FBattleAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject= nullptr) const;
 	
 	// 허용된 GameplayAbilities
 	UPROPERTY(EditDefaultsOnly, Category="Gameplay Abilities")

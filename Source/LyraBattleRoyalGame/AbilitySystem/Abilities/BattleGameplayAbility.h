@@ -26,6 +26,8 @@ UCLASS(Abstract)
 class UBattleGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
+
+	friend class UBattleAbilitySystemComponent;
 public:
 	UBattleGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
@@ -60,6 +62,8 @@ protected:
 	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual FGameplayEffectContextHandle MakeEffectContext(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo) const override;
 
+	virtual void OnPawnAvatarSet();
+	
 	virtual void GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IBattleAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const;
 	
 	UFUNCTION(BlueprintImplementableEvent, Category=Ability, DisplayName="OnAbilityAdded")
@@ -68,6 +72,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category=Ability, DisplayName="OnAbilityRemoved")
 	void K2_OnAbilityRemoved();
 
+	UFUNCTION(BlueprintImplementableEvent, Category=Ability, DisplayName="OnPawnAvatarSet")
+	void K2_OnPawnAvatarSet();
+	
 protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Battle|AbilityActivation")

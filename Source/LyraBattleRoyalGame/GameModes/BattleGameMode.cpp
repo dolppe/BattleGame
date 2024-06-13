@@ -109,6 +109,24 @@ bool ABattleGameMode::PlayerCanRestart_Implementation(APlayerController* Player)
 	return ControllerCanRestart(Player);
 }
 
+PRAGMA_DISABLE_OPTIMIZATION
+
+void ABattleGameMode::RequestPlayerRestartNextFrame(AController* Controller, bool bForceReset)
+{
+	if (bForceReset && (Controller != nullptr))
+	{
+		Controller->Reset();
+	}
+
+	if (APlayerController* PC = Cast<APlayerController>(Controller))
+	{
+		GetWorldTimerManager().SetTimerForNextTick(PC, &APlayerController::ServerRestartPlayer_Implementation);
+	}
+	
+}
+
+PRAGMA_ENABLE_OPTIMIZATION
+
 void ABattleGameMode::HandleMatchAssignmentIfNotExpectingOne()
 {
 	// Experience에 대해 PrimaryAssetId를 생성하여, OnMatchAssignmentGiven으로 넘겨줌.
