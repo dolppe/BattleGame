@@ -64,6 +64,7 @@ public:
 	TArray<UBattleEquipmentInstance*> GetEquipmentInstancesOfType(TSubclassOf<UBattleEquipmentInstance> InstanceType) const;
 
 	// 장착물중 처음 것을 바로 반환
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UBattleEquipmentInstance* GetFirstInstanceOfType(TSubclassOf<UBattleEquipmentInstance> InstanceType);
 
 	template <typename T>

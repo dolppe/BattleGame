@@ -3,7 +3,9 @@
 #include "ModularAIController.h"
 #include "BattlePlayerBotController.generated.h"
 
-UCLASS()
+class UAIPerceptionComponent;
+
+UCLASS(Blueprintable)
 class ABattlePlayerBotController : public AModularAIController
 {
 	GENERATED_BODY()
@@ -13,6 +15,10 @@ public:
 	void ServerRestartController();
 	
 	virtual void OnUnPossess() override;
+	
+	UFUNCTION(BlueprintCallable, Category = "Battle AI Player Controller")
+    void UpdateTeamAttitude(UAIPerceptionComponent* AIPerception);
+	
 	
 };
 
