@@ -2,7 +2,23 @@
 
 #include "BattleInventoryItemDefinition.h"
 #include "BattleInventoryItemInstance.h"
+
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleInventoryManagerComponent)
+
+TArray<UBattleInventoryItemInstance*> FBattleInventoryList::GetAllItems() const
+{
+	TArray<UBattleInventoryItemInstance*> Results;
+	Results.Reserve(Entries.Num());
+	for (const FBattleInventoryEntry& Entry : Entries)
+	{
+		if (Entry.Instance != nullptr)
+		{
+			Results.Add(Entry.Instance);
+		}
+	}
+
+	return Results;
+}
 
 UBattleInventoryItemInstance* FBattleInventoryList::AddEntry(TSubclassOf<UBattleInventoryItemDefinition> ItemDef)
 {
@@ -28,6 +44,18 @@ UBattleInventoryItemInstance* FBattleInventoryList::AddEntry(TSubclassOf<UBattle
 	Result = NewEntry.Instance;
 	return Result;	
 	
+}
+
+void FBattleInventoryList::RemoveEntry(UBattleInventoryItemInstance* Instance)
+{
+	for (auto EntryIt = Entries.CreateIterator();EntryIt;++EntryIt)
+	{
+		FBattleInventoryEntry& Entry = *EntryIt;
+		if (Entry.Instance == Instance)
+		{
+			EntryIt.RemoveCurrent();
+		}
+	}
 }
 
 UBattleInventoryManagerComponent::UBattleInventoryManagerComponent(const FObjectInitializer& ObjectInitializer)
@@ -68,4 +96,19 @@ UBattleInventoryItemInstance* UBattleInventoryManagerComponent::FindFirstItemSta
 	
 	return nullptr;
 	
+}
+
+void UBattleInventoryManagerComponent::RemoveItemInstance(UBattleInventoryItemInstance* ItemInstance)
+{
+	InventoryList.RemoveEntry(ItemInstance);
+
+	if (ItemInstance && IsUsingRegisteredSubObjectList())
+	{
+		RemoveReplicatedSubObject(ItemInstance);
+	}
+}
+
+TArray<UBattleInventoryItemInstance*> UBattleInventoryManagerComponent::GetAllItems() const
+{
+	return InventoryList.GetAllItems();
 }

@@ -28,6 +28,8 @@ UBattleHealthComponent::UBattleHealthComponent(const FObjectInitializer& ObjectI
     	HealthSet = nullptr;
 }
 
+
+
 UBattleHealthComponent* UBattleHealthComponent::FindHealthComponent(const AActor* Actor)
 {
 	if (!Actor)
@@ -87,16 +89,73 @@ void UBattleHealthComponent::InitializeWithAbilitySystem(UBattleAbilitySystemCom
 	}
 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UBattleHealthSet::GetHealthAttribute()).AddUObject(this, &ThisClass::HandleHealthChanged);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UBattleHealthSet::GetMaxHealthAttribute()).AddUObject(this, &ThisClass::HandleMaxHealthChanged);
 	HealthSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOutOfHealth);
+
+	AbilitySystemComponent->SetNumericAttributeBase(UBattleHealthSet::GetHealthAttribute(), HealthSet->GetMaxHealth());
+
+	ClearGameplayTags();
 	
 	OnHealthChanged.Broadcast(this, HealthSet->GetHealth(), HealthSet->GetHealth(), nullptr);
+	OnMaxHealthChanged.Broadcast(this, HealthSet->GetMaxHealth(), HealthSet->GetMaxHealth(), nullptr);
 	
 }
 
 void UBattleHealthComponent::UnInitializeWithAbilitySystem()
 {
+	ClearGameplayTags();
+
+	if (HealthSet)
+	{
+		HealthSet->OnOutOfHealth.RemoveAll(this);
+	}
+	
 	AbilitySystemComponent = nullptr;
 	HealthSet = nullptr;
+}
+
+void UBattleHealthComponent::StartDeath()
+{
+	if (DeathState != EBattleDeathState::NotDead)
+	{
+		return;
+	}
+
+	DeathState = EBattleDeathState::DeathStarted;
+
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->SetLooseGameplayTagCount(FBattleGameplayTags::Get().Status_Death_Dying, 1);
+	}
+
+	AActor* Owner = GetOwner();
+	check(Owner);
+
+	OnDeathStarted.Broadcast(Owner);
+
+	Owner->ForceNetUpdate();
+}
+
+void UBattleHealthComponent::FinishDeath()
+{
+	if (DeathState != EBattleDeathState::DeathStarted)
+	{
+		return;
+	}
+
+	DeathState = EBattleDeathState::DeathFinished;
+
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->SetLooseGameplayTagCount(FBattleGameplayTags::Get().Status_Death_Dead, 1);
+	}
+
+	AActor* Owner = GetOwner();
+	check(Owner);
+
+	OnDeathFinished.Broadcast(Owner);
+
+	Owner->ForceNetUpdate();
 }
 
 
@@ -111,13 +170,36 @@ static AActor* GetInstigatorFromAttrChangeData(const FOnAttributeChangeData& Cha
 	return nullptr;
 }
 
+void UBattleHealthComponent::OnUnregister()
+{
+	UnInitializeWithAbilitySystem();
+	
+	Super::OnUnregister();
+}
+
+void UBattleHealthComponent::ClearGameplayTags()
+{
+	if (AbilitySystemComponent)
+	{
+		const FBattleGameplayTags& GameplayTags = FBattleGameplayTags::Get();
+
+		AbilitySystemComponent->SetLooseGameplayTagCount(GameplayTags.Status_Death_Dying, 0);
+		AbilitySystemComponent->SetLooseGameplayTagCount(GameplayTags.Status_Death_Dead, 0);
+	}
+}
+
 void UBattleHealthComponent::HandleHealthChanged(const FOnAttributeChangeData& ChangeData)
 {
 	OnHealthChanged.Broadcast(this, ChangeData.OldValue, ChangeData.NewValue, GetInstigatorFromAttrChangeData(ChangeData));
 }
 
+void UBattleHealthComponent::HandleMaxHealthChanged(const FOnAttributeChangeData& ChangeData)
+{
+	OnMaxHealthChanged.Broadcast(this, ChangeData.OldValue, ChangeData.NewValue, GetInstigatorFromAttrChangeData(ChangeData));
+}
+
 void UBattleHealthComponent::HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser,
-	const FGameplayEffectSpec& DamageEffectSpec, float DamageMagnitude)
+                                               const FGameplayEffectSpec& DamageEffectSpec, float DamageMagnitude)
 {
 	if (AbilitySystemComponent)
 	{

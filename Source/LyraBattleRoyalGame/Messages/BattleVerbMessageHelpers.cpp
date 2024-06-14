@@ -1,5 +1,7 @@
 #include "BattleVerbMessageHelpers.h"
 
+#include "BattleVerbMessage.h"
+#include "GameplayEffectTypes.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/PlayerState.h"
 
@@ -46,4 +48,18 @@ APlayerState* UBattleVerbMessageHelpers::GetPlayerStateFromObject(UObject* Objec
 	}
 
 	return nullptr;
+}
+
+FBattleVerbMessage UBattleVerbMessageHelpers::CueParametersToVerbMessage(const FGameplayCueParameters& Params)
+{
+	FBattleVerbMessage Result;
+
+	Result.Verb = Params.OriginalTag;
+	Result.Instigator = Params.Instigator.Get();
+	Result.Target = Params.EffectCauser.Get();
+	Result.InstigatorTags = Params.AggregatedSourceTags;
+	Result.TargetTags = Params.AggregatedTargetTags;
+	Result.Magnitude = Params.RawMagnitude;
+
+	return Result;
 }

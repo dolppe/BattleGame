@@ -51,6 +51,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddItemToSlot(int32 SlotIndex, UBattleInventoryItemInstance* Item);
 
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	UBattleInventoryItemInstance* RemoveItemFromSlot(int32 SlotIndex);
+
 	UFUNCTION(BlueprintCallable, Category="Battle")
 	void SetActiveSlotIndex(int32 NewIndex);
 

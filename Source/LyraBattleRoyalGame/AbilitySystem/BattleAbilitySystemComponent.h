@@ -4,10 +4,13 @@
 #include "Abilities/BattleGameplayAbility.h"
 #include "GameplayAbilitySpec.h"
 #include "GameplayTagContainer.h"
+#include "NativeGameplayTags.h"
 #include "Templates/Function.h"
 #include "BattleAbilitySystemComponent.generated.h"
 
 class UBattleAbilityTagRelationshipMapping;
+
+LYRABATTLEROYALGAME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Gameplay_AbilityInputBlocked);
 
 UCLASS()
 class UBattleAbilitySystemComponent : public UAbilitySystemComponent
@@ -17,6 +20,8 @@ public:
 
 	UBattleAbilitySystemComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
 	typedef TFunctionRef<bool(const UBattleGameplayAbility* LyraAbility, FGameplayAbilitySpecHandle Handle)> TShouldCancelAbilityFunc;
 	void CancelAbilityByFunc(TShouldCancelAbilityFunc ShouldCancelFunc, bool bReplicateCancelAbility);
 	
@@ -25,6 +30,7 @@ public:
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
+	void ClearAbilityInput();
 
 
 	void SetTagRelationshipMapping(UBattleAbilityTagRelationshipMapping* NewMapping);

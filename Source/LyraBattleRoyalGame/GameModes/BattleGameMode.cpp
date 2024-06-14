@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "LyraBattleRoyalGame/Character/BattleCharacter.h"
 #include "LyraBattleRoyalGame/Character/BattlePawnExtensionComponent.h"
+#include "LyraBattleRoyalGame/Player/BattlePlayerBotController.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerController.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerSpawningManagerComponent.h"
 #include "LyraBattleRoyalGame/UI/BattleHUD.h"
@@ -108,6 +109,28 @@ bool ABattleGameMode::PlayerCanRestart_Implementation(APlayerController* Player)
 {
 	return ControllerCanRestart(Player);
 }
+
+PRAGMA_DISABLE_OPTIMIZATION
+
+void ABattleGameMode::RequestPlayerRestartNextFrame(AController* Controller, bool bForceReset)
+{
+	if (bForceReset && (Controller != nullptr))
+	{
+		Controller->Reset();
+	}
+
+	if (APlayerController* PC = Cast<APlayerController>(Controller))
+	{
+		GetWorldTimerManager().SetTimerForNextTick(PC, &APlayerController::ServerRestartPlayer_Implementation);
+	}
+	else if (ABattlePlayerBotController* BotController = Cast<ABattlePlayerBotController>(Controller))
+	{
+		GetWorldTimerManager().SetTimerForNextTick(BotController, &ABattlePlayerBotController::ServerRestartController);
+	}
+	
+}
+
+PRAGMA_ENABLE_OPTIMIZATION
 
 void ABattleGameMode::HandleMatchAssignmentIfNotExpectingOne()
 {

@@ -36,6 +36,11 @@ void UBattleGameplayAbility_Reset::ActivateAbility(const FGameplayAbilitySpecHan
 
 	UBattleAbilitySystemComponent* BattleASC = CastChecked<UBattleAbilitySystemComponent>(ActorInfo->AbilitySystemComponent);
 
+	FGameplayTagContainer AbilityTypesToIgnore;
+	AbilityTypesToIgnore.AddTag(FBattleGameplayTags::Get().Ability_Behavior_SurvivesDeath);
+
+	BattleASC->CancelAbilities(nullptr, &AbilityTypesToIgnore, this);
+	
 	SetCanBeCanceled(false);
 
 	if (ABattleCharacter* BattleCharacter = Cast<ABattleCharacter>(CurrentActorInfo->AvatarActor.Get()))

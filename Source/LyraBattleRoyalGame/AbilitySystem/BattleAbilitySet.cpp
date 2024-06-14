@@ -35,7 +35,7 @@ UBattleAbilitySet::UBattleAbilitySet(const FObjectInitializer& ObjectInitializer
 }
 
 void UBattleAbilitySet::GiveToAbilitySystem(UBattleAbilitySystemComponent* BattleASC,
-	FBattleAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject)
+	FBattleAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject) const
 {
 	check(BattleASC);
 

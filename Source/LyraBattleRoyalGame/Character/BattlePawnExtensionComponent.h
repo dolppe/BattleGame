@@ -37,6 +37,8 @@ public:
 	static UBattlePawnExtensionComponent* FindPawnExtensionComponent(const AActor* Actor) {return (Actor ? Actor->FindComponentByClass<UBattlePawnExtensionComponent>() : nullptr);}
 	void SetupPlayerInputComponent();
 
+	void HandleControllerChanged();
+
 	void InitializeAbilitySystem(UBattleAbilitySystemComponent* InASC, AActor* InOwnerActor);
 	void UnInitializeAbilitySystem();
 	UBattleAbilitySystemComponent* GetAbilitySystemComponent() const {return AbilitySystemComponent;}

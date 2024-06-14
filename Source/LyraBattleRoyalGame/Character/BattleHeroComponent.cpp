@@ -8,6 +8,7 @@
 #include "LyraBattleRoyalGame/BattleLogChannels.h"
 #include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySystemComponent.h"
 #include "LyraBattleRoyalGame/Camera/BattleCameraComponent.h"
+#include "LyraBattleRoyalGame/Camera/BattleCameraMode.h"
 #include "LyraBattleRoyalGame/Input/BattleInputComponent.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerState.h"
 #include "LyraBattleRoyalGame/Input/BattleMappableConfigPair.h"
@@ -24,6 +25,8 @@ UBattleHeroComponent::UBattleHeroComponent(const FObjectInitializer& ObjectIniti
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
+
+	AbilityCameraMode = nullptr;
 }
 
 void UBattleHeroComponent::OnRegister()
@@ -85,6 +88,8 @@ void UBattleHeroComponent::OnActorInitStateChanged(const FActorInitStateChangedP
 	}
 }
 
+PRAGMA_DISABLE_OPTIMIZATION
+
 bool UBattleHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState,
 	FGameplayTag DesiredState) const
 {
@@ -112,6 +117,16 @@ bool UBattleHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Ma
 		{
 			return false;
 		}
+
+		if (Pawn->IsLocallyControlled() && !Pawn->IsBotControlled())
+		{
+			ABattlePlayerController* BattlePC = GetController<ABattlePlayerController>();
+
+			if (!Pawn->InputComponent || !BattlePC || !BattlePC->GetLocalPlayer())
+			{
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -129,6 +144,8 @@ bool UBattleHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Ma
 	return false;
 	
 }
+
+
 
 // InitState 상태 변화가 진행될 때 호출하는 함수.
 void UBattleHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState,
@@ -156,15 +173,6 @@ void UBattleHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager*
 			PawnExtensionComponent->InitializeAbilitySystem(BattlePS->GetBattleAbilitySystemComponent(), BattlePS);
 		}
 
-		if (bIsLocallyControlled && PawnData)
-		{
-			// 현재 Character에 Attach된 CameraComponent
-			if (UBattleCameraComponent* CameraComponent = UBattleCameraComponent::FindCameraComponent(Pawn))
-			{
-				CameraComponent->DetermineCameraModeDelegate.BindUObject(this, &ThisClass::DetermineCameraMode);
-			}
-		}
-
 		if (ABattlePlayerController* BattlePC = GetController<ABattlePlayerController>())
 		{
 			if (Pawn->InputComponent != nullptr)
@@ -173,14 +181,28 @@ void UBattleHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager*
 			}
 		}
 		
+		if (bIsLocallyControlled && PawnData)
+		{
+			// 현재 Character에 Attach된 CameraComponent
+			if (UBattleCameraComponent* CameraComponent = UBattleCameraComponent::FindCameraComponent(Pawn))
+			{
+				CameraComponent->DetermineCameraModeDelegate.BindUObject(this, &ThisClass::DetermineCameraMode);
+			}
+		}
+		
 	}
-
-	
 	
 }
 
+PRAGMA_ENABLE_OPTIMIZATION
+
 TSubclassOf<UBattleCameraMode> UBattleHeroComponent::DetermineCameraMode() const
 {
+	if (AbilityCameraMode)
+	{
+		return AbilityCameraMode;
+	}
+	
 	const APawn* Pawn = GetPawn<APawn>();
 	if (!Pawn)
 	{
@@ -196,6 +218,16 @@ TSubclassOf<UBattleCameraMode> UBattleHeroComponent::DetermineCameraMode() const
 	}
 	
 	return nullptr;
+}
+
+void UBattleHeroComponent::SetAbilityCameraMode(TSubclassOf<UBattleCameraMode> CameraMode,
+	const FGameplayAbilitySpecHandle& OwningSpecHandle)
+{
+	if (CameraMode)
+	{
+		AbilityCameraMode = CameraMode;
+		AbilityCameraModeOwningSpecHandle = OwningSpecHandle;
+	}
 }
 
 void UBattleHeroComponent::InitilizePlayerInput(UInputComponent* PlayerInputComponent)

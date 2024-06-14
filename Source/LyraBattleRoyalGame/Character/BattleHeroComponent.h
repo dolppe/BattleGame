@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameplayAbilitySpecHandle.h"
 #include "InputActionValue.h"
 #include "Components/GameFrameworkInitStateInterface.h"
 #include "Components/PawnComponent.h"
@@ -19,6 +20,9 @@ class UBattleHeroComponent : public UPawnComponent, public IGameFrameworkInitSta
 public:
 	UBattleHeroComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	UFUNCTION(BlueprintPure, Category="Battle|Hero")
+	static UBattleHeroComponent* FindHeroComponent(const AActor* Actor) {return (Actor ? Actor->FindComponentByClass<UBattleHeroComponent>() : nullptr);}
+	
 	// GameFeature Name
 	static const FName NAME_ActorFeatureName;
 
@@ -39,6 +43,7 @@ public:
 
 	// Camera
 	TSubclassOf<UBattleCameraMode> DetermineCameraMode() const;
+	void SetAbilityCameraMode(TSubclassOf<UBattleCameraMode> CameraMode, const FGameplayAbilitySpecHandle& OwningSpecHandle);
 
 	// Input
 	void InitilizePlayerInput(UInputComponent* PlayerInputComponent);
@@ -47,7 +52,14 @@ public:
 	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
 	void Input_AbilityInputTagReleased(FGameplayTag InputTag);
 
+protected:
+	
 	UPROPERTY(EditAnywhere)
 	TArray<FBattleMappableConfigPair> DefaultInputConfigs;
+
+	UPROPERTY()
+	TSubclassOf<UBattleCameraMode> AbilityCameraMode;
+
+	FGameplayAbilitySpecHandle AbilityCameraModeOwningSpecHandle;
 	
 };

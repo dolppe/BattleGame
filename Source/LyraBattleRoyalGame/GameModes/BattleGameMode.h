@@ -40,6 +40,9 @@ public:
 	/*
 	 * Member Methods
 	 */
+
+	UFUNCTION(BlueprintCallable)
+	void RequestPlayerRestartNextFrame(AController* Controller, bool bForceReset = false);
 	
 	// 다음 프레임이 시작될 때 진짜 초기화를 진행하기 위한 함수
 	void HandleMatchAssignmentIfNotExpectingOne();

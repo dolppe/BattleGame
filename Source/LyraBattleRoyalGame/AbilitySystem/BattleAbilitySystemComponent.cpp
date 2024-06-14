@@ -1,19 +1,36 @@
 #include "BattleAbilitySystemComponent.h"
 
 #include "BattleAbilityTagRelationshipMapping.h"
+#include "BattleGlobalAbilitySystem.h"
+#include "NativeGameplayTags.h"
 #include "Abilities/BattleGameplayAbility.h"
 #include "LyraBattleRoyalGame/BattleLogChannels.h"
 #include "LyraBattleRoyalGame/Animation/BattleAnimInstance.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleAbilitySystemComponent)
 
+UE_DEFINE_GAMEPLAY_TAG(TAG_Gameplay_AbilityInputBlocked, "Gameplay.AbilityInputBlocked");
+
 UBattleAbilitySystemComponent::UBattleAbilitySystemComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	InputPressedSpecHandles.Reset();
+	InputReleasedSpecHandles.Reset();
+	InputHeldSpecHandles.Reset();
+}
+
+void UBattleAbilitySystemComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (UBattleGlobalAbilitySystem* GlobalAbilitySystem = UWorld::GetSubsystem<UBattleGlobalAbilitySystem>(GetWorld()))
+	{
+		GlobalAbilitySystem->UnregisterASC(this);
+	}
+	
+	Super::EndPlay(EndPlayReason);
 }
 
 void UBattleAbilitySystemComponent::CancelAbilityByFunc(TShouldCancelAbilityFunc ShouldCancelFunc,
-	bool bReplicateCancelAbility)
+                                                        bool bReplicateCancelAbility)
 {
 	ABILITYLIST_SCOPE_LOCK();
 	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
@@ -68,16 +85,41 @@ void UBattleAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, A
 
 	if (bHasNewPawnAvatar)
 	{
+		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+		{
+			UBattleGameplayAbility* BattleAbilityCDO = CastChecked<UBattleGameplayAbility>(AbilitySpec.Ability);
+
+			if (BattleAbilityCDO->GetInstancingPolicy() != EGameplayAbilityInstancingPolicy::NonInstanced)
+			{
+				TArray<UGameplayAbility*> Instances = AbilitySpec.GetAbilityInstances();
+				for (UGameplayAbility* AbilityInstance : Instances)
+				{
+					UBattleGameplayAbility* BattleAbilityInstance = CastChecked<UBattleGameplayAbility>(AbilityInstance);
+					BattleAbilityInstance->OnPawnAvatarSet();
+				}
+			}
+			else
+			{
+				BattleAbilityCDO->OnPawnAvatarSet();
+			}
+		}
+
+		if (UBattleGlobalAbilitySystem* GlobalAbilitySystem = UWorld::GetSubsystem<UBattleGlobalAbilitySystem>(GetWorld()))
+		{
+			GlobalAbilitySystem->RegisterASC(this);
+		}
+		
 		if (UBattleAnimInstance* AnimInstance = Cast<UBattleAnimInstance>(ActorInfo->GetAnimInstance()))
 		{
 			AnimInstance->InitializeWithAbilitySystem(this);
 		}
+
+		TryActivateAbilitiesOnSpawn();
 	}
 
-	TryActivateAbilitiesOnSpawn();
+
 	
 }
-PRAGMA_DISABLE_OPTIMIZATION
 
 void UBattleAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
@@ -111,6 +153,13 @@ void UBattleAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& 
 
 void UBattleAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGamePaused)
 {
+
+	if (HasMatchingGameplayTag(TAG_Gameplay_AbilityInputBlocked))
+	{
+		ClearAbilityInput();
+		return;
+	}
+	
 	TArray<FGameplayAbilitySpecHandle> AbilitiesToActive;
 
 	for (const FGameplayAbilitySpecHandle& SpecHandle : InputHeldSpecHandles)
@@ -182,7 +231,12 @@ void UBattleAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bG
 	
 }
 
-PRAGMA_ENABLE_OPTIMIZATION
+void UBattleAbilitySystemComponent::ClearAbilityInput()
+{
+	InputPressedSpecHandles.Reset();
+	InputReleasedSpecHandles.Reset();
+	InputHeldSpecHandles.Reset();
+}
 
 void UBattleAbilitySystemComponent::SetTagRelationshipMapping(UBattleAbilityTagRelationshipMapping* NewMapping)
 {
@@ -200,6 +254,7 @@ void UBattleAbilitySystemComponent::GetAdditionalActivationTagRequirements(const
 
 void UBattleAbilitySystemComponent::TryActivateAbilitiesOnSpawn()
 {
+	ABILITYLIST_SCOPE_LOCK();
 	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 	{
 		const UBattleGameplayAbility* BattleAbilityCDO = CastChecked<UBattleGameplayAbility>(AbilitySpec.Ability);

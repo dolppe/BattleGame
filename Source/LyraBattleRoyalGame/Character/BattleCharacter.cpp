@@ -3,6 +3,8 @@
 #include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySystemComponent.h"
 #include "LyraBattleRoyalGame/Camera/BattleCameraComponent.h"
 #include "BattleHealthComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleCharacter)
 
@@ -13,6 +15,10 @@ ABattleCharacter::ABattleCharacter(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
+	UCapsuleComponent* CapsuleComp = GetCapsuleComponent();
+	check(CapsuleComp);
+	CapsuleComp->InitCapsuleSize(40.0f, 90.0f);
+	
 	// PawnExtComponent 생성
 	PawnExtComponent = CreateDefaultSubobject<UBattlePawnExtensionComponent>(TEXT("PawnExtensionComponent"));
 	{
@@ -27,8 +33,22 @@ ABattleCharacter::ABattleCharacter(const FObjectInitializer& ObjectInitializer)
 
 	{
 		HealthComponent = CreateDefaultSubobject<UBattleHealthComponent>(TEXT("HealthComponent"));
+		HealthComponent->OnDeathStarted.AddDynamic(this, &ThisClass::OnDeathStarted);
+		HealthComponent->OnDeathFinished.AddDynamic(this, &ThisClass::OnDeathFinished);
 	}
+
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = true;
+	bUseControllerRotationRoll = false;
+
+	BaseEyeHeight = 80.0f;
+	CrouchedEyeHeight = 50.0f;
 	
+}
+
+UBattleAbilitySystemComponent* ABattleCharacter::GetBattleAbilitySystemComponent() const
+{
+	return Cast<UBattleAbilitySystemComponent>(GetAbilitySystemComponent());
 }
 
 void ABattleCharacter::OnAbilitySystemInitialized()
@@ -37,11 +57,85 @@ void ABattleCharacter::OnAbilitySystemInitialized()
 	check(BattleASC);
 
 	HealthComponent->InitializeWithAbilitySystem(BattleASC);
+
+	InitializeGameplayTags();
 }
 
 void ABattleCharacter::OnAbilitySystemUninitialized()
 {
 	HealthComponent->UnInitializeWithAbilitySystem();
+}
+
+void ABattleCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	PawnExtComponent->HandleControllerChanged();
+}
+
+void ABattleCharacter::UnPossessed()
+{
+	Super::UnPossessed();
+
+	PawnExtComponent->HandleControllerChanged();
+}
+
+void ABattleCharacter::InitializeGameplayTags()
+{
+}
+
+void ABattleCharacter::OnDeathStarted(AActor* OwningActor)
+{
+	DisableMovementAndCollision();
+}
+
+void ABattleCharacter::OnDeathFinished(AActor* OwningActor)
+{
+	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::DestroyDueToDeath);
+}
+
+void ABattleCharacter::DisableMovementAndCollision()
+{
+	if (Controller)
+	{
+		Controller->SetIgnoreMoveInput(true);
+	}
+
+	UCapsuleComponent* CapsuleComp = GetCapsuleComponent();
+	check(CapsuleComp);
+	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CapsuleComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+
+	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
+	MovementComponent->StopMovementImmediately();
+	MovementComponent->DisableMovement();
+	
+}
+
+void ABattleCharacter::DestroyDueToDeath()
+{
+	K2_OnDeathFinished();
+
+	UninitAndDestroy();
+}
+
+void ABattleCharacter::UninitAndDestroy()
+{
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		DetachFromControllerPendingDestroy();
+		SetLifeSpan(0.1f);
+	}
+
+	if (UBattleAbilitySystemComponent* BattleASC = GetBattleAbilitySystemComponent())
+	{
+		if (BattleASC->GetAvatarActor() == this)
+		{
+			PawnExtComponent->UnInitializeAbilitySystem();
+		}
+	}
+
+	SetActorHiddenInGame(true);
 }
 
 // PC가 Possess한 이후에 실행되는데 이때 PawnExtensionComponent의 InitState 초기화를 연결시켜줌.
@@ -50,6 +144,15 @@ void ABattleCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PawnExtComponent->SetupPlayerInputComponent();
+}
+
+void ABattleCharacter::Reset()
+{
+	DisableMovementAndCollision();
+
+	K2_OnReset();
+
+	UninitAndDestroy();
 }
 
 UAbilitySystemComponent* ABattleCharacter::GetAbilitySystemComponent() const

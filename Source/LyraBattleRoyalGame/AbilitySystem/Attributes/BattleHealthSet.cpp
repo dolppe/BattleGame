@@ -5,15 +5,38 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleHealthSet)
 
+
+UE_DEFINE_GAMEPLAY_TAG(TAG_Gameplay_DamageImmunity, "Gameplay.DamageImmunity");
+
 UBattleHealthSet::UBattleHealthSet()
 	: Super()
 	, Health(50.0f)
 	, MaxHealth(100.0f)
 {
+	bOutOfHealth = false;
 }
 
+bool UBattleHealthSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
+{
+	if (!Super::PreGameplayEffectExecute(Data))
+	{
+		return false;
+	}
 
+	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
+	{
+		if (Data.EvaluatedData.Magnitude > 0.0f)
+		{
+			if(Data.Target.HasMatchingGameplayTag(TAG_Gameplay_DamageImmunity))
+			{
+				Data.EvaluatedData.Magnitude = 0.0f;
+				return false;
+			}
+		}
+	}
 
+	return true;
+}
 
 void UBattleHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {

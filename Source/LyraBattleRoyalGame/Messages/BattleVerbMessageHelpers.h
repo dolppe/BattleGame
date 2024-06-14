@@ -5,6 +5,7 @@
 
 class APlayerState;
 class APlayerController;
+struct FBattleVerbMessage;
 
 UCLASS()
 class LYRABATTLEROYALGAME_API UBattleVerbMessageHelpers : public UBlueprintFunctionLibrary
@@ -17,5 +18,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Battle")
 	static APlayerState* GetPlayerStateFromObject(UObject* Object);
+
+	UFUNCTION(BlueprintCallable, Category = "Battle")
+	static FBattleVerbMessage CueParametersToVerbMessage(const FGameplayCueParameters& Params);
 	
 };

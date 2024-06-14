@@ -20,11 +20,14 @@ class AController;
 class UBattleAbilitySystemComponent;
 class ABattlePlayerController;
 class IBattleAbilitySourceInterface;
+class UBattleCameraMode;
 
 UCLASS(Abstract)
 class UBattleGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
+
+	friend class UBattleAbilitySystemComponent;
 public:
 	UBattleGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
@@ -39,10 +42,16 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Battle|Ability")
 	ABattleCharacter* GetBattleCharacterFromActorInfo() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Battle|Ability")
+	UBattleHeroComponent* GetHeroComponentFromActorInfo() const;
 	
 	EBattleAbilityActivationPolicy GetActivationPolicy() const {return ActivationPolicy;}
 
 	void TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Battle|Ability")
+	void SetCameraMode(TSubclassOf<UBattleCameraMode> CameraMode);
 
 protected:
 
@@ -53,6 +62,8 @@ protected:
 	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual FGameplayEffectContextHandle MakeEffectContext(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo) const override;
 
+	virtual void OnPawnAvatarSet();
+	
 	virtual void GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IBattleAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const;
 	
 	UFUNCTION(BlueprintImplementableEvent, Category=Ability, DisplayName="OnAbilityAdded")
@@ -61,6 +72,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category=Ability, DisplayName="OnAbilityRemoved")
 	void K2_OnAbilityRemoved();
 
+	UFUNCTION(BlueprintImplementableEvent, Category=Ability, DisplayName="OnPawnAvatarSet")
+	void K2_OnPawnAvatarSet();
+	
 protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Battle|AbilityActivation")
@@ -68,5 +82,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Instanced, Category=Costs)
 	TArray<TObjectPtr<UBattleAbilityCost>> AdditionalCosts;
-	
+
+
+	TSubclassOf<UBattleCameraMode> ActiveCameraMode;
 };

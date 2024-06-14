@@ -156,6 +156,30 @@ void UBattleQuickBarComponent::AddItemToSlot(int32 SlotIndex, UBattleInventoryIt
 	}
 }
 
+UBattleInventoryItemInstance* UBattleQuickBarComponent::RemoveItemFromSlot(int32 SlotIndex)
+{
+
+	UBattleInventoryItemInstance* Result = nullptr;
+
+	if (ActiveSlotIndex == SlotIndex)
+	{
+		UnequipItemInSlot();
+		ActiveSlotIndex = -1;
+	}
+
+	if (Slots.IsValidIndex(SlotIndex))
+	{
+		Result = Slots[SlotIndex];
+
+		if (Result != nullptr)
+		{
+			Slots[SlotIndex] = nullptr;
+		}
+	}
+
+	return Result;
+}
+
 void UBattleQuickBarComponent::SetActiveSlotIndex(int32 NewIndex)
 {
 	if (Slots.IsValidIndex(NewIndex) && (ActiveSlotIndex != NewIndex))

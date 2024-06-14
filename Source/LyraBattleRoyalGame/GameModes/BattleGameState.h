@@ -7,6 +7,7 @@
 #include "BattleGameState.generated.h"
 
 class UBattleExperienceManagerComponent;
+struct FBattleVerbMessage;
 
 UCLASS()
 class ABattleGameState : public AModularGameStateBase , public IAbilitySystemInterface
@@ -21,6 +22,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Battle|GameState")
 	UBattleAbilitySystemComponent* GetBattleAbilitySystemComponent() const {return AbilitySystemComponent;}
 
+	UFUNCTION(NetMulticast, Unreliable, BlueprintCallable, Category = "Battle|GameState")
+	void MulticastMessageToClients(const FBattleVerbMessage Message);
+
+	// Send a message that all clients will be guaranteed to get
+	// (use only for client notifications that cannot handle being lost)
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable, Category = "Battle|GameState")
+	void MulticastReliableMessageToClients(const FBattleVerbMessage Message);
+	
 private:
 	UPROPERTY()
 	TObjectPtr<UBattleExperienceManagerComponent> ExperienceManagerComponent;

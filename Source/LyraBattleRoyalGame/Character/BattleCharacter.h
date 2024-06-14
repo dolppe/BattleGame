@@ -4,6 +4,7 @@
 #include "ModularCharacter.h"
 #include "BattleCharacter.generated.h"
 
+class UBattleAbilitySystemComponent;
 class UBattleHealthComponent;
 class UBattleCameraComponent;
 class UBattlePawnExtensionComponent;
@@ -16,12 +17,38 @@ class ABattleCharacter : public AModularCharacter, public IAbilitySystemInterfac
 public:
 	ABattleCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	void OnAbilitySystemInitialized();
-	void OnAbilitySystemUninitialized();
+	UFUNCTION(BlueprintCallable, Category="Battle|Character")
+	UBattleAbilitySystemComponent* GetBattleAbilitySystemComponent() const;
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	
+
+	
+	UFUNCTION()
+	virtual void OnDeathStarted(AActor* OwningActor);
+
+	UFUNCTION()
+	virtual void OnDeathFinished(AActor* OwningActor);
+
+	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName="OnDeathFinished"))
+	void K2_OnDeathFinished();
+
+	void DisableMovementAndCollision();
+	void DestroyDueToDeath();
+	void UninitAndDestroy();
 	
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) final;
+	
+	virtual void Reset() override;
 
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+protected:
+
+	void OnAbilitySystemInitialized();
+	void OnAbilitySystemUninitialized();
+
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void UnPossessed() override;
+
+	void InitializeGameplayTags();
 	
 private:
 
