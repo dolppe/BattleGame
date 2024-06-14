@@ -5,6 +5,7 @@
 #include "AbilitySystemInterface.h"
 #include "BattlePlayerState.h"
 #include "LyraBattleRoyalGame/GameModes/BattleGameMode.h"
+#include "Perception/AIPerceptionComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattlePlayerBotController)
 
@@ -57,4 +58,12 @@ void ABattlePlayerBotController::OnUnPossess()
 	}
 	
 	Super::OnUnPossess();
+}
+
+void ABattlePlayerBotController::UpdateTeamAttitude(UAIPerceptionComponent* AIPerception)
+{
+	if (AIPerception)
+	{
+		AIPerception->RequestStimuliListenerUpdate();
+	}
 }

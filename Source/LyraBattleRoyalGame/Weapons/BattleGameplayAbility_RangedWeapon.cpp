@@ -2,6 +2,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "BattleRangedWeaponInstance.h"
+#include "LyraBattleRoyalGame/BattleLogChannels.h"
 #include "LyraBattleRoyalGame/AbilitySystem/BattleGameplayAbilityTargetData_SingleTargetHit.h"
 #include "LyraBattleRoyalGame/Physics/BattleCollisionChannels.h"
 
@@ -77,6 +78,7 @@ FHitResult UBattleGameplayAbility_RangedWeapon::WeaponTrace(const FVector& Start
 			if (!OutHitResults.ContainsByPredicate(Pred))
 			{
 				OutHitResults.Add(CurHitResult);
+				UE_LOG(LogBattle, Log, TEXT("PhysicalMat: %s"),*(CurHitResult.PhysMaterial->GetName()));
 			}
 		}
 		Hit = OutHitResults.Last();
@@ -275,7 +277,7 @@ FTransform UBattleGameplayAbility_RangedWeapon::GetTargetingTransform(APawn* Sou
 	check(SourcePawn);
 	check(Source == EBattleAbilityTargetingSource::CameraTowardsFocus);
 
-	AController* Controller = SourcePawn->Controller;
+	AController* Controller = SourcePawn->GetController();
 	if (Controller == nullptr)
 	{
 		return FTransform();
@@ -286,16 +288,35 @@ FTransform UBattleGameplayAbility_RangedWeapon::GetTargetingTransform(APawn* Sou
 	FVector CamLoc;
 	FRotator CamRot;
 
+	
 	APlayerController* PC = Cast<APlayerController>(Controller);
-	check(PC);
-	PC->GetPlayerViewPoint(CamLoc, CamRot);
-
+	if (PC != nullptr)
+	{
+		PC->GetPlayerViewPoint(CamLoc, CamRot);
+	}
+	else
+	{
+		CamLoc = GetWeaponTargetingSourceLocation();
+		CamRot = Controller->GetControlRotation();
+	}
+	
 	FVector AimDir = CamRot.Vector().GetSafeNormal();
 	FocalLoc = CamLoc + (AimDir*FocalDistance);
 
-	const FVector WeaponLoc = GetWeaponTargetingSourceLocation();
-	FVector FinalCamLoc = FocalLoc + (((WeaponLoc - FocalLoc) | AimDir)*AimDir);
+	FVector FinalCamLoc;
 
+	if (PC)
+	{
+		const FVector WeaponLoc = GetWeaponTargetingSourceLocation();
+		FinalCamLoc = FocalLoc + (((WeaponLoc - FocalLoc) | AimDir)*AimDir);
+	}
+	else
+	{
+		const FVector WeaponLoc = GetWeaponTargetingSourceLocation();
+		CamLoc = SourcePawn->GetActorLocation() + FVector(0,0,SourcePawn->BaseEyeHeight);
+		FocalLoc = CamLoc + (AimDir*FocalDistance);
+		FinalCamLoc = FocalLoc + (((WeaponLoc - FocalLoc) | AimDir)*AimDir);
+	}
 #if 0
 	{
 		DrawDebugPoint(GetWorld(), WeaponLoc, 10.0f, FColor::Red, false, 60.0f);
