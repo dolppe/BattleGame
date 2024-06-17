@@ -28,6 +28,7 @@ UBattleHeroComponent::UBattleHeroComponent(const FObjectInitializer& ObjectIniti
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 
 	AbilityCameraMode = nullptr;
+	bReadyToBindInputs = false;
 }
 
 void UBattleHeroComponent::OnRegister()
@@ -231,6 +232,15 @@ void UBattleHeroComponent::SetAbilityCameraMode(TSubclassOf<UBattleCameraMode> C
 	}
 }
 
+void UBattleHeroComponent::ClearAbilityCameraMode(const FGameplayAbilitySpecHandle& OwningSpecHandle)
+{
+	if (AbilityCameraModeOwningSpecHandle == OwningSpecHandle)
+	{
+		AbilityCameraMode = nullptr;
+		AbilityCameraModeOwningSpecHandle = FGameplayAbilitySpecHandle();
+	}
+}
+
 void UBattleHeroComponent::InitilizePlayerInput(UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
@@ -292,6 +302,11 @@ void UBattleHeroComponent::InitilizePlayerInput(UInputComponent* PlayerInputComp
 				
 			}
 		}
+	}
+
+	if (ensure(!bReadyToBindInputs))
+	{
+		bReadyToBindInputs = true;
 	}
 
 	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(const_cast<APawn*>(Pawn), NAME_BindInputsNow);
@@ -395,6 +410,41 @@ void UBattleHeroComponent::Input_AbilityInputTagReleased(FGameplayTag InputTag)
 			}
 		}
 	}
+}
+
+bool UBattleHeroComponent::IsReadyToBindInputs() const
+{
+	return bReadyToBindInputs;
+}
+
+void UBattleHeroComponent::AdditionalInputConfig(const UBattleInputConfig* InputConfig)
+{
+	TArray<uint32> BindHandles;
+
+	const APawn* Pawn = GetPawn<APawn>();
+	if (!Pawn)
+	{
+		return;
+	}
+
+	UBattleInputComponent* BattleIC = Pawn->FindComponentByClass<UBattleInputComponent>();
+	check(BattleIC);
+
+	const APlayerController* PC = GetController<APlayerController>();
+	check(PC);
+
+	const ULocalPlayer* LP = PC->GetLocalPlayer();
+	check(LP);
+
+	if (const UBattlePawnExtensionComponent* PawnExtensionComponent = UBattlePawnExtensionComponent::FindPawnExtensionComponent(Pawn))
+	{
+		BattleIC->BindAbilityActions(InputConfig, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, BindHandles);
+	}
+	
+}
+
+void UBattleHeroComponent::RemoveAdditionalInputConfig(const UBattleInputConfig* InputConfig)
+{
 }
 
 

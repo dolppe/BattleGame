@@ -53,6 +53,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Battle|Ability")
 	void SetCameraMode(TSubclassOf<UBattleCameraMode> CameraMode);
 
+	UFUNCTION(BlueprintCallable, Category="Battle|Ability")
+	void ClearCameraMode();
+	
 protected:
 
 	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;

@@ -9,6 +9,7 @@
 #include "LyraBattleRoyalGame/Character/BattleCharacter.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerController.h"
 #include "LyraBattleRoyalGame/AbilitySystem/BattleAbilitySourceInterface.h"
+#include "LyraBattleRoyalGame/Camera/BattleCameraMode.h"
 #include "LyraBattleRoyalGame/Character/BattleHeroComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleGameplayAbility)
@@ -95,6 +96,18 @@ void UBattleGameplayAbility::SetCameraMode(TSubclassOf<UBattleCameraMode> Camera
 	{
 		HeroComponent->SetAbilityCameraMode(CameraMode, CurrentSpecHandle);
 		ActiveCameraMode = CameraMode;
+	}
+}
+
+void UBattleGameplayAbility::ClearCameraMode()
+{
+	if (ActiveCameraMode)
+	{
+		if (UBattleHeroComponent* HeroComponent = GetHeroComponentFromActorInfo())
+		{
+			HeroComponent->ClearAbilityCameraMode(CurrentSpecHandle);
+		}
+		ActiveCameraMode = nullptr;
 	}
 }
 

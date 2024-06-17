@@ -1,10 +1,14 @@
 #include "BattleRangedWeaponInstance.h"
 
+#include "NativeGameplayTags.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "LyraBattleRoyalGame/BattleLogChannels.h"
+#include "LyraBattleRoyalGame/Camera/BattleCameraComponent.h"
 #include "LyraBattleRoyalGame/Physics/PhysicalMaterialWithTags.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleRangedWeaponInstance)
+
+UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Battle_Weapon_SteadyAimingCamera, "Battle.Weapon.SteadyAimingCamera");
 
 UBattleRangedWeaponInstance::UBattleRangedWeaponInstance(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -160,13 +164,28 @@ bool UBattleRangedWeaponInstance::UpdateMultipliers(float DeltaSeconds)
 	/*
 	 * 아직 Aiming 카메라 모드를 만들지 않았기에 이의 가중치는 추후 적용
 	 */
-	
+	float AimingAlpha = 0.0f;
+	if (const UBattleCameraComponent* CameraComponent = UBattleCameraComponent::FindCameraComponent(Pawn))
+	{
+		float TopCameraWeight;
+		FGameplayTag TopCameraTag;
+		CameraComponent->GetBlendInfo(TopCameraWeight, TopCameraTag);
 
-	const float CombinedMultiplier = StandingStillMultiplier * CrouchingMultiplier * JumpFallMultiplier;
+		AimingAlpha = ((TopCameraTag == TAG_Battle_Weapon_SteadyAimingCamera) ? TopCameraWeight :0.0f);
+
+	}
+
+	const float AimingMultiplier = FMath::GetMappedRangeValueClamped(
+		FVector2D(0.0f, 1.0f),
+		FVector2D(1.0f, SpreadAngleMultiplier_Aiming),
+		AimingAlpha);
+	const bool bAimingMultiplierAtTarget = FMath::IsNearlyEqual(AimingMultiplier, SpreadAngleMultiplier_Aiming, KINDA_SMALL_NUMBER);
+
+	const float CombinedMultiplier = AimingMultiplier * StandingStillMultiplier * CrouchingMultiplier * JumpFallMultiplier;
 	CurrentSpreadAngleMultiplier = CombinedMultiplier;
 	
 	// 정지 상태이며, 점프나 떨어지는 상태가 아니고, 움크리는 중이거나 푸는 중이 아님.
-	return bStandingStillMultiplierAtMin && bCrouchingMultiplierAtTarget && bJumpFallMultiplierIs;
+	return bStandingStillMultiplierAtMin && bCrouchingMultiplierAtTarget && bJumpFallMultiplierIs && bAimingMultiplierAtTarget;
 }
 
 

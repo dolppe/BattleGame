@@ -5,6 +5,7 @@
 
 class UBattleCameraMode;
 class UBattleCameraModeStack;
+struct FGameplayTag;
 
 template <class TClass> class TSubclassOf;
 
@@ -23,6 +24,7 @@ public:
 	static UBattleCameraComponent* FindCameraComponent(const AActor* Actor) {return (Actor ? Actor->FindComponentByClass<UBattleCameraComponent>() : nullptr); }
 	AActor* GetTargetActor() const {return GetOwner();}
 	void UpdateCameraModes();
+	void GetBlendInfo(float& OutWeightOfTopLayer, FGameplayTag& OutTagOfTopLayer) const;
 	
 	/*
 	 * CameraComponent Interface
