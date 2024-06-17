@@ -1,5 +1,6 @@
 #include "BattleHeroComponent.h"
 
+#include "BattleCharacter.h"
 #include "BattlePawnExtensionComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "PlayerMappableInputConfig.h"
@@ -286,6 +287,7 @@ void UBattleHeroComponent::InitilizePlayerInput(UInputComponent* PlayerInputComp
 					// 바인딩을 진행하면, 이후 Input 이벤트에 따라 멤버 함수가 트리거됨.
 					BattleIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this,&ThisClass::Input_Move, false);
 					BattleIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Look_Mouse, ETriggerEvent::Triggered, this,&ThisClass::Input_LookMouse, false);
+					BattleIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Crouch, ETriggerEvent::Triggered, this,&ThisClass::Input_Crouch, false);
 				}
 				
 			}
@@ -350,6 +352,15 @@ void UBattleHeroComponent::Input_LookMouse(const FInputActionValue& InputActionV
 		// Y에는 Pitch 값.
 		double AimInversionValue = -Value.Y;
 		Pawn->AddControllerPitchInput(AimInversionValue);
+	}
+	
+}
+
+void UBattleHeroComponent::Input_Crouch(const FInputActionValue& InputActionValue)
+{
+	if (ABattleCharacter* Character = GetPawn<ABattleCharacter>())
+	{
+		Character->ToggleCrouch();
 	}
 	
 }

@@ -21,7 +21,7 @@ public:
 	UBattleAbilitySystemComponent* GetBattleAbilitySystemComponent() const;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
-
+	void ToggleCrouch();
 	
 	UFUNCTION()
 	virtual void OnDeathStarted(AActor* OwningActor);
