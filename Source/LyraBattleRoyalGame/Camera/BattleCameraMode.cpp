@@ -1,8 +1,12 @@
 #include "BattleCameraMode.h"
 #include "BattleCameraComponent.h"
 #include "BattlePlayerCameraManager.h"
+#include "GameplayTagContainer.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleCameraMode)
+
+PRAGMA_DISABLE_OPTIMIZATION
+
 
 FBattleCameraModeView::FBattleCameraModeView()
 	: Location(ForceInit)
@@ -126,6 +130,7 @@ void UBattleCameraMode::UpdateBlending(float DeltaTime)
 		// - BlendAlpha는 0->1로 변화하는 과정임.
 		// 진행도를 누적하는 느낌
 		BlendAlpha += (DeltaTime / BlendTime);
+		BlendAlpha = FMath::Min(BlendAlpha, 1.0f);
 	}
 	else
 	{
@@ -249,7 +254,7 @@ void UBattleCameraModeStack::PushCameraMode(TSubclassOf<UBattleCameraMode>& Came
 	else
 	{
 		// 카메라 모드가 없는 경우 현재 가진 가중치 0.0f로 설정.
-		ExistingStackIndex = 0.0f;
+		ExistingStackContribution = 0.0f;
 	}
 
 	// blendTime이 0보다 작으면 블랜드를 안하고, 만약 스택에 남은게 없으면 현재 가진 카메라 모드만 실행하기에 false 처리
@@ -339,3 +344,22 @@ void UBattleCameraModeStack::BlendStack(FBattleCameraModeView& OutCameraModeView
 	}
 	
 }
+
+void UBattleCameraModeStack::GetBlendInfo(float& OutWeightOfTopLayer, FGameplayTag& OutTagOfTopLayer) const
+{
+	if (CameraModeStack.Num() == 0)
+	{
+		OutWeightOfTopLayer = 1.0f;
+		OutTagOfTopLayer = FGameplayTag();
+		return;
+	}
+	else
+	{
+		UBattleCameraMode* TopEntry = CameraModeStack.Last();
+		check(TopEntry);
+		OutWeightOfTopLayer = TopEntry->GetBlendWeight();
+		OutTagOfTopLayer = TopEntry->GetCameraTypeTag();
+	}
+}
+
+PRAGMA_ENABLE_OPTIMIZATION

@@ -37,13 +37,27 @@ ABattleCharacter::ABattleCharacter(const FObjectInitializer& ObjectInitializer)
 		HealthComponent->OnDeathFinished.AddDynamic(this, &ThisClass::OnDeathFinished);
 	}
 
+	{
+		UCharacterMovementComponent* MoveComp = GetCharacterMovement();
+		MoveComp->GravityScale = 1.0f;
+		MoveComp->MaxAcceleration = 2400.0f;
+		MoveComp->BrakingFrictionFactor = 1.0f;
+		MoveComp->BrakingFriction = 6.0f;
+		MoveComp->GroundFriction = 8.0f;
+		MoveComp->BrakingDecelerationWalking = 1400.0f;
+		MoveComp->bUseControllerDesiredRotation = false;
+		MoveComp->bOrientRotationToMovement = false;
+		MoveComp->GetNavAgentPropertiesRef().bCanCrouch = true;
+		MoveComp->bCanWalkOffLedgesWhenCrouching = true;
+		MoveComp->SetCrouchedHalfHeight(65.0f);
+	}
+
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
 
 	BaseEyeHeight = 80.0f;
 	CrouchedEyeHeight = 50.0f;
-	
 }
 
 UBattleAbilitySystemComponent* ABattleCharacter::GetBattleAbilitySystemComponent() const
@@ -158,4 +172,16 @@ void ABattleCharacter::Reset()
 UAbilitySystemComponent* ABattleCharacter::GetAbilitySystemComponent() const
 {
 	return PawnExtComponent->GetAbilitySystemComponent();
+}
+
+void ABattleCharacter::ToggleCrouch()
+{
+	if (bIsCrouched || GetCharacterMovement()->bWantsToCrouch)
+	{
+		UnCrouch();
+	}
+	else if (GetCharacterMovement()->IsMovingOnGround())
+	{
+		Crouch();
+	}
 }

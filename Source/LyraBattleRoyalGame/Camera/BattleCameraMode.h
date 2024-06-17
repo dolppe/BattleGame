@@ -1,8 +1,10 @@
 #pragma once
+#include "GameplayTagContainer.h"
 
 #include "BattleCameraMode.generated.h"
 
 class UBattleCameraComponent;
+
 
 UENUM(BlueprintType)
 enum class EBattleCameraModeBlendFunction : uint8
@@ -51,6 +53,19 @@ public:
 	void UpdateBlending(float DeltaTime);
 	
 	void UpdateCameraMode(float DeltaTime);
+
+	float GetBlendWeight() const {return BlendWeight;}
+	float GetBlendTime() const {return BlendTime;}
+	const FBattleCameraModeView& GetCameraModeView() const {return View;}
+
+	FGameplayTag GetCameraTypeTag() const
+	{
+		return CameraTypeTag;
+	}
+	
+
+	UPROPERTY(EditDefaultsOnly, Category="Blending")
+	FGameplayTag CameraTypeTag;
 	
 	FBattleCameraModeView View;
 	
@@ -104,6 +119,7 @@ public:
 	void UpdateStack(float DeltaTime);
 	void BlendStack(FBattleCameraModeView& OutCameraModeView) const;
 
+	void GetBlendInfo(float& OutWeightOfTopLayer, FGameplayTag& OutTagOfTopLayer) const;
 	
 	UPROPERTY()
 	TArray<TObjectPtr<UBattleCameraMode>> CameraModeInstances;

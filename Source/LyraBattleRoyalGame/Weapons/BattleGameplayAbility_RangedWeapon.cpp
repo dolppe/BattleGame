@@ -225,6 +225,8 @@ void UBattleGameplayAbility_RangedWeapon::TraceBulletsInCartridge(const FRangedW
 		// 탄퍼짐 정도에 따라서 랜덤성을 어느정도 부여하여 탄환의 방향을 정함
 		const FVector BulletDir = VRandConeNormalDistribution(InputData.AimDir, HalfSpreadAngleInRadians, WeaponData->GetSpreadExponent());
 
+		UE_LOG(LogBattle, Log, TEXT("%d: %f / %f / %f"),BulletIndex, BulletDir.X, BulletDir.Y, BulletDir.Z);
+
 		const FVector EndTrace = InputData.StartTrace + (BulletDir * WeaponData->GetMaxDamageRange());
 		FVector HitLocation = EndTrace;
 
@@ -241,8 +243,7 @@ void UBattleGameplayAbility_RangedWeapon::TraceBulletsInCartridge(const FRangedW
 
 			HitLocation = Impact.ImpactPoint;
 		}
-
-		if (OutHits.Num() == 0)
+		else
 		{
 			if (!Impact.bBlockingHit)
 			{

@@ -4,9 +4,11 @@
 #include "InputActionValue.h"
 #include "Components/GameFrameworkInitStateInterface.h"
 #include "Components/PawnComponent.h"
+#include "LyraBattleRoyalGame/Input/BattleInputConfig.h"
 
 #include "BattleHeroComponent.generated.h"
 
+class UBattleInputConfig;
 class UBattleCameraMode;
 template<class TClass> class TSubclassOf;
 struct FBattleMappableConfigPair;
@@ -45,12 +47,19 @@ public:
 	TSubclassOf<UBattleCameraMode> DetermineCameraMode() const;
 	void SetAbilityCameraMode(TSubclassOf<UBattleCameraMode> CameraMode, const FGameplayAbilitySpecHandle& OwningSpecHandle);
 
+	void ClearAbilityCameraMode(const FGameplayAbilitySpecHandle& OwningSpecHandle);
+	
 	// Input
 	void InitilizePlayerInput(UInputComponent* PlayerInputComponent);
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_LookMouse(const FInputActionValue& InputActionValue);
+	void Input_Crouch(const FInputActionValue& InputActionValue);
 	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
 	void Input_AbilityInputTagReleased(FGameplayTag InputTag);
+
+	bool IsReadyToBindInputs() const;
+	void AdditionalInputConfig(const UBattleInputConfig* InputConfig);
+	void RemoveAdditionalInputConfig(const UBattleInputConfig* InputConfig);
 
 protected:
 	
@@ -61,5 +70,7 @@ protected:
 	TSubclassOf<UBattleCameraMode> AbilityCameraMode;
 
 	FGameplayAbilitySpecHandle AbilityCameraModeOwningSpecHandle;
+
+	bool bReadyToBindInputs;
 	
 };

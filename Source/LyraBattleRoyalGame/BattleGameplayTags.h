@@ -51,6 +51,7 @@ public:
 	
 	FGameplayTag InputTag_Move;
 	FGameplayTag InputTag_Look_Mouse;
+	FGameplayTag InputTag_Crouch;
 
 protected:
 

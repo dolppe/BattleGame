@@ -1,5 +1,6 @@
 #include "BattleHeroComponent.h"
 
+#include "BattleCharacter.h"
 #include "BattlePawnExtensionComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "PlayerMappableInputConfig.h"
@@ -27,6 +28,7 @@ UBattleHeroComponent::UBattleHeroComponent(const FObjectInitializer& ObjectIniti
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 
 	AbilityCameraMode = nullptr;
+	bReadyToBindInputs = false;
 }
 
 void UBattleHeroComponent::OnRegister()
@@ -230,6 +232,15 @@ void UBattleHeroComponent::SetAbilityCameraMode(TSubclassOf<UBattleCameraMode> C
 	}
 }
 
+void UBattleHeroComponent::ClearAbilityCameraMode(const FGameplayAbilitySpecHandle& OwningSpecHandle)
+{
+	if (AbilityCameraModeOwningSpecHandle == OwningSpecHandle)
+	{
+		AbilityCameraMode = nullptr;
+		AbilityCameraModeOwningSpecHandle = FGameplayAbilitySpecHandle();
+	}
+}
+
 void UBattleHeroComponent::InitilizePlayerInput(UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
@@ -286,10 +297,16 @@ void UBattleHeroComponent::InitilizePlayerInput(UInputComponent* PlayerInputComp
 					// 바인딩을 진행하면, 이후 Input 이벤트에 따라 멤버 함수가 트리거됨.
 					BattleIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this,&ThisClass::Input_Move, false);
 					BattleIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Look_Mouse, ETriggerEvent::Triggered, this,&ThisClass::Input_LookMouse, false);
+					BattleIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Crouch, ETriggerEvent::Triggered, this,&ThisClass::Input_Crouch, false);
 				}
 				
 			}
 		}
+	}
+
+	if (ensure(!bReadyToBindInputs))
+	{
+		bReadyToBindInputs = true;
 	}
 
 	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(const_cast<APawn*>(Pawn), NAME_BindInputsNow);
@@ -354,6 +371,15 @@ void UBattleHeroComponent::Input_LookMouse(const FInputActionValue& InputActionV
 	
 }
 
+void UBattleHeroComponent::Input_Crouch(const FInputActionValue& InputActionValue)
+{
+	if (ABattleCharacter* Character = GetPawn<ABattleCharacter>())
+	{
+		Character->ToggleCrouch();
+	}
+	
+}
+
 PRAGMA_DISABLE_OPTIMIZATION
 
 void UBattleHeroComponent::Input_AbilityInputTagPressed(FGameplayTag InputTag)
@@ -384,6 +410,41 @@ void UBattleHeroComponent::Input_AbilityInputTagReleased(FGameplayTag InputTag)
 			}
 		}
 	}
+}
+
+bool UBattleHeroComponent::IsReadyToBindInputs() const
+{
+	return bReadyToBindInputs;
+}
+
+void UBattleHeroComponent::AdditionalInputConfig(const UBattleInputConfig* InputConfig)
+{
+	TArray<uint32> BindHandles;
+
+	const APawn* Pawn = GetPawn<APawn>();
+	if (!Pawn)
+	{
+		return;
+	}
+
+	UBattleInputComponent* BattleIC = Pawn->FindComponentByClass<UBattleInputComponent>();
+	check(BattleIC);
+
+	const APlayerController* PC = GetController<APlayerController>();
+	check(PC);
+
+	const ULocalPlayer* LP = PC->GetLocalPlayer();
+	check(LP);
+
+	if (const UBattlePawnExtensionComponent* PawnExtensionComponent = UBattlePawnExtensionComponent::FindPawnExtensionComponent(Pawn))
+	{
+		BattleIC->BindAbilityActions(InputConfig, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, BindHandles);
+	}
+	
+}
+
+void UBattleHeroComponent::RemoveAdditionalInputConfig(const UBattleInputConfig* InputConfig)
+{
 }
 
 
