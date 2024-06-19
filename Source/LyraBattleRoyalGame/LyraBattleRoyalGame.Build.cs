@@ -46,6 +46,9 @@ public class LyraBattleRoyalGame : ModuleRules
 			"AIModule",
 			// NiagaraSystem
 			"Niagara",
+			// DeveloperSetting
+			"DeveloperSettings",
+			
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });

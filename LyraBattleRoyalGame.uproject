@@ -8,6 +8,11 @@
 			"Name": "LyraBattleRoyalGame",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "LyraBattleRoyalEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [

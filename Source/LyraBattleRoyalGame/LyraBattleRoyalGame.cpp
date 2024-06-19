@@ -2,9 +2,10 @@
 
 #include "LyraBattleRoyalGame.h"
 #include "Modules/ModuleManager.h"
+#include "Modules/ModuleInterface.h"
 #include "LyraBattleRoyalGame/System/BattleAssetManager.h"
 
-class FLyraBattleRoyalGameModule : public FDefaultModuleImpl
+class FLyraBattleRoyalGameModule : public IModuleInterface
 {
 public:
 	virtual void StartupModule() override;
