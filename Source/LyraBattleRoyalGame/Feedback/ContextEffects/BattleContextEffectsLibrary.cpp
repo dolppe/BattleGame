@@ -6,7 +6,7 @@
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleContextEffectsLibrary)
 
 void UBattleContextEffectsLibrary::GetEffects(const FGameplayTag Effect, const FGameplayTagContainer Context,
-	TArray<USoundBase*> Sounds, TArray<UNiagaraSystem*>& NiagaraSystems)
+	TArray<USoundBase*>& Sounds, TArray<UNiagaraSystem*>& NiagaraSystems)
 {
 	if (Effect.IsValid() && Context.IsValid() && EffectsLoadState == EContextEffectsLibraryLoadState::Loaded)
 	{

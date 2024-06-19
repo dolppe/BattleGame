@@ -38,7 +38,7 @@ struct LYRABATTLEROYALGAME_API FBattleContextEffectAnimNotifyTraceSettings
 	TEnumAsByte<ECollisionChannel> TraceChannel = ECollisionChannel::ECC_Visibility;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= Trace)
-	FVector EndTraceLocationOffset = FVector::ZeroVector;
+	FVector EndTraceLocationOffset = FVector(0.0f,0.0f,-50.0f);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= Trace)
 	bool bIgnoreActor = true;

@@ -23,6 +23,8 @@ FString UAnimNotify_BattleContextEffects::GetNotifyName_Implementation() const
 	return Super::GetNotifyName_Implementation();
 }
 
+PRAGMA_DISABLE_OPTIMIZATION
+
 void UAnimNotify_BattleContextEffects::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
 	const FAnimNotifyEventReference& EventReference)
 {
@@ -69,7 +71,7 @@ void UAnimNotify_BattleContextEffects::Notify(USkeletalMeshComponent* MeshComp, 
 				{
 					if (Component->Implements<UBattleContextEffectsInterface>())
 					{
-						BattleContextEffectImplementingObjects.Add(OwningActor);
+						BattleContextEffectImplementingObjects.Add(Component);
 					}
 				}
 			}
@@ -89,6 +91,7 @@ void UAnimNotify_BattleContextEffects::Notify(USkeletalMeshComponent* MeshComp, 
 	}
 }
 
+PRAGMA_ENABLE_OPTIMIZATION
 
 
 

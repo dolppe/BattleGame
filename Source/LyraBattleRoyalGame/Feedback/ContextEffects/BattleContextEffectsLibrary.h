@@ -64,7 +64,7 @@ public:
 	TArray<FBattleContextEffects> ContextEffects;
 
 	UFUNCTION(BlueprintCallable)
-	void GetEffects(const FGameplayTag Effect, const FGameplayTagContainer Context, TArray<USoundBase*> Sounds, TArray<UNiagaraSystem*>& NiagaraSystems);
+	void GetEffects(const FGameplayTag Effect, const FGameplayTagContainer Context, TArray<USoundBase*>& Sounds, TArray<UNiagaraSystem*>& NiagaraSystems);
 
 	UFUNCTION(BlueprintCallable)
 	void LoadEffects();
