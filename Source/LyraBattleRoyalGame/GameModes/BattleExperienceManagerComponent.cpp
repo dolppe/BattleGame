@@ -4,6 +4,7 @@
 #include "GameFeaturesSubsystemSettings.h"
 #include "LyraBattleRoyalGame/GameModes/BattleExperienceDefinition.h"
 #include "BattleExperienceActionSet.h"
+#include "LyraBattleRoyalGame/BattleLogChannels.h"
 #include "LyraBattleRoyalGame/System/BattleAssetManager.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleExperienceManagerComponent)
@@ -11,6 +12,67 @@
 UBattleExperienceManagerComponent::UBattleExperienceManagerComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+}
+
+void UBattleExperienceManagerComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	for (const FString& PluginURL : GameFeaturePluginURLs)
+	{
+		UGameFeaturesSubsystem::Get().DeactivateGameFeaturePlugin(PluginURL);
+	}
+
+	if (LoadState == EBattleExperienceLoadState::Loaded)
+	{
+		LoadState = EBattleExperienceLoadState::Deactivating;
+
+		NumExpectedPausers = INDEX_NONE;
+		NumObservedPausers = 0;
+
+		FGameFeatureDeactivatingContext Context(FSimpleDelegate::CreateUObject(this, &ThisClass::OnActionDeactivationCompleted));
+
+		const FWorldContext* ExistingWorldContext = GEngine->GetWorldContextFromWorld(GetWorld());
+		if (ExistingWorldContext)
+		{
+			Context.SetRequiredWorldContextHandle(ExistingWorldContext->ContextHandle);
+		}
+		
+		auto DeactivateListOfActions = [&Context](const TArray<UGameFeatureAction*>& ActionList)
+		{
+			for (UGameFeatureAction* Action : ActionList)
+			{
+				if (Action)
+				{
+					Action->OnGameFeatureDeactivating(Context);
+					Action->OnGameFeatureUnregistering();
+				}
+			}
+		};
+
+		DeactivateListOfActions(CurrentExperience->Actions);
+		for (const TObjectPtr<UBattleExperienceActionSet>& ActionSet : CurrentExperience->ActionSets)
+		{
+			if (ActionSet != nullptr)
+			{
+				DeactivateListOfActions(ActionSet->Actions);
+			}
+		}
+
+		NumExpectedPausers = Context.GetNumPausers();
+
+		if (NumExpectedPausers > 0)
+		{
+			UE_LOG(LogBattle, Error, TEXT("Actions that have asynchronous deactivation aren't fully supported yet in Lyra experiences"));
+		}
+
+		if (NumExpectedPausers == NumObservedPausers)
+		{
+			OnAllActionsDeactivated();
+		}
+		
+		
+	}
 }
 
 void UBattleExperienceManagerComponent::CallOrRegister_OnExperienceLoaded(
@@ -234,4 +296,21 @@ const UBattleExperienceDefinition* UBattleExperienceManagerComponent::GetCurrent
 	check(CurrentExperience != nullptr);
 
 	return CurrentExperience;
+}
+
+void UBattleExperienceManagerComponent::OnActionDeactivationCompleted()
+{
+	check(IsInGameThread());
+	++NumObservedPausers;
+
+	if (NumObservedPausers == NumExpectedPausers)
+	{
+		OnAllActionsDeactivated();
+	}
+}
+
+void UBattleExperienceManagerComponent::OnAllActionsDeactivated()
+{
+	LoadState = EBattleExperienceLoadState::Unloaded;
+	CurrentExperience = nullptr;
 }

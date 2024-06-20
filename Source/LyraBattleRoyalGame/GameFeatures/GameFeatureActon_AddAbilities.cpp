@@ -170,6 +170,10 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities(AActor* Actor, const FGa
 
 void UGameFeatureAction_AddAbilities::RemoveActorAbilities(AActor* Actor, FPerContextData& ActiveData)
 {
+	if (Actor == nullptr)
+	{
+		ActiveData.ActiveExtensions.Remove(Actor);
+	}
 	if (FActorExtensions* ActorExtensions = ActiveData.ActiveExtensions.Find(Actor))
 	{
 		if (UAbilitySystemComponent* AbilitySystemComponent = Actor->FindComponentByClass<UAbilitySystemComponent>())

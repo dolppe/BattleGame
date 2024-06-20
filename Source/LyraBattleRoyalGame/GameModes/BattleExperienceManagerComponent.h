@@ -32,6 +32,8 @@ class UBattleExperienceManagerComponent : public UGameStateComponent
 public:
 	UBattleExperienceManagerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
 	// 로딩 완료, Experience가 존재.
 	bool IsExperienceLoaded() const {return (LoadState == EBattleExperienceLoadState::Loaded) &&(CurrentExperience != nullptr);}
 
@@ -46,6 +48,9 @@ public:
 	const UBattleExperienceDefinition* GetCurrentExperienceChecked() const;
 	
 private:
+
+	void OnActionDeactivationCompleted();
+	void OnAllActionsDeactivated();
 	
 	UPROPERTY()
 	TObjectPtr<const UBattleExperienceDefinition> CurrentExperience;
@@ -59,5 +64,9 @@ private:
 	// 활성화된 GameFeature Plugin들
 	int32 NumGameFeaturePluginsLoading = 0;
 	TArray<FString> GameFeaturePluginURLs;
+
+	// Deactivating 싱크를 위한 변수
+	int32 NumObservedPausers = 0;
+	int32 NumExpectedPausers = 0;
 	
 };

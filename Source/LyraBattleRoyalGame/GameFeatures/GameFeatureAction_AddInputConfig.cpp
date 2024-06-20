@@ -8,9 +8,7 @@
 
 void UGameFeatureAction_AddInputConfig::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
-	
 	FPerContextData& ActiveData = ContextData.FindOrAdd(Context);
-
 	// check double Activating with no deactivating
 	if (!ensure(ActiveData.ExtensionRequestHandles.IsEmpty()) ||
 		!ensure(ActiveData.PawnsAddedTo.IsEmpty())
@@ -34,8 +32,9 @@ void UGameFeatureAction_AddInputConfig::OnGameFeatureDeactivating(FGameFeatureDe
 	
 }
 
+
 void UGameFeatureAction_AddInputConfig::AddToWorld(const FWorldContext& WorldContext,
-	const FGameFeatureStateChangeContext& ChangeContext)
+                                                   const FGameFeatureStateChangeContext& ChangeContext)
 {
 	UWorld* World = WorldContext.World();
 	UGameInstance* GameInstance = WorldContext.OwningGameInstance;
@@ -103,9 +102,9 @@ void UGameFeatureAction_AddInputConfig::RemoveInputConfig(APawn* Pawn, FPerConte
 			{
 				Subsystem->RemovePlayerMappableConfig(Pair.Config.LoadSynchronous());
 			}
-			ActiveData.PawnsAddedTo.Remove(Pawn);
 		}
 	}
+	ActiveData.PawnsAddedTo.Remove(Pawn);
 }
 
 void UGameFeatureAction_AddInputConfig::Reset(FPerContextData& ActiveData)
