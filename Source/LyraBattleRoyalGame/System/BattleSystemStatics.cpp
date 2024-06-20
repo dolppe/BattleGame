@@ -1,6 +1,8 @@
 #include "BattleSystemStatics.h"
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleSystemStatics)
 
+PRAGMA_DISABLE_OPTIMIZATION
+
 void UBattleSystemStatics::PlayNextGame(const UObject* WorldContextObject)
 {
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
@@ -19,6 +21,8 @@ void UBattleSystemStatics::PlayNextGame(const UObject* WorldContextObject)
 	const bool bShouldSkipGameNotify = false;
 	World->ServerTravel(URL, bAbsolute, bShouldSkipGameNotify);	
 }
+
+PRAGMA_ENABLE_OPTIMIZATION
 
 void UBattleSystemStatics::SetScalarParameterValueOnAllMeshComponents(AActor* TargetActor, const FName ParameterName,
 	const float ParameterValue, bool bIncludeChildActors)

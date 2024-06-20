@@ -19,7 +19,6 @@ class UGameFeatureAction_WorldActionBase : public UGameFeatureAction
 public:
 	virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
 
-
 	virtual void AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext) PURE_VIRTUAL(UGameFeatureAction_WorldActionBase::AddToWorld,);
 	
 };
