@@ -4,19 +4,6 @@
 
 Lyra 샘플 프로젝트에 대한 분석도 겸하여 진행.
 
-## Sample 
-
-
-https://github.com/dolppe/LyraBattleRoyalGame/assets/35285591/5ba73c18-8a8f-4e76-a5ea-575840fd75ce
-
-
-https://github.com/dolppe/LyraBattleRoyalGame/assets/35285591/36d07085-b2ce-4782-88ea-8c087c6938a0
-
-
-https://github.com/dolppe/LyraBattleRoyalGame/assets/35285591/5d81e258-b7ce-429b-b239-53cae088a287
-
-
-
 ## Documentation Structure
 
 ```sh
