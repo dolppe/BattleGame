@@ -4,11 +4,6 @@
 
 Lyra 샘플 프로젝트에 대한 분석도 겸하여 진행.
 
-## Requirements
-
-- Unreal Engine 5 (v5.1)
-- Data Version Control (https://dvc.org/)
-
 ## Documentation Structure
 
 ```sh
@@ -29,6 +24,40 @@ Documentation
  ┗ LyraClassDiagram.mdj          -> 분석한 내용을 토대로 작성한 Lyra Class Diagram  
 ```
 
+
+### ClassDiagram  
+
+- Main  
+![Main](https://github.com/dolppe/LyraBattleRoyalGame/assets/35285591/6744a0a0-9d2e-4023-b975-ed90c69b6673)
+
+- Camera&Input  
+![CameraAndInput](https://github.com/dolppe/LyraBattleRoyalGame/assets/35285591/183ed8e0-2721-4a8a-bc85-08e31a7e3416)
+
+- GAS  
+![GAS](https://github.com/dolppe/LyraBattleRoyalGame/assets/35285591/f96e55e0-d89c-4ed6-8280-2fb94cb9eaaf)
+
+- CharacterParts  
+![CharacterParts](https://github.com/dolppe/LyraBattleRoyalGame/assets/35285591/ce6cff01-d22a-4c12-b249-7f8f55a8e87f)
+
+- ItemSystem  
+![ItemSystem](https://github.com/dolppe/LyraBattleRoyalGame/assets/35285591/ef61e397-3f9c-4421-928b-0788346f8bce)
+
+- Plugin  
+![Plugin](https://github.com/dolppe/LyraBattleRoyalGame/assets/35285591/d7c2cf1d-c63e-4fda-acee-d4de66fcc727)
+
+- UI  
+![UI](https://github.com/dolppe/LyraBattleRoyalGame/assets/35285591/a6ef5e77-9557-49f2-8038-53cf0e3e987d)
+
+- Phase&Audio  
+![PhaseSystemAndAudio](https://github.com/dolppe/LyraBattleRoyalGame/assets/35285591/15ff2520-e2aa-4ac8-9ab7-fc3bb536b461)
+
+- AI  
+![AI](https://github.com/dolppe/LyraBattleRoyalGame/assets/35285591/91247238-a4b2-4222-b0bf-9da187f9d1f0)
+
+## Requirements
+
+- Unreal Engine 5 (v5.1)
+- Data Version Control (https://dvc.org/)
 
 ## install
 
