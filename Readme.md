@@ -4,10 +4,9 @@
 
 Lyra 샘플 프로젝트에 대한 분석도 겸하여 진행.
 
-## Requirements
+## 
 
-- Unreal Engine 5 (v5.1)
-- Data Version Control (https://dvc.org/)
+
 
 ## Documentation Structure
 
@@ -29,6 +28,15 @@ Documentation
  ┗ LyraClassDiagram.mdj          -> 분석한 내용을 토대로 작성한 Lyra Class Diagram  
 ```
 
+
+### ClassDiagram
+
+
+
+## Requirements
+
+- Unreal Engine 5 (v5.1)
+- Data Version Control (https://dvc.org/)
 
 ## install
 
