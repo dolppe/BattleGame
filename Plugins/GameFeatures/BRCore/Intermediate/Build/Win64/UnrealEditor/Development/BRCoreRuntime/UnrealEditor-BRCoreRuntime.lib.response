@@ -1,0 +1,12 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-BRCoreRuntime.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"..\Intermediate\Build\Win64\UnrealEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
+"F:\LyraBattleRoyalGame\Plugins\GameFeatures\BRCore\Intermediate\Build\Win64\UnrealEditor\Development\BRCoreRuntime\BRCoreRuntimeModule.cpp.obj"
+"..\Intermediate\Build\Win64\UnrealEditor\Development\Default.rc2.res"
+/OUT:"F:\LyraBattleRoyalGame\Plugins\GameFeatures\BRCore\Intermediate\Build\Win64\UnrealEditor\Development\BRCoreRuntime\UnrealEditor-BRCoreRuntime.lib"

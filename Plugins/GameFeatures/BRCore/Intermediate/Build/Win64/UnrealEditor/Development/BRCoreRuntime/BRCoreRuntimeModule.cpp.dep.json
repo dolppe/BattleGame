@@ -1,0 +1,14 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "f:\\lyrabattleroyalgame\\plugins\\gamefeatures\\brcore\\source\\brcoreruntime\\private\\brcoreruntimemodule.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\lyraclone\\engine\\intermediate\\build\\win64\\unrealeditor\\development\\engine\\sharedpch.engine.shadowerrors.h.pch",
+        "Includes": [
+            "f:\\lyrabattleroyalgame\\plugins\\gamefeatures\\brcore\\intermediate\\build\\win64\\unrealeditor\\development\\brcoreruntime\\definitions.brcoreruntime.h",
+            "f:\\lyrabattleroyalgame\\plugins\\gamefeatures\\brcore\\source\\brcoreruntime\\public\\brcoreruntimemodule.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

@@ -78,6 +78,10 @@
 		{
 			"Name": "Spatialization",
 			"Enabled": true
+		},
+		{
+			"Name": "BRCore",
+			"Enabled": true
 		}
 	]
 }
