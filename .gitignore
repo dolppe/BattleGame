@@ -72,3 +72,6 @@ Plugins/*/Intermediate/*
 # Cache files for the editor to use
 DerivedDataCache/*
 /Content
+/Plugins/GameFeatures/BRCore/Content/__ExternalObjects__/*
+/Plugins/GameFeatures/BRCore/Content/__ExternalActors__/Maps/*
+/Plugins/GameFeatures/BRCore/Content/__ExternalActors__/Maps

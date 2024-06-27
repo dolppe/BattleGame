@@ -1,0 +1,6 @@
+outs:
+- md5: fe80e1f3be7fde48a60da50776ff4c44.dir
+  size: 10868
+  nfiles: 5
+  hash: md5
+  path: __ExternalObjects__
