@@ -47,6 +47,7 @@ void FBattleGameplayTags::AddAllTags(UGameplayTagsManager& Manager)
 	AddTag(InputTag_Move, "InputTag.Move", "");
 	AddTag(InputTag_Look_Mouse, "InputTag.Look.Mouse", "");
 	AddTag(InputTag_Crouch, "InputTag.Crouch", "");
+	AddTag(InputTag_Interact, "InputTag.Interact", "");
 	
 	
 }
