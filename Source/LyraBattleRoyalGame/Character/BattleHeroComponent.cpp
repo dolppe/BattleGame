@@ -2,6 +2,7 @@
 
 #include "BattleCharacter.h"
 #include "BattlePawnExtensionComponent.h"
+#include "ChaosWheeledVehicleMovementComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "PlayerMappableInputConfig.h"
 #include "Components/GameFrameworkComponentManager.h"
@@ -13,6 +14,8 @@
 #include "LyraBattleRoyalGame/Input/BattleInputComponent.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerState.h"
 #include "LyraBattleRoyalGame/Input/BattleMappableConfigPair.h"
+#include "LyraBattleRoyalGame/InteractActor/BattleWheeledVehiclePawn.h"
+#include "LyraBattleRoyalGame/InteractActor/InteractActorInterface.h"
 #include "LyraBattleRoyalGame/Player/BattlePlayerController.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BattleHeroComponent)
@@ -29,6 +32,7 @@ UBattleHeroComponent::UBattleHeroComponent(const FObjectInitializer& ObjectIniti
 
 	AbilityCameraMode = nullptr;
 	bReadyToBindInputs = false;
+	bIsVehicle = false;
 }
 
 void UBattleHeroComponent::OnRegister()
@@ -298,6 +302,7 @@ void UBattleHeroComponent::InitilizePlayerInput(UInputComponent* PlayerInputComp
 					BattleIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this,&ThisClass::Input_Move, false);
 					BattleIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Look_Mouse, ETriggerEvent::Triggered, this,&ThisClass::Input_LookMouse, false);
 					BattleIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Crouch, ETriggerEvent::Triggered, this,&ThisClass::Input_Crouch, false);
+					BattleIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Interact, ETriggerEvent::Triggered, this,&ThisClass::Input_Interact, false);
 				}
 				
 			}
@@ -318,11 +323,62 @@ void UBattleHeroComponent::Input_Move(const FInputActionValue& InputActionValue)
 	APawn* Pawn = GetPawn<APawn>();
 	AController* Controller = Pawn ? Pawn->GetController() : nullptr;
 
+	const FVector2D Value = InputActionValue.Get<FVector2D>();
+	const FRotator MovementRotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
+
+	UE_LOG(LogBattle, Log, TEXT("X: %f, Y: %f"),Value.X, Value.Y);
+	
+	if (bIsVehicle && CurrentVehicleMovement != nullptr)
+	{
+		if (Value.X != 0.0f)
+		{
+			CurrentVehicleMovement->SetSteeringInput(PrevSteeringInput + (Value.X*0.2f));
+		}
+		else if (PrevSteeringInput > 0.0f)
+		{
+			CurrentVehicleMovement->SetSteeringInput(FMath::Clamp(PrevSteeringInput-0.05f,0.0f,1.0f));
+		}
+		else if (PrevSteeringInput < 0.0f)
+		{
+			CurrentVehicleMovement->SetSteeringInput(FMath::Clamp(PrevSteeringInput+0.05f,-1.0f,0.0f));
+		}
+		
+		PrevSteeringInput = CurrentVehicleMovement->GetSteeringInput();
+
+
+		if (Value.Y != 0.0f)
+		{
+			if (Value.Y > 0.0f)
+			{
+				CurrentVehicleMovement->IncreaseThrottleInput(Value.Y*0.1f);
+				CurrentVehicleMovement->SetBrakeInput(0.0f);
+			}
+			else if (Value.Y < 0.0f)
+			{
+				CurrentVehicleMovement->SetBrakeInput(PrevBrakeInput + Value.Y*(-0.1f));
+				CurrentVehicleMovement->SetThrottleInput(0.0f);
+			}
+		}
+		else
+		{
+			if (PrevBrakeInput > 0.0f)
+			{
+				CurrentVehicleMovement->SetBrakeInput(FMath::Clamp(PrevBrakeInput-0.05f, 0.0f,1.0f));
+			}
+			if (PrevThrottleInput >0.0f)
+			{
+				CurrentVehicleMovement->DecreaseThrottleInput(0.05f);
+			}
+		}
+
+		PrevThrottleInput = CurrentVehicleMovement->GetThrottleInput();
+		PrevBrakeInput = CurrentVehicleMovement->GetBrakeInput();
+		
+		return;
+	}
+	
 	if (Controller)
 	{
-		const FVector2D Value = InputActionValue.Get<FVector2D>();
-		const FRotator MovementRotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
-
 		if (Value.X != 0.0f)
 		{
 			// Left/Right -> x값에 들어있음.
@@ -381,6 +437,16 @@ void UBattleHeroComponent::Input_Crouch(const FInputActionValue& InputActionValu
 }
 
 PRAGMA_DISABLE_OPTIMIZATION
+
+void UBattleHeroComponent::Input_Interact(const FInputActionValue& InputActionValue)
+{
+	if (UObject* InteractActor = Cast<UObject>(CurrentInteract))
+	{
+		IBattleInteractActorInterface::Execute_Interact(InteractActor, GetController<AController>());
+	}
+}
+
+
 
 void UBattleHeroComponent::Input_AbilityInputTagPressed(FGameplayTag InputTag)
 {
@@ -445,6 +511,11 @@ void UBattleHeroComponent::AdditionalInputConfig(const UBattleInputConfig* Input
 
 void UBattleHeroComponent::RemoveAdditionalInputConfig(const UBattleInputConfig* InputConfig)
 {
+}
+
+void UBattleHeroComponent::SetInteraction(IBattleInteractActorInterface* InInteraction)
+{
+	CurrentInteract = InInteraction;
 }
 
 

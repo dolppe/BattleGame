@@ -8,6 +8,9 @@
 
 #include "BattleHeroComponent.generated.h"
 
+class UChaosVehicleMovementComponent;
+class ABattleWheeledVehiclePawn;
+class IBattleInteractActorInterface;
 class UBattleInputConfig;
 class UBattleCameraMode;
 template<class TClass> class TSubclassOf;
@@ -54,6 +57,7 @@ public:
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_LookMouse(const FInputActionValue& InputActionValue);
 	void Input_Crouch(const FInputActionValue& InputActionValue);
+	void Input_Interact(const FInputActionValue& InputActionValue);
 	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
 	void Input_AbilityInputTagReleased(FGameplayTag InputTag);
 
@@ -61,6 +65,33 @@ public:
 	void AdditionalInputConfig(const UBattleInputConfig* InputConfig);
 	void RemoveAdditionalInputConfig(const UBattleInputConfig* InputConfig);
 
+	void SetInteraction(IBattleInteractActorInterface* InInteraction);
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsVehicle(bool bInIsVehicle)
+	{
+		bIsVehicle = bInIsVehicle;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	bool GetIsVehicle()
+	{
+		return bIsVehicle;
+	}
+	
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentVehicle(UChaosVehicleMovementComponent* InCurrentVehicle)
+	{
+		CurrentVehicleMovement = InCurrentVehicle;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	UChaosVehicleMovementComponent* GetCurrentVehicle()
+	{
+		return CurrentVehicleMovement;
+	}
+	
+	
 protected:
 	
 	UPROPERTY(EditAnywhere)
@@ -72,5 +103,14 @@ protected:
 	FGameplayAbilitySpecHandle AbilityCameraModeOwningSpecHandle;
 
 	bool bReadyToBindInputs;
+
+	IBattleInteractActorInterface* CurrentInteract;
+	
+	UChaosVehicleMovementComponent* CurrentVehicleMovement;
+	bool bIsVehicle = false;
+
+	float PrevSteeringInput = 0.0f;
+	float PrevThrottleInput = 0.0f;
+	float PrevBrakeInput = 0.0f;
 	
 };

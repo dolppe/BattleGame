@@ -82,6 +82,10 @@
 		{
 			"Name": "BRCore",
 			"Enabled": true
+		},
+		{
+			"Name": "ChaosVehiclesPlugin",
+			"Enabled": true
 		}
 	]
 }

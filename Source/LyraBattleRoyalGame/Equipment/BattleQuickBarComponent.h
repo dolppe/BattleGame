@@ -27,7 +27,11 @@ public:
 	virtual void BeginPlay() override;
 
 	UBattleEquipmentManagerComponent* FindEquipmentManager() const;
+
+	UFUNCTION(BlueprintCallable, Category="Battle")
 	void EquipItemInSlot();
+	
+	UFUNCTION(BlueprintCallable, Category="Battle")
 	void UnequipItemInSlot();
 
 	UFUNCTION(BlueprintCallable, Category="Battle")
